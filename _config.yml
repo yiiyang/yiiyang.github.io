@@ -1,9 +1,9 @@
 # Site settings
-title: Hux Blog
+title: Yang Yang
 SEOTitle: yangyang的博客 | Li Rui Yang
 header-img: img/home-bg.jpg
 email: liruyang5241@sina.com
-description: "关于前端与设计、编程与产品经理 | 黄玄，Web & Mobile Lover，Front-End Engineer，UX Designer | 这里是 @洋洋 的个人博客，探索新世界。"
+description: "关于前端与设计、编程与产品经理 | 洋洋，Web & Mobile Lover，Front-End Engineer，UX Designer | 这里是 @洋洋 的个人博客，探索新世界。"
 keyword: "yangyang, Yang洋, Yang, 鬼道, yang, @yang, 洋洋的博客, Yang Blog, 博客, 个人网站, 互联网, 前端, 设计, 产品, fty, lry, 朋友"
 url: "https://yiiyang.github.io"              # your host, for absolute URL
 baseurl: ""                             # for example, '/blog' if your blog hosted on 'host/blog'
