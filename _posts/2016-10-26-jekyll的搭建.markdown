@@ -1,9 +1,16 @@
 ---
-layout: post
-title:  "jekyll的简单搭建"
-date:   2016-10-27 13:30:14 +0800
-categories: jekyll update
+layout:     post
+title:      "Jekyll的搭建"
+subtitle:   " \"Hello World, Hello Blog\""
+date:       2014-01-29 12:10:00
+author:     "yangyang"
+header-img: "img/post-bg-2015.jpg"
+catalog: true
+tags:
+    - jekyll
 ---
+##第一
+> “Yeah It's on. ”
 <div id="article_content" class="article_content">
 
 <pre style="font-family:宋体; font-size:9pt; background-color:rgb(255,255,255)">首先，进入github.io这个网址，
@@ -51,6 +58,8 @@ _config.yml  _posts/  _site/  about.md  css/  feed.xml  Gemfile  Gemfile.lock  i
 $ jekyll new blog
 后面的哪个blog是自己的文件夹
 进入这个文件夹
+##第二
+
 $ cd blog
 $ jekyll serve
 就可以在本地运行了！打开 localhost:4000
@@ -73,6 +82,9 @@ vim /c/Users/ASUS/.ssh/id_rsa.pub
 $ git push origin master
 我们再接着往上推
 就ok了！
+
+##第三
+
 我们要想在本地运行的话，还要再主意一点就是
 进入自己的文件里面，运行
 $ jekyll build
