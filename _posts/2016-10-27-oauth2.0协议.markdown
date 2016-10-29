@@ -1,0 +1,84 @@
+---
+layout: post
+title:  "oauth2.0协议"
+date:   2016-10-28 13:30:14 +0800
+categories: jekyll update
+---
+<div id="blog_content" class="blog_content">
+    <div class="iteye-blog-content-contain" style="font-size: 14px;">
+<h3>什么是OAuth授权？</h3>
+<div class="post post_full">
+<div> </div>
+<div><strong>一、什么是OAuth协议</strong></div>
+<div>OAuth(开放授权)是一个开放标准。</div>
+<div>允许第三方网站在用户授权的前提下访问在用户在服务商那里存储的各种信息。</div>
+<div>而这种授权无需将用户提供用户名和密码提供给该第三方网站。</div>
+<div>OAuth允许用户提供一个令牌给第三方网站，一个令牌对应一个特定的第三方网站，同时该令牌只能在特定的时间内访问特定的资源。</div>
+<div> </div>
+<div><strong>二、OAuth的原理和授权流程</strong></div>
+<div>OAuth的认证和授权的过程中涉及的三方包括：</div>
+<div>服务商：用户使用服务的提供方，一般用来存消息、储照片、视频、联系人、文件等(比如Twitter、Sina微波等)。</div>
+<div>用  户：服务商的用户</div>
+<div>第三方：通常是网站，该网站想要访问用户存储在服务商那里的信息。</div>
+<div>比如某个提供照片打印服务的网站，用户想在那里打印自己存在服务商那里的网络相册。</div>
+<div>在认证过程之前，第三方需要先向服务商申请第三方服务的唯一标识。</div>
+<div>OAuth认证和授权的过程如下:</div>
+<div>1、用户访问第三方网站网站，想对用户存放在服务商的某些资源进行操作。</div>
+<div>2、第三方网站向服务商请求一个临时令牌。</div>
+<div>3、服务商验证第三方网站的身份后，授予一个临时令牌。</div>
+<div>4、第三方网站获得临时令牌后，将用户导向至服务商的授权页面请求用户授权，然后这个过程中将临时令牌和第三方网站的返回地址发送给服务商。</div>
+<div>5、用户在服务商的授权页面上输入自己的用户名和密码，授权第三方网站访问所相应的资源。</div>
+<div>6、授权成功后，服务商将用户导向第三方网站的返回地址。</div>
+<div>7、第三方网站根据临时令牌从服务商那里获取访问令牌。</div>
+<div>8、服务商根据令牌和用户的授权情况授予第三方网站访问令牌。</div>
+<div>9、第三方网站使用获取到的访问令牌访问存放在服务商的对应的用户资源。</div>
+<div> </div>
+<div><strong>三、目前支持OAuth的网站有哪些？</strong></div>
+<div>t.sina.com.cn</div>
+<div>t.qq.com</div>
+<div>t.sohu.com</div>
+<div>t.163.com</div>
+<div>www.douban.com</div>
+<div>www.twitter.com</div>
+<div>www.facebook.com</div>
+<div>Google Buzz</div>
+<div> </div>
+</div>
+<p><span style="color: #333333; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 12px; line-height: 20px;">文件来源于：<a href="http://www.6zou.net/tech/what_is_oauth.html">http://www.6zou.net/tech/what_is_oauth.html</a> <br></span></p>
+<p> </p>
+<p> </p>
+<br><p style="margin-top: 0px; margin-bottom: 10px; padding-top: 0px; padding-bottom: 0px; border: 0px; color: #222222; font-family: 'Microsoft Yahei',Arial,'Lucida Sans',Helvetica,Arial,sans-serif; font-size: 14px; line-height: 23.7999992370605px;">所谓OAuth（即Open Authorization，开放授权），它是为用户资源授权提供了一种安全简单的标准，也就是说用户在访问第三方web或应用的时候，第三方不会知道用户的信息（登录密码等），现在基本都支持OAuth2.0版本了。</p>
+<p style="margin-top: 0px; margin-bottom: 10px; padding-top: 0px; padding-bottom: 0px; border: 0px; color: #222222; font-family: 'Microsoft Yahei',Arial,'Lucida Sans',Helvetica,Arial,sans-serif; font-size: 14px; line-height: 23.7999992370605px;">首先来看看我们在第三方使用oauth流程如下：</p>
+<p style="margin-top: 0px; margin-bottom: 10px; padding-top: 0px; padding-bottom: 0px; border: 0px; color: #222222; font-family: 'Microsoft Yahei',Arial,'Lucida Sans',Helvetica,Arial,sans-serif; font-size: 14px; line-height: 23.7999992370605px;">第一步：用户登录第三方网站，使用qq登录。</p>
+<p style="text-align: center; margin-top: 0px; margin-bottom: 10px; padding-top: 0px; padding-bottom: 0px; border: 0px; color: #222222; font-family: 'Microsoft Yahei',Arial,'Lucida Sans',Helvetica,Arial,sans-serif; font-size: 14px; line-height: 23.7999992370605px;"><img src="http://img.blog.csdn.net/20141230183503812?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZ3NsczE4MTcxMQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""></p>
+<p style="margin-top: 0px; margin-bottom: 10px; padding-top: 0px; padding-bottom: 0px; border: 0px; color: #222222; font-family: 'Microsoft Yahei',Arial,'Lucida Sans',Helvetica,Arial,sans-serif; font-size: 14px; line-height: 23.7999992370605px;">第二步：点击登录后，会跳到qq平台提示输入用户名和密码。</p>
+<p style="text-align: center; margin-top: 0px; margin-bottom: 10px; padding-top: 0px; padding-bottom: 0px; border: 0px; color: #222222; font-family: 'Microsoft Yahei',Arial,'Lucida Sans',Helvetica,Arial,sans-serif; font-size: 14px; line-height: 23.7999992370605px;"><img src="http://img.blog.csdn.net/20141230184453649?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZ3NsczE4MTcxMQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""></p>
+<p style="margin-top: 0px; margin-bottom: 10px; padding-top: 0px; padding-bottom: 0px; border: 0px; color: #222222; font-family: 'Microsoft Yahei',Arial,'Lucida Sans',Helvetica,Arial,sans-serif; font-size: 14px; line-height: 23.7999992370605px;">第三步：如果用户名和密码正确，会提示是否接受授权，如果授权成功，第三方网站就能访问你的资源了，qq头像、用户名等</p>
+<p style="text-align: center; margin-top: 0px; margin-bottom: 10px; padding-top: 0px; padding-bottom: 0px; border: 0px; color: #222222; font-family: 'Microsoft Yahei',Arial,'Lucida Sans',Helvetica,Arial,sans-serif; font-size: 14px; line-height: 23.7999992370605px;"><img src="http://img.blog.csdn.net/20141230184514709?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZ3NsczE4MTcxMQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""></p>
+<br style="color: #222222; font-family: 'Microsoft Yahei',Arial,'Lucida Sans',Helvetica,Arial,sans-serif; font-size: 14px; line-height: 23.7999992370605px;"><h3 style="margin-bottom: 10px; font-size: 16px; color: #222222; font-family: 'Microsoft Yahei',Arial,'Lucida Sans',Helvetica,Arial,sans-serif;">认证和授权过程（包括三方）</h3>
+<br style="color: #222222; font-family: 'Microsoft Yahei',Arial,'Lucida Sans',Helvetica,Arial,sans-serif; font-size: 14px; line-height: 23.7999992370605px;"><p style="margin-top: 0px; margin-bottom: 10px; padding-top: 0px; padding-bottom: 0px; border: 0px; color: #222222; font-family: 'Microsoft Yahei',Arial,'Lucida Sans',Helvetica,Arial,sans-serif; font-size: 14px; line-height: 23.7999992370605px;">　　1、服务提供方，用户使用服务提供方来存储受保护的资源，如照片，视频，联系人列表。</p>
+<p style="margin-top: 0px; margin-bottom: 10px; padding-top: 0px; padding-bottom: 0px; border: 0px; color: #222222; font-family: 'Microsoft Yahei',Arial,'Lucida Sans',Helvetica,Arial,sans-serif; font-size: 14px; line-height: 23.7999992370605px;">　　2、用户，存放在服务提供方的受保护的资源的拥有者。</p>
+<p style="margin-top: 0px; margin-bottom: 10px; padding-top: 0px; padding-bottom: 0px; border: 0px; color: #222222; font-family: 'Microsoft Yahei',Arial,'Lucida Sans',Helvetica,Arial,sans-serif; font-size: 14px; line-height: 23.7999992370605px;">　　3、客户端，要访问服务提供方资源的第三方应用，通常是网站。在认证过程之前，客户端要向服务提供者申请客户端标识。</p>
+<p style="text-align: center; margin-top: 0px; margin-bottom: 10px; padding-top: 0px; padding-bottom: 0px; border: 0px; color: #222222; font-family: 'Microsoft Yahei',Arial,'Lucida Sans',Helvetica,Arial,sans-serif; font-size: 14px; line-height: 23.7999992370605px;"><span style="font-family: arial,宋体,sans-serif; line-height: 24px;"><img src="http://img.blog.csdn.net/20141230184537891?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZ3NsczE4MTcxMQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""><br></span></p>
+<p style="margin-top: 0px; margin-bottom: 10px; padding-top: 0px; padding-bottom: 0px; border: 0px; color: #222222; font-family: 'Microsoft Yahei',Arial,'Lucida Sans',Helvetica,Arial,sans-serif; font-size: 14px; line-height: 23.7999992370605px;"><span style="font-family: arial,宋体,sans-serif; line-height: 24px;"><br></span></p>
+<p style="margin-top: 0px; margin-bottom: 10px; padding-top: 0px; padding-bottom: 0px; border: 0px; color: #222222; font-family: 'Microsoft Yahei',Arial,'Lucida Sans',Helvetica,Arial,sans-serif; font-size: 14px; line-height: 23.7999992370605px;"><span style="font-family: arial,宋体,sans-serif; line-height: 24px;"><br></span></p>
+<p style="margin-top: 0px; margin-bottom: 10px; padding-top: 0px; padding-bottom: 0px; border: 0px; color: #222222; font-family: 'Microsoft Yahei',Arial,'Lucida Sans',Helvetica,Arial,sans-serif; font-size: 14px; line-height: 23.7999992370605px;"><span style="font-family: arial,宋体,sans-serif; line-height: 24px;">       用户访问客户端的网站，想操作用户存放在服务提供方的资源。</span></p>
+<p style="margin-top: 0px; margin-bottom: 10px; padding-top: 0px; padding-bottom: 0px; border: 0px; color: #222222; font-family: 'Microsoft Yahei',Arial,'Lucida Sans',Helvetica,Arial,sans-serif; font-size: 14px; line-height: 23.7999992370605px;"><span style="font-family: arial,宋体,sans-serif; line-height: 24px;">　　客户端向服务提供方请求一个临时令牌。</span></p>
+<p style="margin-top: 0px; margin-bottom: 10px; padding-top: 0px; padding-bottom: 0px; border: 0px; color: #222222; font-family: 'Microsoft Yahei',Arial,'Lucida Sans',Helvetica,Arial,sans-serif; font-size: 14px; line-height: 23.7999992370605px;"><span style="font-family: arial,宋体,sans-serif; line-height: 24px;">　　服务提供方验证客户端的身份后，授予一个临时令牌。</span></p>
+<p style="margin-top: 0px; margin-bottom: 10px; padding-top: 0px; padding-bottom: 0px; border: 0px; color: #222222; font-family: 'Microsoft Yahei',Arial,'Lucida Sans',Helvetica,Arial,sans-serif; font-size: 14px; line-height: 23.7999992370605px;"><span style="font-family: arial,宋体,sans-serif; line-height: 24px;">　　客户端获得临时令牌后，将用户引导至服务提供方的授权页面请求用户授权。在这个过程中将临时令牌和客户端的回调连接发送给服务提供方。</span></p>
+<p style="margin-top: 0px; margin-bottom: 10px; padding-top: 0px; padding-bottom: 0px; border: 0px; color: #222222; font-family: 'Microsoft Yahei',Arial,'Lucida Sans',Helvetica,Arial,sans-serif; font-size: 14px; line-height: 23.7999992370605px;"><span style="font-family: arial,宋体,sans-serif; line-height: 24px;">　　用户在服务提供方的网页上输入用户名和密码，然后授权该客户端访问所请求的资源。</span></p>
+<p style="margin-top: 0px; margin-bottom: 10px; padding-top: 0px; padding-bottom: 0px; border: 0px; color: #222222; font-family: 'Microsoft Yahei',Arial,'Lucida Sans',Helvetica,Arial,sans-serif; font-size: 14px; line-height: 23.7999992370605px;"><span style="font-family: arial,宋体,sans-serif; line-height: 24px;">　　授权成功后，服务提供方引导用户返回客户端的网页，并返回已授权的临时凭证。</span></p>
+<p style="margin-top: 0px; margin-bottom: 10px; padding-top: 0px; padding-bottom: 0px; border: 0px; color: #222222; font-family: 'Microsoft Yahei',Arial,'Lucida Sans',Helvetica,Arial,sans-serif; font-size: 14px; line-height: 23.7999992370605px;"><span style="font-family: arial,宋体,sans-serif; line-height: 24px;">　　客户端根据已授权的临时令牌从服务提供方那里获取访问令牌。</span></p>
+<p style="margin-top: 0px; margin-bottom: 10px; padding-top: 0px; padding-bottom: 0px; border: 0px; color: #222222; font-family: 'Microsoft Yahei',Arial,'Lucida Sans',Helvetica,Arial,sans-serif; font-size: 14px; line-height: 23.7999992370605px;"><span style="font-family: arial,宋体,sans-serif; line-height: 24px;">　　服务提供方根据临时令牌和用户的授权情况授予客户端访问令牌。</span></p>
+<p style="margin-top: 0px; margin-bottom: 10px; padding-top: 0px; padding-bottom: 0px; border: 0px; color: #222222; font-family: 'Microsoft Yahei',Arial,'Lucida Sans',Helvetica,Arial,sans-serif; font-size: 14px; line-height: 23.7999992370605px;"><span style="font-family: arial,宋体,sans-serif; line-height: 24px;">　　客户端使用获取的访问令牌访问该用户存放在服务提供方上的受保护的资源。（客户端只能访问给予它授权的用户的资源信息）</span></p>
+<p> </p>
+<p>来源： <a href="http://www.phpddt.com/%E4%BA%8C%E6%AC%A1%E5%BC%80%E5%8F%91/oauth-2.html">http://www.phpddt.com/%E4%BA%8C%E6%AC%A1%E5%BC%80%E5%8F%91/oauth-2.html</a></p>
+<p> </p>
+<p></p>
+<p> </p>
+<p>http://player.youku.com/player.php/sid/XMzI4NzA1MDA0/v.swf</p>
+<p> </p>
+</div>
+  </div>
+
+
