@@ -1,0 +1,98 @@
+---
+layout:     post
+title:      "Jekyll的搭建"
+subtitle:   " \"Hello World, Hello Blog\""
+date:       2014-01-29 12:10:00
+author:     "yangyang"
+header-img: "img/post-bg-2015.jpg"
+catalog: true
+tags:
+    - jekyll
+---
+##第一
+> “Yeah It's on. ”
+<div id="article_content" class="article_content">
+
+<pre style="font-family:宋体; font-size:9pt; background-color:rgb(255,255,255)">首先，进入github.io这个网址，
+进去按照里面的教程搭建ruby 和gem 这都搭建好了以后
+在cmd里面输入ruby和gem后会出现如下的这种情况：</pre>
+<pre name="code" class="python">$ ruby
+ASUS@DESKTOP-5J15LT4 MINGW32 ~/Desktop/mylog (gh-pages)
+$ gem
+RubyGems is a sophisticated package manager for Ruby.  This is a
+basic help message containing pointers to more information.
+  Usage:
+    gem -h/--help
+    gem -v/--version
+    gem command [arguments...] [options...]
+
+  Examples:
+    gem install rake
+    gem list --local
+    gem build package.gemspec
+    gem help install
+
+  Further help:
+    gem help commands            list all &#39;gem&#39; commands
+    gem help examples            show some examples of usage
+    gem help gem_dependencies    gem dependencies file guide
+    gem help platforms           gem platforms guide
+    gem help &lt;COMMAND&gt;           show help on COMMAND
+                                   (e.g. &#39;gem help install&#39;)
+    gem server                   present a web page at
+                                 http://localhost:8808/
+                                 with info about installed gems</pre>
+<p></p>
+<pre style="font-family:宋体; font-size:9pt; background-color:rgb(255,255,255)">这就说明你安装成功了！
+然后！安装镜像，在本地新建个文件夹，用cmd进去安装这些东西</pre>
+<pre style="font-family:宋体; font-size:9pt; background-color:rgb(255,255,255)">$ gem sources -a http://gems.ruby-china.org/</pre>
+<pre style="font-family:宋体; font-size:9pt; background-color:rgb(255,255,255)"> 安装jekyll 3.0的版本呢
+ $ gem install jekyll -v '3.0'
+ 还有这也要安装
+$ gem install minima
+$ gem install bundle
+安装成功以后，会在文件里面出现
+$ ls
+_config.yml  _posts/  _site/  about.md  css/  feed.xml  Gemfile  Gemfile.lock  index.html
+但是，当我们不小心删了里面的东西以后，还可以生成jekyll
+$ jekyll new blog
+后面的哪个blog是自己的文件夹
+进入这个文件夹
+##第二
+
+$ cd blog
+$ jekyll serve
+就可以在本地运行了！打开 localhost:4000
+页面就出现了！
+但是！我们还想往github上推，这该怎么半呢？
+首先：git init
+就是在本地创建一个版本库
+git remote add origin git@github.com:/yiiyang/yiiyang.github.io
+这是与远程版本库有关联，这是必要的操作
+$ git add * -f
+$ git commit -m '1'
+$ git push origin master
+然后我们会发现这推不上去，这该怎么办呢？
+因为我们首次推的时候，github有ssh加密协议，so
+$ git config --global user.email &quot;自己的邮箱&quot;
+$ ssh-keygen -t rsa -C  &quot;自己的邮箱&quot;
+$ ssh-keygen -t rsa -C &quot;自己的邮箱&quot;
+vim /c/Users/ASUS/.ssh/id_rsa.pub
+进入里面，把里面的东西复制到自己的github上
+$ git push origin master
+我们再接着往上推
+就ok了！
+
+##第三
+
+我们要想在本地运行的话，还要再主意一点就是
+进入自己的文件里面，运行
+$ jekyll build
+$ jekyll serve --watch
+别关！就very good了！！！！！！</pre>
+<p></p>
+<p><br>
+</p>
+
+</div>
+
