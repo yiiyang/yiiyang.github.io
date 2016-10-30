@@ -9,8 +9,6 @@ tags:
     - redis
 ---
 <div class="text clear" itemprop="articleBody">
-        <p>　　<strong><strong>作者介绍</strong></strong></p>
-<p>　　陆晨，英文名Float Lu，目前就职于大众点评网，JAVA工程师，热爱开源，业余时间喜欢钻研基础技术及各种开源中间件，技术博客（http://my.oschina.net/andylucc）。本文已获得作者授权。 </p>
 <p>　　<strong><strong>正文</strong></strong></p>
 <p>　　Redis Partitioning即Redis分区，简单的说就是将数据分布到不同的redis实例中，因此对于每个redis实例所存储的内容仅仅是所有内容的一个子集。分区（Partitioning）不仅仅是Redis中的概念，几乎是所有数据存储系统都会涉及到的概念，这篇文章将会在理解分区基本概念的基础之上进一步了解Redis对分区的支持。 </p>
 <p>　　<strong><strong>一、我们为什么要分区</strong></strong></p>
