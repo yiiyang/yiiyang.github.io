@@ -1,0 +1,389 @@
+---
+layout:     post
+title:      "正则和php正则常用语法"
+date:       2014-02-17 13:15:00
+author:     "yangyang"
+header-img: "img/post-bg-2015.jpg"
+catalog: true
+tags:
+- 正则
+---
+<div id="post_detail">
+    <div class="block">
+        <h1 class="block_title"><a id="cb_post_title_url" href="http://www.cnblogs.com/light169/archive/2006/10/18/532347.html">正则表达式基本语法</a></h1>
+        <div class="post">
+            <div class="postcontent">
+                <div id="cnblogs_post_body">1.正则表达式基本语法<br><br>
+                    <p><span><font face=新細明體>两个特殊的符号</font></span><span>'^'</span><span><font face=新細明體>和</font></span><span>'$'</span><font face=新細明體><span>。他们的作用是分别指出一个字符串的开始和结束。例子如下：</span></font></p>
+                    <p><span>"^The"</span><span><font face=新細明體>：表示所有以</font></span><span>"The"</span><span><font face=新細明體>开始的字符串（</font></span><span>"There"</span><span><font face=新細明體>，</font></span><span>"The cat"</span><span><font face=新細明體>等）；</font></span><span><br>"of despair$"</span><span><font face=新細明體>：表示所以以</font></span><span>"of despair"</span><span><font face=新細明體>结尾的字符串；</font></span><span><br>"^abc$"</span><span><font face=新細明體>：表示开始和结尾都是</font></span><span>"abc"</span><span><font face=新細明體>的字符串</font></span><span>——</span><span><font face=新細明體>呵呵，只有</font></span><span>"abc"</span><span><font face=新細明體>自己了；</font></span><span><br>"notice"</span><span><font face=新細明體>：表示任何包含</font></span><span>"notice"</span><font face=新細明體><span>的字符串。</span></font></p>
+                    <p><span><font face=新細明體>象最后那个例子，如果你不使用两个特殊字符，你就在表示要查找的串在被查找串的任意部分</font></span><span>——</span><span><font face=新細明體>你并</font></span><span><br></span><font face=新細明體><span>不把它定位在某一个顶端。</span></font></p>
+                    <p><span><font face=新細明體>其它还有</font></span><span>'*'</span><span><font face=新細明體>，</font></span><span>'+'</span><span><font face=新細明體>和</font></span><span>'?'</span><span><font face=新細明體>这三个符号，表示一个或一序列字符重复出现的次数。它们分别表示</font></span><span>&#8220;</span><span><font face=新細明體>没有或</font></span><span><br></span><span><font face=新細明體>更多</font></span><span>&#8221;</span><span><font face=新細明體>，</font></span><span>&#8220;</span><span><font face=新細明體>一次或更多</font></span><span>&#8221;</span><span><font face=新細明體>还有</font></span><span>&#8220;</span><span><font face=新細明體>没有或一次</font></span><span>&#8221;</span><font face=新細明體><span>。下面是几个例子：</span></font></p>
+                    <p><span>"ab*"</span><span><font face=新細明體>：表示一个字符串有一个</font></span><span>a</span><span><font face=新細明體>后面跟着零个或若干个</font></span><span>b</span><span><font face=新細明體>。（</font></span><span>"a", "ab", "abbb",&#8230;&#8230;</span><span><font face=新細明體>）；</font></span><span><br>"ab+"</span><span><font face=新細明體>：表示一个字符串有一个</font></span><span>a</span><span><font face=新細明體>后面跟着至少一个</font></span><span>b</span><span><font face=新細明體>或者更多；</font></span><span><br>"ab?"</span><span><font face=新細明體>：表示一个字符串有一个</font></span><span>a</span><span><font face=新細明體>后面跟着零个或者一个</font></span><span>b</span><span><font face=新細明體>；</font></span><span><br>"a?b+$"</span><span><font face=新細明體>：表示在字符串的末尾有零个或一个</font></span><span>a</span><span><font face=新細明體>跟着一个或几个</font></span><span>b</span><font face=新細明體><span>。</span></font></p>
+                    <p><font face=新細明體><span>你也可以使用范围，用大括号括起，用以表示重复次数的范围。</span></font></p>
+                    <p><span>"ab{2}"</span><span><font face=新細明體>：表示一个字符串有一个</font></span><span>a</span><span><font face=新細明體>跟着</font></span><span>2</span><span><font face=新細明體>个</font></span><span>b</span><span><font face=新細明體>（</font></span><span>"abb"</span><span><font face=新細明體>）；</font></span><span><br>"ab{2,}"</span><span><font face=新細明體>：表示一个字符串有一个</font></span><span>a</span><span><font face=新細明體>跟着至少</font></span><span>2</span><span><font face=新細明體>个</font></span><span>b</span><span><font face=新細明體>；</font></span><span><br>"ab{3,5}"</span><span><font face=新細明體>：表示一个字符串有一个</font></span><span>a</span><span><font face=新細明體>跟着</font></span><span>3</span><span><font face=新細明體>到</font></span><span>5</span><span><font face=新細明體>个</font></span><span>b</span><font face=新細明體><span>。</span></font></p>
+                    <p><span><font face=新細明體>请注意，你必须指定范围的下限（如：</font></span><span>"{0,2}"</span><span><font face=新細明體>而不是</font></span><span>"{,2}"</span><span><font face=新細明體>）。还有，你可能注意到了，</font></span><span>'*'</span><span><font face=新細明體>，</font></span><span>'+'</span><span><font face=新細明體>和</font></span><span><br>'?'</span><span><font face=新細明體>相当于</font></span><span>"{0,}"</span><span><font face=新細明體>，</font></span><span>"{1,}"</span><span><font face=新細明體>和</font></span><span>"{0,1}"</span><span><font face=新細明體>。</font></span><span><br></span><span><font face=新細明體>还有一个</font></span><span>'&#166;'</span><span><font face=新細明體>，表示</font></span><span>&#8220;</span><span><font face=新細明體>或</font></span><span>&#8221;</span><font face=新細明體><span>操作：</span></font></p>
+                    <p><span>"hi&#166;hello"</span><span><font face=新細明體>：表示一个字符串里有</font></span><span>"hi"</span><span><font face=新細明體>或者</font></span><span>"hello"</span><span><font face=新細明體>；</font></span><span><br>"(b&#166;cd)ef"</span><span><font face=新細明體>：表示</font></span><span>"bef"</span><span><font face=新細明體>或</font></span><span>"cdef"</span><span><font face=新細明體>；</font></span><span><br>"(a&#166;b)*c"</span><span><font face=新細明體>：表示一串</font></span><span>"a""b"</span><span><font face=新細明體>混合的字符串后面跟一个</font></span><span>"c"</span><font face=新細明體><span>；</span></font></p>
+                    <p><span>'.'</span><font face=新細明體><span>可以替代任何字符：</span></font></p>
+                    <p><span>"a.[0-9]"</span><span><font face=新細明體>：表示一个字符串有一个</font></span><span>"a"</span><span><font face=新細明體>后面跟着一个任意字符和一个数字；</font></span><span><br>"^.{3}$"</span><span><font face=新細明體>：表示有任意三个字符的字符串（长度为</font></span><span>3</span><font face=新細明體><span>个字符）；</span></font></p>
+                    <p><font face=新細明體><span>方括号表示某些字符允许在一个字符串中的某一特定位置出现：</span></font></p>
+                    <p><span>"[ab]"</span><span><font face=新細明體>：表示一个字符串有一个</font></span><span>"a"</span><span><font face=新細明體>或</font></span><span>"b"</span><span><font face=新細明體>（相当于</font></span><span>"a&#166;b"</span><span><font face=新細明體>）；</font></span><span><br>"[a-d]"</span><span><font face=新細明體>：表示一个字符串包含小写的</font></span><span>'a'</span><span><font face=新細明體>到</font></span><span>'d'</span><span><font face=新細明體>中的一个（相当于</font></span><span>"a&#166;b&#166;c&#166;d"</span><span><font face=新細明體>或者</font></span><span>"[abcd]"</span><span><font face=新細明體>）；</font></span><span><br>"^[a-zA-Z]"</span><span><font face=新細明體>：表示一个以字母开头的字符串；</font></span><span><br>"[0-9]%"</span><span><font face=新細明體>：表示一个百分号前有一位的数字；</font></span><span><br>",[a-zA-Z0-9]$"</span><font face=新細明體><span>：表示一个字符串以一个逗号后面跟着一个字母或数字结束。</span></font></p>
+                    <p><span><font face=新細明體>你也可以在方括号里用</font></span><span>'^'</span><span><font face=新細明體>表示不希望出现的字符，</font></span><span>'^'</span><span><font face=新細明體>应在方括号里的第一位。（如：</font></span><span>"%[^a-zA-Z]%"</span><span><font face=新細明體>表</font></span><span><br></span><font face=新細明體><span>示两个百分号中不应该出现字母）。</span></font></p>
+                    <p><span><font face=新細明體>为了逐字表达，你必须在</font></span><span>"^.$()&#166;*+?{\"</span><span><font face=新細明體>这些字符前加上转移字符</font></span><span>'\'</span><font face=新細明體><span>。</span></font></p>
+<span>请注意在方括号中，不需要转义字符。<br><br><br><br>2.<span>正则表达式<span>验证控制文本框的输入字符类型<br><span><strong>1.只能输入数字和英文的：</strong></span><span> <br>&lt;input onkeyup="value=value.replace(/[\W]/g,'') " onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))" ID="Text1" NAME="Text1"&gt;<br><br><strong><span>2.</span></strong></span><strong><span>只能输入数字的：</span></strong><span> <br>&lt;input onkeyup="value=value.replace(/[^\d]/g,'') " onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))" ID="Text2" NAME="Text2"&gt;<br><br><strong><span>3.</span></strong></span><strong><span>只能输入全角的：</span></strong><span> <br>&lt;input onkeyup="value=value.replace(/[^\uFF00-\uFFFF]/g,'')" onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\uFF00-\uFFFF]/g,''))" ID="Text3" NAME="Text3"&gt;<br><br><strong><span>4.</span></strong></span><strong><span>只能输入汉字的：</span></strong><span> <br>&lt;input onkeyup="value=value.replace(/[^\u4E00-\u9FA5]/g,'')" onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\u4E00-\u9FA5]/g,''))" ID="Text4" NAME="Text4"&gt;<br><br><br><strong><font size=2>3.</font></strong><span id=ArticleTitle1_ArticleTitle1_lblTitle><font color=#000000><strong><font size=2>正则表达式的应用实例通俗说明<br></font></strong><span id=ArticleContent1_ArticleContent1_lblContent><strong><font size=2>&nbsp; </font></strong>
+<p><span><strong><font size=2>*******************************************************************************</font></strong></span></p>
+<p><strong><font size=2><span>//</span><span>校验是否全由数字组成</span><span> </span></font></strong></p>
+<p><span><strong><font size=2>/^[0-9]{1,20}$/</font></strong></span></p>
+<p><span><strong><font size=2>&nbsp;</font></strong></span></p>
+<p><strong><font size=2><span>^ </span><span>表示打头的字符要匹配紧跟</span><span>^</span><span>后面的规则</span></font></strong></p>
+<p><strong><font size=2><span>$ </span><span>表示打头的字符要匹配紧靠</span><span>$</span><span>前面的规则</span></font></strong></p>
+<p><strong><font size=2><span>[ ] </span><span>中的内容是可选字符集</span></font></strong></p>
+<p><strong><font size=2><span>[0-9] </span><span>表示要求字符范围在</span><span>0-9</span><span>之间</span></font></strong></p>
+<p><strong><font size=2><span>{1,20}</span><span>表示数字字符串长度合法为</span><span>1</span><span>到</span><span>20</span><span>，即为</span><span>[0-9]</span><span>中的字符出现次数的范围是</span><span>1</span><span>到</span><span>20</span><span>次。</span></font></strong></p>
+<p><span><strong><font size=2>&nbsp;</font></strong></span></p>
+<p><strong><font size=2><span>/^ </span><span>和</span><span> $/</span><span>成对使用应该是表示要求整个字符串完全匹配定义的规则，而不是只匹配字符串中的一个子串。</span></font></strong></p>
+<p><span><strong><font size=2>&nbsp;</font></strong></span></p>
+<p><span><strong><font size=2>*******************************************************************************</font></strong></span></p>
+<p><strong><font size=2><span>//</span><span>校验登录名：只能输入</span><span>5-20</span><span>个以字母开头、可带数字、&#8220;</span><span>_</span><span>&#8221;、&#8220;</span><span>.</span><span>&#8221;的字串</span><span> </span></font></strong></p>
+<p><span><strong><font size=2>/^[a-zA-Z]{1}([a-zA-Z0-9]|[._]){4,19}$/</font></strong></span></p>
+<p><span><strong><font size=2>&nbsp;</font></strong></span></p>
+<p><strong><font size=2><span>^[a-zA-Z]{1} </span><span>表示第一个字符要求是字母。</span></font></strong></p>
+<p><strong><font size=2><span>([a-zA-Z0-9]|[._]){4,19} </span><span>表示从第二位开始（因为它紧跟在上个表达式后面）的一个长度为</span><span>4</span><span>到</span><span>9</span><span>位的字符串，它要求是由大小写字母、数字或者特殊字符集</span><span>[._]</span><span>组成。</span></font></strong></p>
+<p><span><strong><font size=2>&nbsp;</font></strong></span></p>
+<p><span><strong><font size=2>*******************************************************************************</font></strong></span></p>
+<p><strong><font size=2><span>//</span><span>校验用户姓名：只能输入</span><span>1-30</span><span>个以字母开头的字串</span><span> </span></font></strong></p>
+<p><span><strong><font size=2>/^[a-zA-Z]{1,30}$/ </font></strong></span></p>
+<p><span><strong><font size=2>&nbsp;</font></strong></span></p>
+<p><span><strong><font size=2>*******************************************************************************</font></strong></span></p>
+<p><strong><font size=2><span>//</span><span>校验密码：只能输入</span><span>6-20</span><span>个字母、数字、下划线</span><span> </span></font></strong></p>
+<p><span><strong><font size=2>/^(\w){6,20}$/</font></strong></span></p>
+<p><span><strong><font size=2>&nbsp;</font></strong></span></p>
+<p><strong><font size=2><span>\w</span><span>：用于匹配字母，数字或下划线字符</span></font></strong></p>
+<p><span><strong><font size=2>&nbsp;</font></strong></span></p>
+<p><span><strong><font size=2>*******************************************************************************</font></strong></span></p>
+<p><strong><font size=2><span>//</span><span>校验普通电话、传真号码：可以&#8220;</span><span>+</span><span>&#8221;或数字开头，可含有&#8220;</span><span>-</span><span>&#8221;</span> <span>和</span> <span>&#8220;</span> <span>&#8221;</span></font></strong></p>
+<p><span><strong><font size=2>/^[+]{0,1}(\d){1,3}[ ]?([-]?((\d)|[ ]){1,12})+$/</font></strong></span></p>
+<p><span><strong><font size=2>&nbsp;</font></strong></span></p>
+<p><strong><font size=2><span>\d</span><span>：用于匹配从</span><span>0</span><span>到</span><span>9</span><span>的数字；</span><span> </span></font></strong></p>
+<p><strong><font size=2><span>&#8220;?&#8221;</span><span>元字符规定其前导对象必须在目标对象中连续出现零次或一次</span></font></strong></p>
+<p><span><strong><font size=2>&nbsp;</font></strong></span></p>
+<p><strong><font size=2><span>可以匹配的字符串如：</span><span>+123 -999 999&nbsp;</span><span>；</span> <span>+123-999 999&nbsp;</span><span>；</span><span>123 999 999 </span><span>；</span><span>+123 999999</span><span>等</span></font></strong></p>
+<p><span><strong><font size=2>&nbsp;</font></strong></span></p>
+<p><span><strong><font size=2>&nbsp;</font></strong></span></p>
+<p><span><strong><font size=2>&nbsp;</font></strong></span></p>
+<p><span><strong><font size=2>&nbsp;</font></strong></span></p>
+<p><span><strong><font size=2>&nbsp;</font></strong></span></p>
+<p><span><strong><font size=2>&nbsp;</font></strong></span></p>
+<p><span><strong><font size=2>*******************************************************************************</font></strong></span></p>
+<p><strong><font size=2><span>//</span><span>校验</span><span>URL </span></font></strong></p>
+<p><strong><font size=2><span>/^http[s]{0,1}:\/\/.+$/ </span><span>或</span> <span>/^http[s]{0,1}:\/\/.{1,n}$/ (</span><span>表示</span><span>url</span><span>串的长度为</span><span>length(&#8220;https://&#8221;) + n )</span></font></strong></p>
+<p><span><strong><font size=2>&nbsp;</font></strong></span></p>
+<p><strong><font size=2><span>\ / </span><span>：表示字符&#8220;</span><span>/</span><span>&#8221;。</span></font></strong></p>
+<p><strong><font size=2><span>. </span><span>表示所有字符的集</span></font></strong></p>
+<p><strong><font size=2><span>+ </span><span>等同于</span><span>{1,}</span><span>，就是</span><span>1</span><span>到正无穷吧。</span></font></strong></p>
+<p><span><strong><font size=2>&nbsp;</font></strong></span></p>
+<p><span><strong><font size=2>*******************************************************************************</font></strong></span></p>
+<p><strong><font size=2><span>//</span><span>校验纯中文字符</span></font></strong></p>
+<p><span><strong><font size=2>/^[\u4E00-\u9FA5]+$/</font></strong></span></p>
+<p><span><strong><font size=2>&nbsp;</font></strong></span></p>
+<p><strong><font size=2><span>[\u4E00-\u9FA5] </span><span>：估计是中文字符集的范围吧</span></font></strong></p>
+<p><span><strong><font size=2>&nbsp;</font></strong></span></p>
+<p><strong><font size=2><span>以上表达式均在</span><span>下面的</span><span>javascript</span><span>中测试通过</span></font></strong></p>
+<p><span><strong><font size=2>&nbsp;</font></strong></span></p>
+<p><span><strong><font size=2>&lt;html&gt;</font></strong></span></p>
+<p><span><strong><font size=2>&lt;script language="JavaScript"&gt;</font></strong></span></p>
+<p><span><strong><font size=2>&lt;!--</font></strong></span></p>
+<p><span><strong><font size=2>function regx(r,s) </font></strong></span></p>
+<p><span><strong><font size=2>{ </font></strong></span></p>
+<p><span><strong><font size=2><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>if (r == null || r == ""){</font></strong></span></p>
+<p><span><strong><font size=2><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>return false;</font></strong></span></p>
+<p><span><strong><font size=2><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</font></strong></span></p>
+<p><span><strong><font size=2><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>var patrn= new RegExp(r); </font></strong></span></p>
+<p><span><strong><font size=2><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>if (patrn.exec(s)) </font></strong></span></p>
+<p><span><strong><font size=2><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>return true</font></strong></span></p>
+<p><span><strong><font size=2><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>return false</font></strong></span></p>
+<p><span><strong><font size=2>} </font></strong></span></p>
+<p><span><strong><font size=2>&nbsp;</font></strong></span></p>
+<p><span><strong><font size=2>--&gt;</font></strong></span></p>
+<p><span><strong><font size=2>&lt;/script&gt;</font></strong></span></p>
+<p><span><strong><font size=2>&lt;body&gt;</font></strong></span></p>
+<p><span><strong><font size=2>&lt;form&gt;</font></strong></span></p>
+<p><strong><font size=2><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>规则表达式</span> <span>：</span><span> &lt;input type="input" name="regxStr" value="" &gt; (</span><span>填写</span><span>/ /</span><span>之间的表达式</span><span>)</span></font></strong></p>
+<p><span><strong><font size=2>&lt;br&gt;</font></strong></span></p>
+<p><strong><font size=2><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>校验字符串</span> <span>：</span><span> &lt;input type="input" name="str" value="" &gt;</span></font></strong></p>
+<p><span><strong><font size=2>&nbsp;</font></strong></span></p>
+<p><strong><font size=2><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;input type="button" name="match" value="</span><span>匹配</span><span>" onClick="alert(regx(regxStr.value,str.value));"&gt;</span></font></strong></p>
+<p><span><strong><font size=2>&lt;/form&gt;</font></strong></span></p>
+<p><span><strong><font size=2>&lt;/body&gt;</font></strong></span></p>
+<p><span><strong><font size=2>&lt;/html&gt;<br><br>4.正則表達式應用<br></font></strong><span id=ArticleContent1_ArticleContent1_lblContent><strong><font size=2>&nbsp;</font></strong></p>
+<p><strong><font size=2>"^\d+$"　　//非负整数（正整数 + 0） <br>"^[0-9]*[1-9][0-9]*$"　　//正整数 <br>"^((-\d+)|(0+))$"　　//非正整数（负整数 + 0） <br>"^-[0-9]*[1-9][0-9]*$"　　//负整数 <br>"^-?\d+$"　　　　//整数 <br>"^\d+(\.\d+)?$"　　//非负浮点数（正浮点数 + 0） <br>"^(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*))$"　　//正浮点数 <br>"^((-\d+(\.\d+)?)|(0+(\.0+)?))$"　　//非正浮点数（负浮点数 + 0） <br>"^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$"　　//负浮点数 <br>"^(-?\d+)(\.\d+)?$"　　//浮点数 <br>"^[A-Za-z]+$"　　//由26个英文字母组成的字符串 <br>"^[A-Z]+$"　　//由26个英文字母的大写组成的字符串 <br>"^[a-z]+$"　　//由26个英文字母的小写组成的字符串 <br>"^[A-Za-z0-9]+$"　　//由数字和26个英文字母组成的字符串 <br>"^\w+$"　　//由数字、26个英文字母或者下划线组成的字符串 <br>"^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$"　　　　//email地址 <br>"^[a-zA-z]+://(\w+(-\w+)*)(\.(\w+(-\w+)*))*(\?\S*)?$"　　//url<br>/^(d{2}|d{4})-((0([1-9]{1}))|(1[1|2]))-(([0-2]([1-9]{1}))|(3[0|1]))$/&nbsp;&nbsp; //&nbsp; 年-月-日<br>/^((0([1-9]{1}))|(1[1|2]))/(([0-2]([1-9]{1}))|(3[0|1]))/(d{2}|d{4})$/&nbsp;&nbsp; // 月/日/年<br>"^([w-.]+)@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.)|(([w-]+.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(]?)$"&nbsp;&nbsp; //Emil<br>"(d+-)?(d{4}-?d{7}|d{3}-?d{8}|^d{7,8})(-d+)?"&nbsp;&nbsp;&nbsp;&nbsp; //电话号码<br>"^(d{1,2}|1dd|2[0-4]d|25[0-5]).(d{1,2}|1dd|2[0-4]d|25[0-5]).(d{1,2}|1dd|2[0-4]d|25[0-5]).(d{1,2}|1dd|2[0-4]d|25[0-5])$"&nbsp;&nbsp; //IP地址</font></strong></p>
+<p><font size=2><strong>^([0-9A-F]{2})(-[0-9A-F]{2}){5}$&nbsp;&nbsp; //MAC地址的正则表达式<br>^[-+]?\d+(\.\d+)?$&nbsp; //值类型正则表达式<br><br><br>5.</strong>javascript正则表达式检验<br>//校验是否全由数字组成<br>function isDigit(s)<br>{<br>var patrn=/^[0-9]{1,20}$/;<br>if (!patrn.exec(s)) return false<br>return true<br>}</p>
+<p>//校验登录名：只能输入5-20个以字母开头、可带数字、&#8220;_&#8221;、&#8220;.&#8221;的字串<br>function isRegisterUserName(s)<br>{<br>var patrn=/^[a-zA-Z]{1}([a-zA-Z0-9]|[._]){4,19}$/;<br>if (!patrn.exec(s)) return false<br>return true<br>}</p>
+<p>//校验用户姓名：只能输入1-30个以字母开头的字串<br>function isTrueName(s)<br>{<br>var patrn=/^[a-zA-Z]{1,30}$/;<br>if (!patrn.exec(s)) return false<br>return true<br>}</p>
+<p>//校验密码：只能输入6-20个字母、数字、下划线<br>function isPasswd(s)<br>{<br>var patrn=/^(\w){6,20}$/;<br>if (!patrn.exec(s)) return false<br>return true<br>}</p>
+<p>//校验普通电话、传真号码：可以&#8220;+&#8221;开头，除数字外，可含有&#8220;-&#8221;<br>function isTel(s)<br>{<br>//var patrn=/^[+]{0,1}(\d){1,3}[ ]?([-]?(\d){1,12})+$/;<br>var patrn=/^[+]{0,1}(\d){1,3}[ ]?([-]?((\d)|[ ]){1,12})+$/;<br>if (!patrn.exec(s)) return false<br>return true<br>}</p>
+<p>//校验手机号码：必须以数字开头，除数字外，可含有&#8220;-&#8221;<br>function isMobil(s)<br>{<br>var patrn=/^[+]{0,1}(\d){1,3}[ ]?([-]?((\d)|[ ]){1,12})+$/;<br>if (!patrn.exec(s)) return false<br>return true<br>}</p>
+<p>//校验邮政编码<br>function isPostalCode(s)<br>{<br>//var patrn=/^[a-zA-Z0-9]{3,12}$/;<br>var patrn=/^[a-zA-Z0-9 ]{3,12}$/;<br>if (!patrn.exec(s)) return false<br>return true<br>}</p>
+<p>//校验搜索关键字<br>function isSearch(s)<br>{<br>var patrn=/^[^`~!@#$%^&amp;*()+=|\\\][\]\{\}:;\'\,.&lt;&gt;/?]{1}[^`~!@$%^&amp;()+=|\\\][\]\{\}:;\'\,.&lt;&gt;?]{0,19}$/;<br>if (!patrn.exec(s)) return false<br>return true<br>}</p>
+<p>function isIP(s) //by zergling<br>{<br>var patrn=/^[0-9.]{1,20}$/;<br>if (!patrn.exec(s)) return false<br>return true<br>}<br>&nbsp;<br>&nbsp;<br>/*********************************************************************************<br>* FUNCTION: isBetween<br>* PARAMETERS: val AS any value<br>* lo AS Lower limit to check<br>* hi AS Higher limit to check<br>* CALLS: NOTHING<br>* RETURNS: TRUE if val is between lo and hi both inclusive, otherwise false.<br>**********************************************************************************/<br>function isBetween (val, lo, hi) {<br>if ((val &lt; lo) || (val &gt; hi)) { return(false); }<br>else { return(true); }<br>}</p>
+<p>/*********************************************************************************<br>* FUNCTION: isDate checks a valid date<br>* PARAMETERS: theStr AS String<br>* CALLS: isBetween, isInt<br>* RETURNS: TRUE if theStr is a valid date otherwise false.<br>**********************************************************************************/<br>function isDate (theStr) {<br>var the1st = theStr.indexOf('-');<br>var the2nd = theStr.lastIndexOf('-');</p>
+<p>if (the1st == the2nd) { return(false); }<br>else {<br>var y = theStr.substring(0,the1st);<br>var m = theStr.substring(the1st+1,the2nd);<br>var d = theStr.substring(the2nd+1,theStr.length);<br>var maxDays = 31;</p>
+<p>if (isInt(m)==false || isInt(d)==false || isInt(y)==false) {<br>return(false); }<br>else if (y.length &lt; 4) { return(false); }<br>else if (!isBetween (m, 1, 12)) { return(false); }<br>else if (m==4 || m==6 || m==9 || m==11) maxDays = 30;<br>else if (m==2) {<br>if (y % 4 &gt; 0) maxDays = 28;<br>else if (y % 100 == 0 &amp;&amp; y % 400 &gt; 0) maxDays = 28;<br>else maxDays = 29;<br>}<br>if (isBetween(d, 1, maxDays) == false) { return(false); }<br>else { return(true); }<br>}<br>}<br>/*********************************************************************************<br>* FUNCTION: isEuDate checks a valid date in British format<br>* PARAMETERS: theStr AS String<br>* CALLS: isBetween, isInt<br>* RETURNS: TRUE if theStr is a valid date otherwise false.<br>**********************************************************************************/<br>function isEuDate (theStr) {<br>if (isBetween(theStr.length, 8, 10) == false) { return(false); }<br>else {<br>var the1st = theStr.indexOf('/');<br>var the2nd = theStr.lastIndexOf('/');</p>
+<p>if (the1st == the2nd) { return(false); }<br>else {<br>var m = theStr.substring(the1st+1,the2nd);<br>var d = theStr.substring(0,the1st);<br>var y = theStr.substring(the2nd+1,theStr.length);<br>var maxDays = 31;</p>
+<p>if (isInt(m)==false || isInt(d)==false || isInt(y)==false) {<br>return(false); }<br>else if (y.length &lt; 4) { return(false); }<br>else if (isBetween (m, 1, 12) == false) { return(false); }<br>else if (m==4 || m==6 || m==9 || m==11) maxDays = 30;<br>else if (m==2) {<br>if (y % 4 &gt; 0) maxDays = 28;<br>else if (y % 100 == 0 &amp;&amp; y % 400 &gt; 0) maxDays = 28;<br>else maxDays = 29;<br>}</p>
+<p>if (isBetween(d, 1, maxDays) == false) { return(false); }<br>else { return(true); }<br>}<br>}</p>
+<p>}<br>/********************************************************************************<br>* FUNCTION: Compare Date! Which is the latest!<br>* PARAMETERS: lessDate,moreDate AS String<br>* CALLS: isDate,isBetween<br>* RETURNS: TRUE if lessDate&lt;moreDate<br>*********************************************************************************/<br>function isComdate (lessDate , moreDate)<br>{<br>if (!isDate(lessDate)) { return(false);}<br>if (!isDate(moreDate)) { return(false);}<br>var less1st = lessDate.indexOf('-');<br>var less2nd = lessDate.lastIndexOf('-');<br>var more1st = moreDate.indexOf('-');<br>var more2nd = moreDate.lastIndexOf('-');<br>var lessy = lessDate.substring(0,less1st);<br>var lessm = lessDate.substring(less1st+1,less2nd);<br>var lessd = lessDate.substring(less2nd+1,lessDate.length);<br>var morey = moreDate.substring(0,more1st);<br>var morem = moreDate.substring(more1st+1,more2nd);<br>var mored = moreDate.substring(more2nd+1,moreDate.length);<br>var Date1 = new Date(lessy,lessm,lessd); <br>var Date2 = new Date(morey,morem,mored); <br>if (Date1&gt;Date2) { return(false);}<br>return(true); </p>
+<p>}</p>
+<p>/*********************************************************************************<br>* FUNCTION isEmpty checks if the parameter is empty or null<br>* PARAMETER str AS String<br>**********************************************************************************/<br>function isEmpty (str) {<br>if ((str==null)||(str.length==0)) return true;<br>else return(false);<br>}</p>
+<p>/*********************************************************************************<br>* FUNCTION: isInt<br>* PARAMETER: theStr AS String <br>* RETURNS: TRUE if the passed parameter is an integer, otherwise FALSE<br>* CALLS: isDigit<br>**********************************************************************************/<br>function isInt (theStr) {<br>var flag = true;</p>
+<p>if (isEmpty(theStr)) { flag=false; }<br>else<br>{ for (var i=0; i&lt;theStr.length; i++) {<br>if (isDigit(theStr.substring(i,i+1)) == false) {<br>flag = false; break;<br>}<br>}<br>}<br>return(flag);<br>}</p>
+<p>/*********************************************************************************<br>* FUNCTION: isReal<br>* PARAMETER: heStr AS String <br>decLen AS Integer (how many digits after period)<br>* RETURNS: TRUE if theStr is a float, otherwise FALSE<br>* CALLS: isInt<br>**********************************************************************************/<br>function isReal (theStr, decLen) {<br>var dot1st = theStr.indexOf('.');<br>var dot2nd = theStr.lastIndexOf('.');<br>var OK = true;</p>
+<p>if (isEmpty(theStr)) return false;</p>
+<p>if (dot1st == -1) {<br>if (!isInt(theStr)) return(false);<br>else return(true);<br>}</p>
+<p>else if (dot1st != dot2nd) return (false);<br>else if (dot1st==0) return (false);<br>else {<br>var intPart = theStr.substring(0, dot1st);<br>var decPart = theStr.substring(dot2nd+1);</p>
+<p>if (decPart.length &gt; decLen) return(false);<br>else if (!isInt(intPart) || !isInt(decPart)) return (false);<br>else if (isEmpty(decPart)) return (false);<br>else return(true);<br>}<br>}</p>
+<p>/*********************************************************************************<br>* FUNCTION: isEmail<br>* PARAMETER: String (Email Address)<br>* RETURNS: TRUE if the String is a valid Email address<br>* FALSE if the passed string is not a valid Email Address<br>* EMAIL FORMAT: <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#65;&#110;&#121;&#78;&#97;&#109;&#101;&#64;&#69;&#109;&#97;&#105;&#108;&#83;&#101;&#114;&#118;&#101;&#114;"><font color=#002c99>AnyName@EmailServer</font></a> e.g; <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#119;&#101;&#98;&#109;&#97;&#115;&#116;&#101;&#114;&#64;&#104;&#111;&#116;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;"><font color=#002c99>webmaster@hotmail.com</font></a><br>* @ sign can appear only once in the email address.<br>*********************************************************************************/<br>function isEmail (theStr) {<br>var atIndex = theStr.indexOf(<a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#39;&#64;&#39;"><font color=#002c99>'@'</font></a>);<br>var dotIndex = theStr.indexOf('.', atIndex);<br>var flag = true;<br>theSub = theStr.substring(0, dotIndex+1)</p>
+<p>if ((atIndex &lt; 1)||(atIndex != theStr.lastIndexOf(<a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#39;&#64;&#39;&#41;&#41;&#124;&#124;&#40;&#100;&#111;&#116;&#73;&#110;&#100;&#101;&#120;"><font color=#002c99>'@'))||(dotIndex</font></a> &lt; atIndex + 2)||(theStr.length &lt;= theSub.length)) <br>{ return(false); }<br>else { return(true); }<br>}<br>/*********************************************************************************<br>* FUNCTION: newWindow<br>* PARAMETERS: doc -&gt; Document to open in the new window<br>hite -&gt; Height of the new window<br>wide -&gt; Width of the new window<br>bars -&gt; 1-Scroll bars = YES 0-Scroll Bars = NO<br>resize -&gt; 1-Resizable = YES 0-Resizable = NO<br>* CALLS: NONE<br>* RETURNS: New window instance<br>**********************************************************************************/<br>function newWindow (doc, hite, wide, bars, resize) {<br>var winNew="_blank";<br>var opt="toolbar=0,location=0,directories=0,status=0,menubar=0,";<br>opt+=("scrollbars="+bars+",");<br>opt+=("resizable="+resize+",");<br>opt+=("width="+wide+",");<br>opt+=("height="+hite);<br>winHandle=window.open(doc,winNew,opt);<br>return;<br>}<br>/*********************************************************************************<br>* FUNCTION: DecimalFormat<br>* PARAMETERS: paramValue -&gt; Field value<br>* CALLS: NONE<br>* RETURNS: Formated string<br>**********************************************************************************/<br>function DecimalFormat (paramValue) {<br>var intPart = parseInt(paramValue);<br>var decPart =parseFloat(paramValue) - intPart;</p>
+<p>str = "";<br>if ((decPart == 0) || (decPart == null)) str += (intPart + ".00");<br>else str += (intPart + decPart);</p>
+<p>return (str);<br>}</p>
+<p>&nbsp;</p>
+<p>"^\\d+$"　　//非负整数（正整数 + 0） <br>"^[0-9]*[1-9][0-9]*$"　　//正整数 <br>"^((-\\d+)|(0+))$"　　//非正整数（负整数 + 0） <br>"^-[0-9]*[1-9][0-9]*$"　　//负整数 <br>"^-?\\d+$"　　　　//整数 <br>"^\\d+(<a href="file://.//d+)?$"><font color=#002c99>\\.\\d+)?$</font></a>"　　//非负浮点数（正浮点数 + 0） <br>"^(([0-9]+\\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\\.[0-9]+)|([0-9]*[1-9][0-9]*))$"　　//正浮点数 <br>"^((-\\d+(<a href="file://.//d+)?)%7C(0+(//.0+)?))$"><font color=#002c99>\\.\\d+)?)|(0+(\\.0+)?))$</font></a>"　　//非正浮点数（负浮点数 + 0） <br>"^(-(([0-9]+\\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\\.[0-9]+)|([0-9]*[1-9][0-9]*)))$"　　//负浮点数 <br>"^(-?\\d+)(<a href="file://.//d+)?$"><font color=#002c99>\\.\\d+)?$</font></a>"　　//浮点数 <br>"^[A-Za-z]+$"　　//由26个英文字母组成的字符串 <br>"^[A-Z]+$"　　//由26个英文字母的大写组成的字符串 <br>"^[a-z]+$"　　//由26个英文字母的小写组成的字符串 <br>"^[A-Za-z0-9]+$"　　//由数字和26个英文字母组成的字符串 <br>"^\\w+$"　　//由数字、26个英文字母或者下划线组成的字符串 <br>"^[\\w-]+(<a href="file://.%5B//w-%5D+)*@%5B//w-%5D+(//.%5B//w-%5D+)+$"><font color=#002c99>\\.[\\w-]+)*@[\\w-]+(\\.[\\w-]+)+$</font></a>"　　　　//email地址 <br>"^[a-zA-z]+://(<a href="file://w+(-//w+)*)(//.(//w+(-//w+)*))*(//?//S*)?$"><font color=#002c99>\\w+(-\\w+)*)(\\.(\\w+(-\\w+)*))*(\\?\\S*)?$</font></a>"　　//url</p>
+                    </font></span></span></span></font></span></span></span></span></span><br>
+</div><div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+    <div id="BlogPostCategory"></div>
+    <div id="EntryTag"></div>
+    <div id="blog_post_info">
+    </div>
+    <div class="clear"></div>
+    <div id="post_next_prev"></div>
+</div>
+                <p><strong>php 正则表达式的方法</strong></p>
+                <p><br> 方法描述：</p>
+<pre name="code" class="html">preg_match() 该函数preg_match按照模式去匹配字符串，如果符合则返回TRUE，否则返回FALSE
+preg_match_all() 该函数 preg_match_all() 在字符串中匹配出全部符合模式的字符串.
+
+* preg_match() 返回 pattern 所匹配的次数。要么是 0 次（没有匹配）或 1 次，因为 preg_match() 在第一次匹配之后将停止搜索。
+* http://www.yesky.com/imagesnew/software/php/zh/function.preg-match.html
+
+* preg_match_all() 则相反，会一直搜索到 subject 的结尾处。如果出错 preg_match() 返回 FALSE。
+* http://www.yesky.com/imagesnew/software/php/zh/function.preg-match-all.html
+
+
+ preg_replace()  该函数与ereg_replace()类似，不同在于它利用匹配的模式去替换输入的参数
+ http://www.yesky.com/imagesnew/software/php/zh/function.preg-replace.htm
+
+ preg_split() 该函数与split()类似 不同在于它将与正则表达式匹配的字符当做分割的模式
+ http://www.yesky.com/imagesnew/software/php/zh/function.preg-split.html
+
+ preg_grep() 该函数preg_grep() 匹配数组中全部元素，返回符合正则表达式的元素组成的数组
+
+ preg_quote() 转义正则表达式字符</pre>
+                <p><br><strong> 验证域名</strong><br> 检验一个字符串是否是个有效域名.</p>
+<pre name="code" class="php">$url = "http://komunitasweb.com/";
+if (preg_match('/^(http|https|ftp)://([A-Z0-9][A-Z0-9_-]*(?:.[A-Z0-9][A-Z0-9_-]*)+):?(d+)?/?/i', $url)) {
+    echo "Your url is ok.";
+} else {
+    echo "Wrong url.";
+}</pre>
+                <p><br><strong> 从一个字符串中 突出某个单词</strong><br> 这是一个非常有用的在一个字符串中匹配出某个单词 并且突出它，非常有效的搜索结果</p>
+<pre name="code" class="php">$text = "Sample sentence from KomunitasWeb, regex has become popular in web programming. Now we learn regex. According to wikipedia, Regular expressions (abbreviated as regex or
+
+regexp, with plural forms regexes, regexps, or regexen) are written in a formal language that can be interpreted by a regular expression processor";
+$text = preg_replace("/b(regex)b/i", '&lt;span style="background:#5fc9f6"&gt;1&lt;/span&gt;', $text);
+echo $text;</pre>
+                <p><br> 突出查询结果在你的 WordPress 博客里就像刚才我说的，上面的那段代码可以很方便的搜索出结果，而这里是一个更好的方式去执行搜索在某个WordPress的博客上打开你的文件 search.php ，然后找到 方法 the_title() 然后用下面代码替换掉它</p>
+<pre name="code" class="php">echo $title;
+
+Now, just before the modified line, add this code:
+
+&lt;?php
+    $title     = get_the_title();
+    $keys= explode(" ",$s);
+    $title     = preg_replace('/('.implode('|', $keys) .')/iu',
+        '&lt;strong&gt;\0&lt;/strong&gt;',
+        $title);
+?&gt;
+
+Save the search.php file and open style.css. Append the following line to it:
+
+strong.search-excerpt { background: yellow; }</pre>
+                <p><br><strong> 从HTML文档中获得全部图片</strong><br> 如果你曾经希望去获得某个网页上的全部图片，这段代码就是你需要的，你可以轻松的建立一个图片下载机器人</p>
+<pre name="code" class="php">$images = array();
+preg_match_all('/(img|src)=("|')[^"'&gt;]+/i', $data, $media);
+unset($data);
+$data=preg_replace('/(img|src)("|'|="|=')(.*)/i',"$3",$media[0]);
+foreach($data as $url)
+{
+    $info = pathinfo($url);
+    if (isset($info['extension']))
+    {
+        if (($info['extension'] == 'jpg') ||
+        ($info['extension'] == 'jpeg') ||
+        ($info['extension'] == 'gif') ||
+        ($info['extension'] == 'png'))
+        array_push($images, $url);
+    }
+}</pre>
+                <p><br><strong> 删除重复字母</strong><br> 经常重复输入字母? 这个表达式正适合.</p>
+                <pre name="code" class="php">$text = preg_replace("/s(w+s)1/i", "$1", $text); </pre>
+                <p> </p>
+                <p><strong>删除重复的标点</strong><br> 功能同上，但只是面对标点，白白重复的逗号</p>
+                <pre name="code" class="php">$text = preg_replace("/.+/i", ".", $text);</pre>
+                <p> </p>
+                <p><strong>匹配一个XML或者HTML标签</strong><br> 这个简单的函数有两个参数：第一个是你要匹配的标签，第二个是包含XML或HTML的变量，再强调下，这个真的很强大</p>
+<pre name="code" class="php">function get_tag( $tag, $xml ) {
+  $tag = preg_quote($tag);
+  preg_match_all('{&lt;'.$tag.'[^&gt;]*&gt;(.*?)&lt;/'.$tag.'&gt;.'}',
+                   $xml,
+                   $matches,
+                   PREG_PATTERN_ORDER);
+
+  return $matches[1];
+}</pre>
+                <p> <br><strong> 匹配具有属性值的XML或者HTML标签</strong><br> 这个功能和上面的非常相似，但是它允许你匹配的标签内部有属性值，例如你可以轻松匹配 &lt;div id=”header”&gt;</p>
+<pre name="code" class="php">function get_tag( $attr, $value, $xml, $tag=null ) {
+  if( is_null($tag) )
+    $tag = '\w+';
+  else
+    $tag = preg_quote($tag);
+
+  $attr = preg_quote($attr);
+  $value = preg_quote($value);
+
+  $tag_regex = "/&lt;(".$tag.")[^&gt;]*$attr\s*=\s*".
+                "(['\"])$value\\2[^&gt;]*&gt;(.*?)&lt;\/\\1&gt;/"
+
+  preg_match_all($tag_regex,
+                 $xml,
+                 $matches,
+                 PREG_PATTERN_ORDER);
+
+  return $matches[3];
+}</pre>
+                <p><br><strong> 匹配十六进制颜色值</strong><br> web开发者的另一个有趣的工具，它允许你匹配和验证十六进制颜色值.</p>
+<pre name="code" class="php">$string = "#555555";
+if (preg_match('/^#(?:(?:[a-fd]{3}){1,2})$/i', $string)) {
+echo "example 6 successful.";
+}</pre>
+                <p><br><strong> 查找页面 title</strong><br> 这段代码方便查找和打印 网页 &lt;title&gt; 和&lt;/title&gt; 之间的内容</p>
+<pre name="code" class="php">$fp = fopen("http://www.catswhocode.com/blog","r");
+while (!feof($fp) ){
+    $page .= fgets($fp, 4096);
+}
+
+$titre = eregi("&lt;title&gt;(.*)&lt;/title&gt;",$page,$regs);
+echo $regs[1];
+fclose($fp);</pre>
+                <p><br><strong> 解释 Apache 日志</strong><br> 大多数网站使用的都是著名的Apache服务器，如果你的网站也是，那么使用PHP正则表达式解析 apache 服务器日志 怎么样？</p>
+<pre name="code" class="php">//Logs: Apache web server
+//Successful hits to HTML files only.  Useful for counting the number of page views.
+'^((?#client IP or domain name)S+)s+((?#basic authentication)S+s+S+)s+[((?#date and time)[^]]+)]s+"(?:GET|POST|HEAD) ((?#file)/[^ ?"]+?.html?)??((?#parameters)[^ ?"]+)? HTTP/[0-9.]+"s+(?#status code)200s+((?#bytes transferred)[-0-9]+)s+"((?#referrer)[^"]*)"s+"((?#user agent)[^"]*)"$'
+
+//Logs: Apache web server
+//404 errors only
+'^((?#client IP or domain name)S+)s+((?#basic authentication)S+s+S+)s+[((?#date and time)[^]]+)]s+"(?:GET|POST|HEAD) ((?#file)[^ ?"]+)??((?#parameters)[^ ?"]+)? HTTP/[0-9.]+"s+(?#status code)404s+((?#bytes transferred)[-0-9]+)s+"((?#referrer)[^"]*)"s+"((?#user agent)[^"]*)"$'</pre>
+                <p> <br><strong> 使用智能引号代替双引号</strong><br> 如果你是一个印刷爱好者，你将喜欢这个允许用智能引号代替双引号的正则表达式，这个正则被WORDPRESS在其内容上使用</p>
+                <pre name="code" class="php">preg_replace('B"b([^"x84x93x94rn]+)b"B', '?1?', $text);</pre>
+                <p> </p>
+                <p><strong>检验密码的复杂度</strong><br> 这个正则表达式将检测输入的内容是否包含6个或更多字母，数字，下划线和连字符. 输入必须包含至少一个大写字母，一个小写字母和一个数字</p>
+                <pre name="code" class="php">'A(?=[-_a-zA-Z0-9]*?[A-Z])(?=[-_a-zA-Z0-9]*?[a-z])(?=[-_a-zA-Z0-9]*?[0-9])[-_a-zA-Z0-9]{6,}z'</pre>
+                <p> </p>
+                <p><strong>WordPress: 使用正则获得 帖子上的图片 </strong><br> 我知道很多人是WORDPRESS的使用者，你可能会喜欢并且愿意使用 那些从帖子的内容检索下来的图像代码。使用这个代码在你的BLOG只需要复制下面代码到你的某个文件里</p>
+<pre name="code" class="php">&lt;?php if (have_posts()) : ?&gt;
+&lt;?php while (have_posts()) : the_post(); ?&gt;
+
+&lt;?php
+$szPostContent = $post-&gt;post_content;
+$szSearchPattern = '~&lt;img [^&gt;]* /&gt;~';
+
+// Run preg_match_all to grab all the images and save the results in $aPics
+preg_match_all( $szSearchPattern, $szPostContent, $aPics );
+
+// Check to see if we have at least 1 image
+$iNumberOfPics = count($aPics[0]);
+
+if ( $iNumberOfPics &gt; 0 ) {
+     // Now here you would do whatever you need to do with the images
+     // For this example the images are just displayed
+     for ( $i=0; $i &lt; $iNumberOfPics ; $i++ ) {
+          echo $aPics[0][$i];
+     };
+};
+
+endwhile;
+endif;
+?&gt;</pre>
+                <p><br><strong> 自动生成笑脸图案</strong><br> 被WordPress使用的另一个方法, 这段代码可使你把图像自动更换一个笑脸符号</p>
+<pre name="code" class="php">$texte='A text with a smiley  ';
+echo str_replace(':-)','&lt;img src="smileys/souriant.png"&gt;',$texte);
+</pre>
+                <p> </p>
+                <p><strong>移除图片的链接</strong></p>
+<pre name="code" class="php">&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;?php
+	$str = '
+		&lt;a href="http://www.5idev.com/"&gt;5idev&lt;/a&gt;其他字符
+		&lt;a href="http://www.sohu.com/"&gt;sohu&lt;/a&gt;
+		&lt;a href="http://www.sohu.com/"&gt;&lt;img src="http://www.fashion-press.net/img/news/3176/mot_06.jpg" /&gt;&lt;/a&gt;
+		&lt;br&gt;';
+
+
+	//echo  preg_replace("/(&lt;a.*?&gt;)(&lt;img.*?&gt;)(&lt;\/a&gt;)/", '$2', $str);
+	echo  preg_replace("/(&lt;a.*?&gt;)(&lt;img.*?&gt;)(&lt;\/a&gt;)/", '\2', $str);
+?&gt;</pre>
+                <p> </p>
+                <h1>PHP 常用正则表达式整理</h1>
+                <h2>表单验证匹配</h2>
+                <p>验证账号，字母开头，允许 5-16 字节，允许字母数字下划线：^[a-zA-Z][a-zA-Z0-9_]{4,15}$</p>
+                <p>验证账号，不能为空，不能有空格，只能是英文字母：^\S+[a-z A-Z]$</p>
+                <p>验证账号，不能有空格，不能非数字：^\d+$</p>
+                <p>验证用户密码，以字母开头，长度在 6-18 之间：^[a-zA-Z]\w{5,17}$</p>
+                <p>验证是否含有 ^%&amp;',;=?$\ 等字符：[^%&amp;',;=?$\x22]+</p>
+                <p>匹配Email地址：\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*</p>
+                <p>匹配腾讯QQ号：[1-9][0-9]{4,}</p>
+                <p>匹配日期，只能是 2004-10-22 格式：^\d{4}\-\d{1,2}-\d{1,2}$</p>
+                <p>匹配国内电话号码：^\d{3}-\d{8}|\d{4}-\d{7,8}$<br> 评注：匹配形式如 010-12345678 或 0571-12345678 或 0831-1234567</p>
+                <p>匹配中国邮政编码：^[1-9]\d{5}(?!\d)$</p>
+                <p>匹配身份证：\d{14}(\d{4}|(\d{3}[xX])|\d{1})<br> 评注：中国的身份证为 15 位或 18 位</p>
+                <p>不能为空且二十字节以上：^[\s|\S]{20,}$</p>
+                <h2> </h2>
+                <h2>字符匹配</h2>
+                <p>匹配由 26 个英文字母组成的字符串：^[A-Za-z]+$</p>
+                <p>匹配由 26 个大写英文字母组成的字符串：^[A-Z]+$</p>
+                <p>匹配由 26 个小写英文字母组成的字符串：^[a-z]+$</p>
+                <p>匹配由数字和 26 个英文字母组成的字符串：^[A-Za-z0-9]+$</p>
+                <p>匹配由数字、26个英文字母或者下划线组成的字符串：^\w+$</p>
+                <p>匹配空行：\n[\s| ]*\r</p>
+                <p>匹配任何内容：[\s\S]*</p>
+                <p>匹配中文字符：[\x80-\xff]+ 或者 [\xa1-\xff]+</p>
+                <p>只能输入汉字：^[\x80-\xff],{0,}$</p>
+                <p>匹配双字节字符(包括汉字在内)：[^\x00-\xff]</p>
+                <h2> </h2>
+                <h2>匹配数字</h2>
+                <p>只能输入数字：^[0-9]*$</p>
+                <p>只能输入n位的数字：^\d{n}$</p>
+                <p>只能输入至少n位数字：^\d{n,}$</p>
+                <p>只能输入m-n位的数字：^\d{m,n}$</p>
+                <p>匹配正整数：^[1-9]\d*$</p>
+                <p>匹配负整数：^-[1-9]\d*$</p>
+                <p>匹配整数：^-?[1-9]\d*$</p>
+                <p>匹配非负整数（正整数 + 0）：^[1-9]\d*|0$</p>
+                <p>匹配非正整数（负整数 + 0）：^-[1-9]\d*|0$</p>
+                <p>匹配正浮点数：^[1-9]\d*\.\d*|0\.\d*[1-9]\d*$</p>
+                <p>匹配负浮点数：^-([1-9]\d*\.\d*|0\.\d*[1-9]\d*)$</p>
+                <p>匹配浮点数：^-?([1-9]\d*\.\d*|0\.\d*[1-9]\d*|0?\.0+|0)$</p>
+                <p>匹配非负浮点数（正浮点数 + 0）：^[1-9]\d*\.\d*|0\.\d*[1-9]\d*|0?\.0+|0$</p>
+                <p>匹配非正浮点数（负浮点数 + 0）：^(-([1-9]\d*\.\d*|0\.\d*[1-9]\d*))|0?\.0+|0$</p>
+                <h2> </h2>
+                <h2>其他</h2>
+                <p>匹配HTML标记的正则表达式（无法匹配嵌套标签）：&lt;(\S*?)[^&gt;]*&gt;.*?&lt;/\1&gt;|&lt;.*? /&gt;</p>
+                <p>匹配网址 URL ：[a-zA-z]+://[^\s]*</p>
+                <p>匹配 IP 地址：((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)</p>
+                <p>匹配完整域名：[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+\.?</p>
+                <h3> </h3>
+                <h3>提示</h3>
+                <ol>
+                    <li>上述正则表达式通常都加了 ^ 与 $ 来限定字符的起始和结束，如果需要匹配的内容包括在字符串当中，可能需要考虑去掉 ^ 和 $ 限定符。</li>
+                    <li>以上正则表达式仅供参考，使用时请检验后再使用</li>
+                </ol>
