@@ -1,0 +1,223 @@
+---
+layout:     post
+title:      "微信支付"
+date:       2014-05-23
+author:     "yangyang"
+header-img: "img/post-bg-2015.jpg"
+catalog: true
+tags:
+-微信支付
+---
+
+<div id="topics">
+    <div class = "post">
+        <h1 class = "postTitle">
+            <a id="cb_post_title_url" class="postTitle2" href="http://www.cnblogs.com/txw1958/p/wxpayv3-jsapi.html">微信支付开发(1) JS API支付</a>
+        </h1>
+        <div class="clear"></div>
+        <div class="postBody">
+            <div id="cnblogs_post_body"><p>关键字：微信支付 微信支付v3 jsapi支付 统一支付 Native支付 prepay_id&nbsp;<br />作者：方倍工作室<br />原文:&nbsp;<a id="Editor_Edit_hlEntryLink" title="view: 微信支付开发(1) JS API支付" href="http://www.cnblogs.com/txw1958/p/wxpayv3-jsapi.html" target="_blank">http://www.cnblogs.com/txw1958/p/wxpayv3-jsapi.html</a>&nbsp;</p>
+                <p>&nbsp;</p>
+                <p>本文介绍微信支付下的jsapi实现流程</p>
+                <h2>前言</h2>
+                <p>微信支付现在分为v2版和v3版，2014年9月10号之前申请的为v2版，之后申请的为v3版。V3版的微信支付没有paySignKey参数。v2的相关介绍请参考方倍工作室的其他文章。本文介绍的微信支付v3。</p>
+                <h2>流程实现</h2>
+                <h3>1. OAuth2.0授权</h3>
+                <p>JSAPI 支付前需要调用 登录授权接口获取到用户的 Openid 。所以需要做一次授权，这次授权是不弹出确认框的。<br />其实质就是在用户访问</p>
+                <div class="cnblogs_code">
+                    <pre>http:<span style="color: #008000;">//</span><span style="color: #008000;">www.fangbei.org/wxpay/js_api_call.php</span></pre>
+                </div>
+                <p>时跳转到</p>
+                <div class="cnblogs_code">
+                    <pre>https:<span style="color: #008000;">//</span><span style="color: #008000;">open.weixin.qq.com/connect/oauth2/authorize?appid=wx8888888888888888&amp;redirect_uri=http://www.fangbei.org/wxpay/js_api_call.php&amp;response_type=code&amp;scope=snsapi_base&amp;state=STATE#wechat_redirect</span></pre>
+                </div>
+                <p>以此来获得code参数，并根据code来获得授权access_token及openid</p>
+                <p>其实现的详细流程可参考&nbsp;<a id="cb_post_title_url" class="postTitle2" href="http://www.cnblogs.com/txw1958/p/weixin71-oauth20.html">微信公众平台开发（71）OAuth2.0网页授权</a></p>
+                <p>在微信支付的Demo中，其代码为</p>
+                <div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #008000;">//</span><span style="color: #008000;">使用jsapi接口</span>
+<span style="color: #008080;"> 2</span> <span style="color: #800080;">$jsApi</span> = <span style="color: #0000ff;">new</span><span style="color: #000000;"> JsApi_pub();
+</span><span style="color: #008080;"> 3</span>
+<span style="color: #008080;"> 4</span> <span style="color: #008000;">//</span><span style="color: #008000;">=========步骤1：网页授权获取用户openid============
+</span><span style="color: #008080;"> 5</span> <span style="color: #008000;">//通过code获得openid</span>
+<span style="color: #008080;"> 6</span> <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">isset</span>(<span style="color: #800080;">$_GET</span>['code'<span style="color: #000000;">]))
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">{
+</span><span style="color: #008080;"> 8</span>     <span style="color: #008000;">//</span><span style="color: #008000;">触发微信返回code码</span>
+<span style="color: #008080;"> 9</span>     <span style="color: #800080;">$url</span> = <span style="color: #800080;">$jsApi</span>-&gt;createOauthUrlForCode(WxPayConf_pub::<span style="color: #000000;">JS_API_CALL_URL);
+</span><span style="color: #008080;">10</span>     <span style="color: #008080;">Header</span>("Location: <span style="color: #800080;">$url</span>"<span style="color: #000000;">);
+</span><span style="color: #008080;">11</span> }<span style="color: #0000ff;">else</span>
+<span style="color: #008080;">12</span> <span style="color: #000000;">{
+</span><span style="color: #008080;">13</span>     <span style="color: #008000;">//</span><span style="color: #008000;">获取code码，以获取openid</span>
+<span style="color: #008080;">14</span>     <span style="color: #800080;">$code</span> = <span style="color: #800080;">$_GET</span>['code'<span style="color: #000000;">];
+</span><span style="color: #008080;">15</span>     <span style="color: #800080;">$jsApi</span>-&gt;setCode(<span style="color: #800080;">$code</span><span style="color: #000000;">);
+</span><span style="color: #008080;">16</span>     <span style="color: #800080;">$openid</span> = <span style="color: #800080;">$jsApi</span>-&gt;<span style="color: #000000;">getOpenId();
+</span><span style="color: #008080;">17</span> }</pre>
+                </div>
+                <p>这一步的最终结果就是获得了当前用户的openid</p>
+                <div class="cnblogs_code">
+                    <pre>ou9dHt0L8qFLI1foP-kj5x1mDWsM</pre>
+                </div>
+                <p>&nbsp;</p>
+                <h3>2. 统一支付</h3>
+                <p>统一支付是JSAPI/NATIVE/APP各种支付场景下生成支付订单，返回预支付订单号的接口，目前微信支付所有场景均使用这一接口<br />统一支付中以下参数从配置中获取，或由类自动生成，不需要用户填写</p>
+                <div class="cnblogs_code">
+<pre><span style="color: #800080;">$this</span>-&gt;parameters["appid"] = WxPayConf_pub::APPID;<span style="color: #008000;">//</span><span style="color: #008000;">公众账号ID</span>
+<span style="color: #800080;">$this</span>-&gt;parameters["mch_id"] = WxPayConf_pub::MCHID;<span style="color: #008000;">//</span><span style="color: #008000;">商户号</span>
+<span style="color: #800080;">$this</span>-&gt;parameters["spbill_create_ip"] = <span style="color: #800080;">$_SERVER</span>['REMOTE_ADDR'];<span style="color: #008000;">//</span><span style="color: #008000;">终端ip        </span>
+<span style="color: #800080;">$this</span>-&gt;parameters["nonce_str"] = <span style="color: #800080;">$this</span>-&gt;createNoncestr();<span style="color: #008000;">//</span><span style="color: #008000;">随机字符串</span>
+<span style="color: #800080;">$this</span>-&gt;parameters["sign"] = <span style="color: #800080;">$this</span>-&gt;getSign(<span style="color: #800080;">$this</span>-&gt;parameters);<span style="color: #008000;">//</span><span style="color: #008000;">签名</span></pre>
+                </div>
+                <p>在JSAPI支付中，另外填写以下参数</p>
+                <div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;">统一支付接口中，trade_type为JSAPI时，openid为必填参数！</span>
+<span style="color: #800080;">$unifiedOrder</span>-&gt;setParameter("openid","<span style="color: #800080;">$openid</span>");<span style="color: #008000;">//</span><span style="color: #008000;">商品描述</span>
+<span style="color: #800080;">$unifiedOrder</span>-&gt;setParameter("body","方倍工作室");<span style="color: #008000;">//</span><span style="color: #008000;">商品描述
+//自定义订单号，此处仅作举例</span>
+<span style="color: #800080;">$timeStamp</span> = <span style="color: #008080;">time</span><span style="color: #000000;">();
+</span><span style="color: #800080;">$out_trade_no</span> = WxPayConf_pub::APPID."<span style="color: #800080;">$timeStamp</span>"<span style="color: #000000;">;
+</span><span style="color: #800080;">$unifiedOrder</span>-&gt;setParameter("out_trade_no","<span style="color: #800080;">$out_trade_no</span>");<span style="color: #008000;">//</span><span style="color: #008000;">商户订单号 </span>
+<span style="color: #800080;">$unifiedOrder</span>-&gt;setParameter("total_fee","1");<span style="color: #008000;">//</span><span style="color: #008000;">总金额</span>
+<span style="color: #800080;">$unifiedOrder</span>-&gt;setParameter("notify_url",WxPayConf_pub::NOTIFY_URL);<span style="color: #008000;">//</span><span style="color: #008000;">通知地址 </span>
+<span style="color: #800080;">$unifiedOrder</span>-&gt;setParameter("trade_type","JSAPI");<span style="color: #008000;">//</span><span style="color: #008000;">交易类型</span></pre>
+                </div>
+                <p>其他为选填参数</p>
+                <div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;">非必填参数，商户可根据实际情况选填
+//$unifiedOrder-&gt;setParameter("sub_mch_id","XXXX");//子商户号
+//$unifiedOrder-&gt;setParameter("device_info","XXXX");//设备号
+//$unifiedOrder-&gt;setParameter("attach","XXXX");//附加数据
+//$unifiedOrder-&gt;setParameter("time_start","XXXX");//交易起始时间
+//$unifiedOrder-&gt;setParameter("time_expire","XXXX");//交易结束时间
+//$unifiedOrder-&gt;setParameter("goods_tag","XXXX");//商品标记
+//$unifiedOrder-&gt;setParameter("openid","XXXX");//用户标识
+//$unifiedOrder-&gt;setParameter("product_id","XXXX");//商品ID</span></pre>
+                </div>
+                <p>这些参数最终组成了这样的xml数据，</p>
+                <div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">xml</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">openid</span><span style="color: #0000ff;">&gt;</span><span style="color: #0000ff;">&lt;![CDATA[</span><span style="color: #808080;">ou9dHt0L8qFLI1foP-kj5x1mDWsM</span><span style="color: #0000ff;">]]&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">openid</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span><span style="color: #0000ff;">&lt;![CDATA[</span><span style="color: #808080;">方倍工作室</span><span style="color: #0000ff;">]]&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">out_trade_no</span><span style="color: #0000ff;">&gt;</span><span style="color: #0000ff;">&lt;![CDATA[</span><span style="color: #808080;">wx88888888888888881414411779</span><span style="color: #0000ff;">]]&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">out_trade_no</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">total_fee</span><span style="color: #0000ff;">&gt;</span>1<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">total_fee</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">notify_url</span><span style="color: #0000ff;">&gt;</span><span style="color: #0000ff;">&lt;![CDATA[</span><span style="color: #808080;">http://www.fangbei.org/wxpay/notify_url.php</span><span style="color: #0000ff;">]]&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">notify_url</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">trade_type</span><span style="color: #0000ff;">&gt;</span><span style="color: #0000ff;">&lt;![CDATA[</span><span style="color: #808080;">JSAPI</span><span style="color: #0000ff;">]]&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">trade_type</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">appid</span><span style="color: #0000ff;">&gt;</span><span style="color: #0000ff;">&lt;![CDATA[</span><span style="color: #808080;">wx8888888888888888</span><span style="color: #0000ff;">]]&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">appid</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">mch_id</span><span style="color: #0000ff;">&gt;</span>10012345<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">mch_id</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">spbill_create_ip</span><span style="color: #0000ff;">&gt;</span><span style="color: #0000ff;">&lt;![CDATA[</span><span style="color: #808080;">61.50.221.43</span><span style="color: #0000ff;">]]&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">spbill_create_ip</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">nonce_str</span><span style="color: #0000ff;">&gt;</span><span style="color: #0000ff;">&lt;![CDATA[</span><span style="color: #808080;">60uf9sh6nmppr9azveb2bn7arhy79izk</span><span style="color: #0000ff;">]]&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">nonce_str</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">sign</span><span style="color: #0000ff;">&gt;</span><span style="color: #0000ff;">&lt;![CDATA[</span><span style="color: #808080;">2D8A96553672D56BB2908CE4B0A23D0F</span><span style="color: #0000ff;">]]&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">sign</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">xml</span><span style="color: #0000ff;">&gt;</span></pre>
+                </div>
+                <p>将这些数据提交给统一支付接口</p>
+                <div class="cnblogs_code">
+                    <pre>https:<span style="color: #008000;">//</span><span style="color: #008000;">api.mch.weixin.qq.com/pay/unifiedorder</span></pre>
+                </div>
+                <p>将获得返回 如下数据</p>
+                <div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">xml</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">return_code</span><span style="color: #0000ff;">&gt;</span><span style="color: #0000ff;">&lt;![CDATA[</span><span style="color: #808080;">SUCCESS</span><span style="color: #0000ff;">]]&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">return_code</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">return_msg</span><span style="color: #0000ff;">&gt;</span><span style="color: #0000ff;">&lt;![CDATA[</span><span style="color: #808080;">OK</span><span style="color: #0000ff;">]]&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">return_msg</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">appid</span><span style="color: #0000ff;">&gt;</span><span style="color: #0000ff;">&lt;![CDATA[</span><span style="color: #808080;">wx8888888888888888</span><span style="color: #0000ff;">]]&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">appid</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">mch_id</span><span style="color: #0000ff;">&gt;</span><span style="color: #0000ff;">&lt;![CDATA[</span><span style="color: #808080;">10012345</span><span style="color: #0000ff;">]]&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">mch_id</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">nonce_str</span><span style="color: #0000ff;">&gt;</span><span style="color: #0000ff;">&lt;![CDATA[</span><span style="color: #808080;">Be8YX7gjCdtCT7cr</span><span style="color: #0000ff;">]]&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">nonce_str</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">sign</span><span style="color: #0000ff;">&gt;</span><span style="color: #0000ff;">&lt;![CDATA[</span><span style="color: #808080;">885B6D84635AE6C020EF753A00C8EEDB</span><span style="color: #0000ff;">]]&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">sign</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">result_code</span><span style="color: #0000ff;">&gt;</span><span style="color: #0000ff;">&lt;![CDATA[</span><span style="color: #808080;">SUCCESS</span><span style="color: #0000ff;">]]&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">result_code</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">prepay_id</span><span style="color: #0000ff;">&gt;</span><span style="color: #0000ff;">&lt;![CDATA[</span><span style="color: #808080;">wx201410272009395522657a690389285100</span><span style="color: #0000ff;">]]&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">prepay_id</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">trade_type</span><span style="color: #0000ff;">&gt;</span><span style="color: #0000ff;">&lt;![CDATA[</span><span style="color: #808080;">JSAPI</span><span style="color: #0000ff;">]]&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">trade_type</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">xml</span><span style="color: #0000ff;">&gt;</span></pre>
+                </div>
+                <p>其中包含了最重要的预支付ID参数，prepay_id，值为&nbsp;</p>
+                <div class="cnblogs_code">
+                    <pre>wx201410272009395522657a690389285100</pre>
+                </div>
+                <p>&nbsp;</p>
+                <h3>3、JS API支付</h3>
+                <p>前面的准备工作做好了以后，JS API根据prepay_id生成jsapi支付参数<br />生成代码如下</p>
+                <div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;">=========步骤3：使用jsapi调起支付============</span>
+<span style="color: #800080;">$jsApi</span>-&gt;setPrepayId(<span style="color: #800080;">$prepay_id</span><span style="color: #000000;">);
+</span><span style="color: #800080;">$jsApiParameters</span> = <span style="color: #800080;">$jsApi</span>-&gt;getParameters();</pre>
+                </div>
+                <p>生成的json数据如下</p>
+                <div class="cnblogs_code">
+<pre><span style="color: #000000;">{
+    "appId": "wx8888888888888888",
+    "timeStamp": "1414411784",
+    "nonceStr": "gbwr71b5no6q6ne18c8up1u7l7he2y75",
+    "package": "prepay_id=wx201410272009395522657a690389285100",
+    "signType": "MD5",
+    "paySign": "9C6747193720F851EB876299D59F6C7D"
+}</span></pre>
+                </div>
+                <p>在微信浏览器中调试起js接口，代码如下</p>
+                <div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">http-equiv</span><span style="color: #0000ff;">="content-type"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">="text/html;charset=utf-8"</span><span style="color: #0000ff;">/&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>微信安全支付<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+        <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">调用微信JS api 支付</span>
+        <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> jsApiCall()
+        {
+            WeixinJSBridge.invoke(
+                </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">getBrandWCPayRequest</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+                </span><span style="background-color: #f5f5f5; color: #000000;">&lt;?</span><span style="background-color: #f5f5f5; color: #000000;">php echo $jsApiParameters; </span><span style="background-color: #f5f5f5; color: #000000;">?&gt;</span><span style="background-color: #f5f5f5; color: #000000;">,
+                </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;">(res){
+                    WeixinJSBridge.log(res.err_msg);
+                    </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">alert(res.err_code+res.err_desc+res.err_msg);</span>
+<span style="background-color: #f5f5f5; color: #000000;">                }
+            );
+        }
+
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> callpay()
+        {
+            </span><span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #0000ff;">typeof</span><span style="background-color: #f5f5f5; color: #000000;"> WeixinJSBridge </span><span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">undefined</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">){
+                </span><span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;">( document.addEventListener ){
+                    document.addEventListener(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">WeixinJSBridgeReady</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, jsApiCall, </span><span style="background-color: #f5f5f5; color: #0000ff;">false</span><span style="background-color: #f5f5f5; color: #000000;">);
+                }</span><span style="background-color: #f5f5f5; color: #0000ff;">else</span> <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (document.attachEvent){
+                    document.attachEvent(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">WeixinJSBridgeReady</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, jsApiCall);
+                    document.attachEvent(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">onWeixinJSBridgeReady</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, jsApiCall);
+                }
+            }</span><span style="background-color: #f5f5f5; color: #0000ff;">else</span><span style="background-color: #f5f5f5; color: #000000;">{
+                jsApiCall();
+            }
+        }
+    </span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">br</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">br</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">br</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">br</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">align</span><span style="color: #0000ff;">="center"</span><span style="color: #0000ff;">&gt;</span>
+        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">button </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">="width:210px; height:30px; background-color:#FE6714; border:0px #FE6714 solid; cursor: pointer;  color:white;  font-size:16px;"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="button"</span><span style="color: #ff0000;"> onclick</span><span style="color: #0000ff;">="callpay()"</span> <span style="color: #0000ff;">&gt;</span>贡献一下<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">button</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+                </div>
+                <p>当用户点击&ldquo;贡献一下&rdquo;按钮时，将弹出微信支付插件，用户可以开始支付。</p>
+                <p>&nbsp;</p>
+                <h3>4、支付通知</h3>
+                <p>支付成功后，通知接口中也将收到支付成功的xml通知</p>
+                <div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">xml</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">appid</span><span style="color: #0000ff;">&gt;</span><span style="color: #0000ff;">&lt;![CDATA[</span><span style="color: #808080;">wx8888888888888888</span><span style="color: #0000ff;">]]&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">appid</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">bank_type</span><span style="color: #0000ff;">&gt;</span><span style="color: #0000ff;">&lt;![CDATA[</span><span style="color: #808080;">CFT</span><span style="color: #0000ff;">]]&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">bank_type</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">fee_type</span><span style="color: #0000ff;">&gt;</span><span style="color: #0000ff;">&lt;![CDATA[</span><span style="color: #808080;">CNY</span><span style="color: #0000ff;">]]&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">fee_type</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">is_subscribe</span><span style="color: #0000ff;">&gt;</span><span style="color: #0000ff;">&lt;![CDATA[</span><span style="color: #808080;">Y</span><span style="color: #0000ff;">]]&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">is_subscribe</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">mch_id</span><span style="color: #0000ff;">&gt;</span><span style="color: #0000ff;">&lt;![CDATA[</span><span style="color: #808080;">10012345</span><span style="color: #0000ff;">]]&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">mch_id</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">nonce_str</span><span style="color: #0000ff;">&gt;</span><span style="color: #0000ff;">&lt;![CDATA[</span><span style="color: #808080;">60uf9sh6nmppr9azveb2bn7arhy79izk</span><span style="color: #0000ff;">]]&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">nonce_str</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">openid</span><span style="color: #0000ff;">&gt;</span><span style="color: #0000ff;">&lt;![CDATA[</span><span style="color: #808080;">ou9dHt0L8qFLI1foP-kj5x1mDWsM</span><span style="color: #0000ff;">]]&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">openid</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">out_trade_no</span><span style="color: #0000ff;">&gt;</span><span style="color: #0000ff;">&lt;![CDATA[</span><span style="color: #808080;">wx88888888888888881414411779</span><span style="color: #0000ff;">]]&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">out_trade_no</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">result_code</span><span style="color: #0000ff;">&gt;</span><span style="color: #0000ff;">&lt;![CDATA[</span><span style="color: #808080;">SUCCESS</span><span style="color: #0000ff;">]]&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">result_code</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">return_code</span><span style="color: #0000ff;">&gt;</span><span style="color: #0000ff;">&lt;![CDATA[</span><span style="color: #808080;">SUCCESS</span><span style="color: #0000ff;">]]&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">return_code</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">sign</span><span style="color: #0000ff;">&gt;</span><span style="color: #0000ff;">&lt;![CDATA[</span><span style="color: #808080;">0C1D7F2534F1473247550A5A138F0CEB</span><span style="color: #0000ff;">]]&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">sign</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">sub_mch_id</span><span style="color: #0000ff;">&gt;</span><span style="color: #0000ff;">&lt;![CDATA[</span><span style="color: #808080;">10012345</span><span style="color: #0000ff;">]]&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">sub_mch_id</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">time_end</span><span style="color: #0000ff;">&gt;</span><span style="color: #0000ff;">&lt;![CDATA[</span><span style="color: #808080;">20141027200958</span><span style="color: #0000ff;">]]&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">time_end</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">total_fee</span><span style="color: #0000ff;">&gt;</span>1<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">total_fee</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">trade_type</span><span style="color: #0000ff;">&gt;</span><span style="color: #0000ff;">&lt;![CDATA[</span><span style="color: #808080;">JSAPI</span><span style="color: #0000ff;">]]&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">trade_type</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">transaction_id</span><span style="color: #0000ff;">&gt;</span><span style="color: #0000ff;">&lt;![CDATA[</span><span style="color: #808080;">1002750185201410270005514026</span><span style="color: #0000ff;">]]&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">transaction_id</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">xml</span><span style="color: #0000ff;">&gt;</span></pre>
+                </div>
+
+            </div>
+
+
+        </div>
