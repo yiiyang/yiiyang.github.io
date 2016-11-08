@@ -1,0 +1,621 @@
+---
+layout:     post
+title:      "微信支付详情"
+date:       2014-10-05-9
+author:     "yangyang"
+header-img: "img/post-bg-2015.jpg"
+catalog: true
+tags:
+-   微信支付详情
+---
+
+
+<div id="contents">
+    <div class="main clearfix">
+        <div class="w690 fl">
+            <div class="article-content border">
+                <div class="title">
+                    <h1 class="YaHei">PHP微信支付开发实例</h1>
+                </div>
+                <div class="art_desc mt10"><div id="art_demo">这篇文章主要为大家详细介绍了PHP微信支付开发过程，具有一定的参考价值，感兴趣的小伙伴们可以参考一下</div></div>
+                <div class="lbd clearfix"><span id="art_up" class="jbTestPos"></span></div>
+                <div id="content">
+                    <p>PHP微信支付开发过程，分享给大家，供大家参考，具体内容如下</p>
+                    <p><strong>1.开发环境 <br />
+                        </strong>Thinkphp 3.2.3 <br />
+                        微信：服务号，已认证 <br />
+                        开发域名：http://test.paywechat.com (自定义的域名，外网不可访问)</p>
+                    <p><strong>2.需要相关文件和权限 <br />
+                        </strong>微信支付需申请开通 <br />
+                        微信公众平台开发者文档：http://mp.weixin.qq.com/wiki/home/index.html <br />
+                        微信支付开发者文档：https://pay.weixin.qq.com/wiki/doc/api/index.html <br />
+                        微信支付SDK下载地址：https://pay.weixin.qq.com/wiki/doc/api/jsapi.php&#63;chapter=11_1</p>
+                    <p style="text-align: left"><strong>3.开发 <br />
+                        </strong>下载好微信支付PHP版本的SDK，文件目录为下图：</p>
+                    <p style="text-align: center"><img title="" alt="这里写图片描述" src="http://files.jb51.net/file_images/article/201606/2016062212530585.png" /></p>
+                    <p style="text-align: left"><img title="" alt="这里写图片描述" src="http://files.jb51.net/file_images/article/201606/2016062212530586.png" />&nbsp;<br />
+                    </p>
+                    <p style="text-align: left">把微信支付SDK的Cert和Lib目录放入Thinkphp，目录为 <br />
+                    </p>
+                    <p style="text-align: left"><img title="" alt="这里写图片描述" src="http://files.jb51.net/file_images/article/201606/2016062212530587.png" />&nbsp;<br />
+                    </p>
+                    <p style="text-align: left">现在介绍微信支付授权目录问题，首先是微信支付开发配置里面的支付授权目录填写， <br />
+                    </p>
+                    <p style="text-align: center"><img title="" alt="这里写图片描述" src="http://files.jb51.net/file_images/article/201606/2016062212530588.png" /></p>
+                    <p>然后填写JS接口安全域。 <br />
+                    </p>
+                    <p style="text-align: center"><img title="" alt="这里写图片描述" src="http://files.jb51.net/file_images/article/201606/2016062212530589.png" /></p>
+                    <p>最后设置网页授权 <br />
+                    </p>
+                    <p style="text-align: center"><img title="" alt="这里写图片描述" src="http://files.jb51.net/file_images/article/201606/2016062212530590.png" /></p>
+                    <p><img title="" alt="这里写图片描述" src="http://files.jb51.net/file_images/article/201606/2016062212530591.png" /></p>
+                    <p>这些设置完，基本完成一半,注意设置的目录和我thinkphp里面的目录。 <br />
+                    </p>
+                    <p><img title="" alt="这里写图片描述" src="http://files.jb51.net/file_images/article/201606/2016062212530592.png" /></p>
+                    <p><strong>4.微信支付配置</strong></p>
+                    <p><img title="" alt="这里写图片描述" src="http://files.jb51.net/file_images/article/201606/2016062212530593.png" /></p>
+                    <p>把相关配置填写正确。</p>
+                    <div class="jb51code">
+<pre class="brush:php;">
+/**
+* 配置账号信息
+*/
+
+class WxPayConfig
+{
+ //=======【基本信息设置】=====================================
+ //
+ /**
+ * TODO: 修改这里配置为您自己申请的商户信息
+ * 微信公众号信息配置
+ *
+ * APPID：绑定支付的APPID（必须配置，开户邮件中可查看）
+ *
+ * MCHID：商户号（必须配置，开户邮件中可查看）
+ *
+ * KEY：商户支付密钥，参考开户邮件设置（必须配置，登录商户平台自行设置）
+ * 设置地址：https://pay.weixin.qq.com/index.php/account/api_cert
+ *
+ * APPSECRET：公众帐号secert（仅JSAPI支付的时候需要配置， 登录公众平台，进入开发者中心可设置），
+ * 获取地址：https://mp.weixin.qq.com/advanced/advanced&#63;action=dev&t=advanced/dev&token=2005451881&lang=zh_CN
+ * @var string
+ */
+ const APPID = '';
+ const MCHID = '';
+ const KEY = '';
+ const APPSECRET = '';
+
+ //=======【证书路径设置】=====================================
+ /**
+ * TODO：设置商户证书路径
+ * 证书路径,注意应该填写绝对路径（仅退款、撤销订单时需要，可登录商户平台下载，
+ * API证书下载地址：https://pay.weixin.qq.com/index.php/account/api_cert，下载之前需要安装商户操作证书）
+ * @var path
+ */
+ const SSLCERT_PATH = '../cert/apiclient_cert.pem';
+ const SSLKEY_PATH = '../cert/apiclient_key.pem';
+
+ //=======【curl代理设置】===================================
+ /**
+ * TODO：这里设置代理机器，只有需要代理的时候才设置，不需要代理，请设置为0.0.0.0和0
+ * 本例程通过curl使用HTTP POST方法，此处可修改代理服务器，
+ * 默认CURL_PROXY_HOST=0.0.0.0和CURL_PROXY_PORT=0，此时不开启代理（如有需要才设置）
+ * @var unknown_type
+ */
+ const CURL_PROXY_HOST = "0.0.0.0";//"10.152.18.220";
+ const CURL_PROXY_PORT = 0;//8080;
+
+ //=======【上报信息配置】===================================
+ /**
+ * TODO：接口调用上报等级，默认紧错误上报（注意：上报超时间为【1s】，上报无论成败【永不抛出异常】，
+ * 不会影响接口调用流程），开启上报之后，方便微信监控请求调用的质量，建议至少
+ * 开启错误上报。
+ * 上报等级，0.关闭上报; 1.仅错误出错上报; 2.全量上报
+ * @var int
+ */
+ const REPORT_LEVENL = 1;
+}
+
+</pre>
+                    </div>
+                    <p>现在开始贴出代码：</p>
+                    <div class="jb51code">
+<pre class="brush:php;">
+namespace Wechat\Controller;
+use Think\Controller;
+/**
+ * 父类控制器，需要继承
+ * @file ParentController.class.php
+ * @author Gary &lt;lizhiyong2204@sina.com&gt;
+ * @date 2015年8月4日
+ * @todu
+ */
+class ParentController extends Controller {
+ protected $options = array (
+ 'token' =&gt; '', // 填写你设定的key
+ 'encodingaeskey' =&gt; '', // 填写加密用的EncodingAESKey
+ 'appid' =&gt; '', // 填写高级调用功能的app id
+ 'appsecret' =&gt; '', // 填写高级调用功能的密钥
+ 'debug' =&gt; false,
+ 'logcallback' =&gt; ''
+ );
+ public $errCode = 40001;
+ public $errMsg = "no access";
+
+ /**
+ * 获取access_token
+ * @return mixed|boolean|unknown
+ */
+ public function getToken(){
+ $cache_token = S('exp_wechat_pay_token');
+ if(!empty($cache_token)){
+ return $cache_token;
+ }
+ $url = 'https://api.weixin.qq.com/cgi-bin/token&#63;grant_type=client_credential&appid=%s&secret=%s';
+ $url = sprintf($url,$this-&gt;options['appid'],$this-&gt;options['appsecret']);
+ $result = $this-&gt;http_get($url);
+ $result = json_decode($result,true);
+ if(empty($result)){
+ return false;
+ }
+ S('exp_wechat_pay_token',$result['access_token'],array('type'=&gt;'file','expire'=&gt;3600));
+ return $result['access_token'];
+ }
+
+ /**
+ * 发送客服消息
+ * @param array $data 消息结构{"touser":"OPENID","msgtype":"news","news":{...}}
+ */
+ public function sendCustomMessage($data){
+ $token = $this-&gt;getToken();
+ if (empty($token)) return false;
+ $url = 'https://api.weixin.qq.com/cgi-bin/message/custom/send&#63;access_token=%s';
+ $url = sprintf($url,$token);
+ $result = $this-&gt;http_post($url,self::json_encode($data));
+ if ($result)
+ {
+ $json = json_decode($result,true);
+ if (!$json || !empty($json['errcode'])) {
+ $this-&gt;errCode = $json['errcode'];
+ $this-&gt;errMsg = $json['errmsg'];
+ return false;
+ }
+ return $json;
+ }
+ return false;
+ }
+
+ /**
+ * 发送模板消息
+ * @param unknown $data
+ * @return boolean|unknown
+ */
+ public function sendTemplateMessage($data){
+ $token = $this-&gt;getToken();
+ if (empty($token)) return false;
+ $url = "https://api.weixin.qq.com/cgi-bin/message/template/send&#63;access_token=%s";
+ $url = sprintf($url,$token);
+ $result = $this-&gt;http_post($url,self::json_encode($data));
+ if ($result)
+ {
+ $json = json_decode($result,true);
+ if (!$json || !empty($json['errcode'])) {
+ $this-&gt;errCode = $json['errcode'];
+ $this-&gt;errMsg = $json['errmsg'];
+ return false;
+ }
+ return $json;
+ }
+ return false;
+ }
+
+
+ public function getFileCache($name){
+ return S($name);
+ }
+
+ /**
+ * 微信api不支持中文转义的json结构
+ * @param array $arr
+ */
+ static function json_encode($arr) {
+ $parts = array ();
+ $is_list = false;
+ //Find out if the given array is a numerical array
+ $keys = array_keys ( $arr );
+ $max_length = count ( $arr ) - 1;
+ if (($keys [0] === 0) && ($keys [$max_length] === $max_length )) { //See if the first key is 0 and last key is length - 1
+ $is_list = true;
+ for($i = 0; $i &lt; count ( $keys ); $i ++) { //See if each key correspondes to its position
+ if ($i != $keys [$i]) { //A key fails at position check.
+  $is_list = false; //It is an associative array.
+  break;
+ }
+ }
+ }
+ foreach ( $arr as $key =&gt; $value ) {
+ if (is_array ( $value )) { //Custom handling for arrays
+ if ($is_list)
+  $parts [] = self::json_encode ( $value ); /* :RECURSION: */
+ else
+  $parts [] = '"' . $key . '":' . self::json_encode ( $value ); /* :RECURSION: */
+ } else {
+ $str = '';
+ if (! $is_list)
+  $str = '"' . $key . '":';
+ //Custom handling for multiple data types
+ if (!is_string ( $value ) && is_numeric ( $value ) && $value&lt;2000000000)
+  $str .= $value; //Numbers
+ elseif ($value === false)
+ $str .= 'false'; //The booleans
+ elseif ($value === true)
+ $str .= 'true';
+ else
+  $str .= '"' . addslashes ( $value ) . '"'; //All other things
+ // :TODO: Is there any more datatype we should be in the lookout for&#63; (Object&#63;)
+ $parts [] = $str;
+ }
+ }
+ $json = implode ( ',', $parts );
+ if ($is_list)
+ return '[' . $json . ']'; //Return numerical JSON
+ return '{' . $json . '}'; //Return associative JSON
+ }
+
+ /**
+ +----------------------------------------------------------
+ * 生成随机字符串
+ +----------------------------------------------------------
+ * @param int $length 要生成的随机字符串长度
+ * @param string $type 随机码类型：0，数字+大小写字母；1，数字；2，小写字母；3，大写字母；4，特殊字符；-1，数字+大小写字母+特殊字符
+ +----------------------------------------------------------
+ * @return string
+ +----------------------------------------------------------
+ */
+ static public function randCode($length = 5, $type = 2){
+ $arr = array(1 =&gt; "0123456789", 2 =&gt; "abcdefghijklmnopqrstuvwxyz", 3 =&gt; "ABCDEFGHIJKLMNOPQRSTUVWXYZ", 4 =&gt; "~@#$%^&*(){}[]|");
+ if ($type == 0) {
+ array_pop($arr);
+ $string = implode("", $arr);
+ } elseif ($type == "-1") {
+ $string = implode("", $arr);
+ } else {
+ $string = $arr[$type];
+ }
+ $count = strlen($string) - 1;
+ $code = '';
+ for ($i = 0; $i &lt; $length; $i++) {
+ $code .= $string[rand(0, $count)];
+ }
+ return $code;
+ }
+
+
+ /**
+ * GET 请求
+ * @param string $url
+ */
+ private function http_get($url){
+ $oCurl = curl_init();
+ if(stripos($url,"https://")!==FALSE){
+ curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+ curl_setopt($oCurl, CURLOPT_SSL_VERIFYHOST, FALSE);
+ curl_setopt($oCurl, CURLOPT_SSLVERSION, 1); //CURL_SSLVERSION_TLSv1
+ }
+ curl_setopt($oCurl, CURLOPT_URL, $url);
+ curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1 );
+ $sContent = curl_exec($oCurl);
+ $aStatus = curl_getinfo($oCurl);
+ curl_close($oCurl);
+ if(intval($aStatus["http_code"])==200){
+ return $sContent;
+ }else{
+ return false;
+ }
+ }
+
+ /**
+ * POST 请求
+ * @param string $url
+ * @param array $param
+ * @param boolean $post_file 是否文件上传
+ * @return string content
+ */
+ private function http_post($url,$param,$post_file=false){
+ $oCurl = curl_init();
+ if(stripos($url,"https://")!==FALSE){
+ curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+ curl_setopt($oCurl, CURLOPT_SSL_VERIFYHOST, false);
+ curl_setopt($oCurl, CURLOPT_SSLVERSION, 1); //CURL_SSLVERSION_TLSv1
+ }
+ if (is_string($param) || $post_file) {
+ $strPOST = $param;
+ } else {
+ $aPOST = array();
+ foreach($param as $key=&gt;$val){
+ $aPOST[] = $key."=".urlencode($val);
+ }
+ $strPOST = join("&", $aPOST);
+ }
+ curl_setopt($oCurl, CURLOPT_URL, $url);
+ curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1 );
+ curl_setopt($oCurl, CURLOPT_POST,true);
+ curl_setopt($oCurl, CURLOPT_POSTFIELDS,$strPOST);
+ $sContent = curl_exec($oCurl);
+ $aStatus = curl_getinfo($oCurl);
+ curl_close($oCurl);
+ if(intval($aStatus["http_code"])==200){
+ return $sContent;
+ }else{
+ return false;
+ }
+ }
+}
+
+</pre>
+                    </div>
+                    <div class="jb51code">
+<pre class="brush:php;">
+namespace Wechat\Controller;
+use Wechat\Controller\ParentController;
+/**
+ * 微信支付测试控制器
+ * @file TestController.class.php
+ * @author Gary &lt;lizhiyong2204@sina.com&gt;
+ * @date 2015年8月4日
+ * @todu
+ */
+class TestController extends ParentController {
+ private $_order_body = 'xxx';
+ private $_order_goods_tag = 'xxx';
+ public function __construct(){
+ parent::__construct();
+ require_once ROOT_PATH."Api/lib/WxPay.Api.php";
+ require_once ROOT_PATH."Api/lib/WxPay.JsApiPay.php";
+ }
+
+ public function index(){
+ //①、获取用户openid
+ $tools = new \JsApiPay();
+ $openId = $tools-&gt;GetOpenid();
+ //②、统一下单
+ $input = new \WxPayUnifiedOrder();
+ //商品描述
+ $input-&gt;SetBody($this-&gt;_order_body);
+ //附加数据，可以添加自己需要的数据，微信回异步回调时会附加这个数据
+ $input-&gt;SetAttach('xxx');
+ //商户订单号
+ $out_trade_no = \WxPayConfig::MCHID.date("YmdHis");
+ $input-&gt;SetOut_trade_no($out_trade_no);
+ //总金额,订单总金额，只能为整数,单位为分
+ $input-&gt;SetTotal_fee(1);
+ //交易起始时间
+ $input-&gt;SetTime_start(date("YmdHis"));
+ //交易结束时间
+ $input-&gt;SetTime_expire(date("YmdHis", time() + 600));
+ //商品标记
+ $input-&gt;SetGoods_tag($this-&gt;_order_goods_tag);
+ //通知地址,接收微信支付异步通知回调地址 SITE_URL=http://test.paywechat.com/Charge
+ $notify_url = SITE_URL.'/index.php/Test/notify.html';
+ $input-&gt;SetNotify_url($notify_url);
+ //交易类型
+ $input-&gt;SetTrade_type("JSAPI");
+ $input-&gt;SetOpenid($openId);
+ $order = \WxPayApi::unifiedOrder($input);
+ $jsApiParameters = $tools-&gt;GetJsApiParameters($order);
+ //获取共享收货地址js函数参数
+ $editAddress = $tools-&gt;GetEditAddressParameters();
+
+ $this-&gt;assign('openId',$openId);
+ $this-&gt;assign('jsApiParameters',$jsApiParameters);
+ $this-&gt;assign('editAddress',$editAddress);
+ $this-&gt;display();
+ }
+
+ /**
+ * 异步通知回调方法
+ */
+ public function notify(){
+ require_once ROOT_PATH."Api/lib/notify.php";
+ $notify = new \PayNotifyCallBack();
+ $notify-&gt;Handle(false);
+ //这里的IsSuccess是我自定义的一个方法，后面我会贴出这个文件的代码，供参考。
+ $is_success = $notify-&gt;IsSuccess();
+ $bdata = $is_success['data'];
+ //支付成功
+ if($is_success['code'] == 1){
+ $news = array(
+  'touser' =&gt; $bdata['openid'],
+  'msgtype' =&gt; 'news',
+  'news' =&gt; array (
+  'articles'=&gt; array (
+   array(
+   'title' =&gt; '订单支付成功',
+   'description' =&gt; "支付金额：{$bdata['total_fee']}\n".
+   "微信订单号：{$bdata['transaction_id']}\n"
+   'picurl' =&gt; '',
+   'url' =&gt; ''
+   )
+
+  )
+  )
+ );
+ //发送微信支付通知
+ $this-&gt;sendCustomMessage($news);
+ }else{//支付失败
+
+ }
+ }
+
+ /**
+ * 支付成功页面
+ * 不可靠的回调
+ */
+ public function ajax_PaySuccess(){
+ //订单号
+ $out_trade_no = I('post.out_trade_no');
+ //支付金额
+ $total_fee = I('post.total_fee');
+ /*相关逻辑处理*/
+
+ }
+
+</pre>
+                    </div>
+                    <p>贴上模板HTML</p>
+                    <div class="jb51code">
+<pre class="brush:xhtml;">
+&lt;html&gt;
+&lt;head&gt;
+ &lt;meta http-equiv="content-type" content="text/html;charset=utf-8"/&gt;
+ &lt;meta name="viewport" content="width=device-width, initial-scale=1"/&gt;
+ &lt;title&gt;微信支付样例-支付&lt;/title&gt;
+ &lt;script type="text/javascript"&gt;
+ //调用微信JS api 支付
+ function jsApiCall()
+ {
+ WeixinJSBridge.invoke(
+ 'getBrandWCPayRequest',
+ {$jsApiParameters},
+ function(res){
+ WeixinJSBridge.log(res.err_msg);
+ //取消支付
+ if(res.err_msg == 'get_brand_wcpay_request:cancel'){
+ //处理取消支付的事件逻辑
+ }else if(res.err_msg == "get_brand_wcpay_request：ok"){
+ /*使用以上方式判断前端返回,微信团队郑重提示：
+ res.err_msg将在用户支付成功后返回 ok，但并不保证它绝对可靠。
+ 这里可以使用Ajax提交到后台，处理一些日志，如Test控制器里面的ajax_PaySuccess方法。
+ */
+ }
+ alert(res.err_code+res.err_desc+res.err_msg);
+ }
+ );
+ }
+
+ function callpay()
+ {
+ if (typeof WeixinJSBridge == "undefined"){
+ if( document.addEventListener ){
+ document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+ }else if (document.attachEvent){
+ document.attachEvent('WeixinJSBridgeReady', jsApiCall);
+ document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+ }
+ }else{
+ jsApiCall();
+ }
+ }
+ //获取共享地址
+ function editAddress()
+ {
+ WeixinJSBridge.invoke(
+ 'editAddress',
+ {$editAddress},
+ function(res){
+ var value1 = res.proviceFirstStageName;
+ var value2 = res.addressCitySecondStageName;
+ var value3 = res.addressCountiesThirdStageName;
+ var value4 = res.addressDetailInfo;
+ var tel = res.telNumber;
+ alert(value1 + value2 + value3 + value4 + ":" + tel);
+ }
+ );
+ }
+
+ window.onload = function(){
+ if (typeof WeixinJSBridge == "undefined"){
+ if( document.addEventListener ){
+ document.addEventListener('WeixinJSBridgeReady', editAddress, false);
+ }else if (document.attachEvent){
+ document.attachEvent('WeixinJSBridgeReady', editAddress);
+ document.attachEvent('onWeixinJSBridgeReady', editAddress);
+ }
+ }else{
+ editAddress();
+ }
+ };
+
+ &lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+ &lt;br/&gt;
+ &lt;font color="#9ACD32"&gt;&lt;b&gt;该笔订单支付金额为&lt;span style="color:#f00;font-size:50px"&gt;1分&lt;/span&gt;钱&lt;/b&gt;&lt;/font&gt;&lt;br/&gt;&lt;br/&gt;
+ &lt;div align="center"&gt;
+ &lt;button style="width:210px; height:50px; border-radius: 15px;background-color:#FE6714; border:0px #FE6714 solid; cursor: pointer; color:white; font-size:16px;" type="button" onclick="callpay()" &gt;立即支付&lt;/button&gt;
+ &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+</pre>
+                    </div>
+                    <p>notify.php文件代码，这里有在官方文件里新添加的一个自定义方法。<br />
+                    </p>
+                    <div class="jb51code">
+<pre class="brush:php;">
+require_once ROOT_PATH."Api/lib/WxPay.Api.php";
+require_once ROOT_PATH.'Api/lib/WxPay.Notify.php';
+require_once ROOT_PATH.'Api/lib/log.php';
+
+//初始化日志
+$logHandler= new \CLogFileHandler(ROOT_PATH."/logs/".date('Y-m-d').'.log');
+$log = \Log::Init($logHandler, 15);
+
+class PayNotifyCallBack extends WxPayNotify
+{
+ protected $para = array('code'=&gt;0,'data'=&gt;'');
+ //查询订单
+ public function Queryorder($transaction_id)
+ {
+ $input = new \WxPayOrderQuery();
+ $input-&gt;SetTransaction_id($transaction_id);
+ $result = \WxPayApi::orderQuery($input);
+ \Log::DEBUG("query:" . json_encode($result));
+ if(array_key_exists("return_code", $result)
+ && array_key_exists("result_code", $result)
+ && $result["return_code"] == "SUCCESS"
+ && $result["result_code"] == "SUCCESS")
+ {
+ return true;
+ }
+ $this-&gt;para['code'] = 0;
+ $this-&gt;para['data'] = '';
+ return false;
+ }
+
+ //重写回调处理函数
+ public function NotifyProcess($data, &$msg)
+ {
+ \Log::DEBUG("call back:" . json_encode($data));
+ $notfiyOutput = array();
+
+ if(!array_key_exists("transaction_id", $data)){
+ $msg = "输入参数不正确";
+ $this-&gt;para['code'] = 0;
+ $this-&gt;para['data'] = '';
+ return false;
+ }
+ //查询订单，判断订单真实性
+ if(!$this-&gt;Queryorder($data["transaction_id"])){
+ $msg = "订单查询失败";
+ $this-&gt;para['code'] = 0;
+ $this-&gt;para['data'] = '';
+ return false;
+ }
+
+ $this-&gt;para['code'] = 1;
+ $this-&gt;para['data'] = $data;
+ return true;
+ }
+
+ /**
+ * 自定义方法 检测微信端是否回调成功方法
+ * @return multitype:number string
+ */
+ public function IsSuccess(){
+ return $this-&gt;para;
+ }
+}
+
+</pre>
+                    </div>

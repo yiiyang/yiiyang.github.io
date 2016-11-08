@@ -1,0 +1,41 @@
+---
+layout:     post
+title:      "github给他人开启权限"
+date:       2014-06-05
+author:     "yangyang"
+header-img: "img/post-bg-2015.jpg"
+catalog: true
+tags:
+-   github给他人开启权限
+---
+
+<div id="article_content" class="article_content">
+
+    <p><strong>1.你要在github上新建一个repository(这好像是废话，没有库怎么给别人权限...)</strong></p>
+    <p><strong>2.获得想要获取权限的人的公钥(.pub文件)</strong></p>
+    <p>当你建好repository之后，你可以通过下面的按钮获取该库的地址：</p>
+    <p><img src="http://img.blog.csdn.net/20140819170550500?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMTc5NjI3NA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""><br>
+    </p>
+    <p>有几种基于不同方式的URL我们可以选择：</p>
+    <p>(1)基于HTTPS：选择这种，我们每次向该库push代码的时候，都要输入用户名和密码(当然，我自然不愿意将密码告诉别人啦)。</p>
+    <p>(2)基于SSH：选择这种，我们就可以通过公钥密钥的身份来验证自己的权限，下面重点介绍的就是这个。</p>
+    <p>(3)基于Subversion：其实就是svn，但是这种方式没用过，果断忽略...</p>
+    <p>这时候，你就可以将URL分发给需要的人(不同类型的URL，会决定以后所用的协议，但是可以在配置文件中修改)。拿到URL的人都可以将代码库pull下来，但这时候还没有push的权限。</p>
+    <p>我们可以用ssh-keygen -t rsa生成公钥密钥。当然，如果你喜欢用Tortoise的话，也可以用Puttygen来生成(Tortoise生成的密钥是.ppk，他将密钥又进行了一次加密)。其实git是没有权限验证这方面的功能的，所以都要借用第三方的服务(SSH或HTTPS)。然后就将公钥发送给我了。</p>
+    <p><strong>3.在repository中注册公钥</strong></p>
+    <p>进入该repository，选择settings——&gt;Deploy keys——&gt;add deploy key，Title随意填，Key贴上公钥的内容。</p>
+    <p><img src="http://img.blog.csdn.net/20140819174240312?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMTc5NjI3NA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""><br>
+    </p>
+    <p><strong>4.设置Tortoise</strong></p>
+    <p>首先，你要将HTTP协议改为SSH协议：</p>
+    <p>在文件.git/config中</p>
+    <p></p>
+<pre code_snippet_id="453977" snippet_file_name="blog_20140819_1_2548607" name="code" class="plain">[remote &quot;origin&quot;]
+	#url = https://github.com/holiday519/WINS-DSP.git
+	url = git@github.com:holiday519/WINS-DSP.git</pre>然后，将私钥加载进Tortoise设置中：
+    <p></p>
+    <p><img src="http://img.blog.csdn.net/20140819175022297?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMTc5NjI3NA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""><br>
+    </p>
+
+</div>
+
