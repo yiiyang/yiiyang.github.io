@@ -1,0 +1,697 @@
+---
+layout:     post
+title:      "MongoDB基本操作"
+date:       2014-07-26
+author:     "yangyang"
+header-img: "img/post-bg-2015.jpg"
+catalog: true
+tags:
+-   MongoDB基本操作
+---
+<div id="article_content" class="article_content">
+
+    <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+        <span style="font-size:14px">MongoDB 是一个基于分布式文件存储的数据库。由 C&#43;&#43; 语言编写。旨在为 WEB 应用提供可扩展的高性能数据存储解决方案。</span></p>
+    <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+        <span style="font-size:14px">MongoDB 是一个介于关系数据库和非关系数据库之间的产品，是非关系数据库当中功能最丰富，最像关系数据库的。</span></p>
+    <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+<span style="font-size:14px"><span style="font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif"><strong>window平台安装&nbsp;</strong></span><span class="color_h1" style="border:0px; margin:0px; padding:0px; color:rgb(100,133,76); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif; font-weight:bold">MongoDB</span><span style="font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif"><strong></strong></span><br>
+</span></p>
+    <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+<span class="color_h1" style="border:0px; margin:0px; padding:0px; color:rgb(100,133,76); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif; font-weight:bold"><span style="font-size:14px"><span style="color:rgb(51,51,51); font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; line-height:24px">MongoDB提供了可用于32位和64位系统的预编译二进制包，你可以从MongoDB官网下载安装，MongoDB预编译二进制包下载地址：</span><a target="_blank" href="http://www.mongodb.org/downloads" target="_blank" style="border:0px; margin:0px; padding:0px; color:rgb(100,133,76); font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; line-height:24px">http://www.mongodb.org/downloads</a><br>
+</span></span></p>
+    <div><span class="color_h1" style="border:0px; margin:0px; padding:0px; color:rgb(100,133,76); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif; font-weight:bold"></span>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            <span style="font-size:14px">根据你的系统下载 32 位或 64 位的 .msi 文件，下载后双击该文件，按操作提示安装即可。</span></p>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+        </p>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            <span style="font-size:14px">安装过程中，你可以通过点击 &quot;Custom(自定义)&quot; 按钮来设置你的安装目录。</span></p>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            <span style="font-size:14px"><img src="http://www.runoob.com/wp-content/uploads/2013/10/win-install1.jpg" alt="" style="border:0px; margin:0px; padding:0px; max-width:400px; height:auto"></span></p>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+        </p>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            <span style="font-size:14px"><img src="http://www.runoob.com/wp-content/uploads/2013/10/win-install2.jpg" alt="" style="border:0px; margin:0px; padding:0px; max-width:400px; height:auto"></span></p>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            <span style="border:0px; margin:0px; padding:0px"><span style="font-size:14px">创建数据目录</span></span></p>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            <span style="font-size:14px">MongoDB将数据目录存储在 db 目录下。但是这个数据目录不会主动创建，我们在安装完成后需要创建它。请注意，数据目录应该放在根目录下（(如： C:\ 或者 D:\ 等 )。</span></p>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            <span style="font-size:14px">在本教程中，我们已经在C：盘 安装了 mongodb，现在让我们创建一个data的目录然后在data目录里创建db目录。</span></p>
+<pre class="prettyprint prettyprinted" style="border-width:1px 1px 1px 4px; border-style:solid; border-color:rgb(221,221,221); margin:15px auto; padding:10px 15px; line-height:20px; font-family:&quot;courier new&quot;; white-space:pre-wrap; word-break:break-all; word-wrap:break-word; color:rgb(51,51,51); background-color:rgb(251,251,251)"><span style="font-size:14px"><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">c</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">\&gt;cd c</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">\
+
+c</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">\&gt;mkdir data
+
+c</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">\&gt;cd data
+
+c</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">\data</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&gt;</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">mkdir db
+
+c</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">\data</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&gt;</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">cd db
+
+c</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">\data\db</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&gt;</span></span></pre>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            <span style="font-size:14px">你也可以通过window的资源管理器中创建这些目录，而不一定通过命令行。</span></p>
+<span style="font-size:14px"><br style="color:rgb(51,51,51); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif">
+</span>
+        <hr style="color:rgb(212,212,212); height:1px; border:0px; clear:both; font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif; background-color:rgb(212,212,212)">
+        <h2 style="border:0px; margin:2px 0px; padding:0px; line-height:1.8em; color:rgb(51,51,51); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif">
+            <span style="font-size:14px">命令行下运行 MongoDB 服务器</span></h2>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            <span style="font-size:14px">为了从命令提示符下运行MongoDB服务器，你必须从MongoDB目录的bin目录中执行mongod.exe文件。</span></p>
+        <pre class="prettyprint prettyprinted" style="border-width:1px 1px 1px 4px; border-style:solid; border-color:rgb(221,221,221); margin:15px auto; padding:10px 15px; line-height:20px; font-family:&quot;courier new&quot;; white-space:pre-wrap; word-break:break-all; word-wrap:break-word; color:rgb(51,51,51); background-color:rgb(251,251,251)"><span style="font-size:14px"><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">mongod</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">.</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">exe </span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">--</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">dbpath c</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">\data\db</span></span></pre>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            <span style="font-size:14px">如果执行成功，会输出如下信息：</span></p>
+<pre class="prettyprint prettyprinted" style="border-width:1px 1px 1px 4px; border-style:solid; border-color:rgb(221,221,221); margin:15px auto; padding:10px 15px; line-height:20px; font-family:&quot;courier new&quot;; white-space:pre-wrap; word-break:break-all; word-wrap:break-word; color:rgb(51,51,51); background-color:rgb(251,251,251)"><span style="font-size:14px"><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">2015</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">-</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">09</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">-</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">25T15</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">54</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">09.212</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&#43;</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">0800</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> I CONTROL  </span><span class="typ" style="border:0px; margin:0px; padding:0px; color:rgb(102,0,102)">Hotfix</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> KB2731284 </span><span class="kwd" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,136)">or</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> later update </span><span class="kwd" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,136)">is</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="kwd" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,136)">not</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+installed</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">,</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> will zero</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">-</span><span class="kwd" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,136)">out</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> data files
+</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">2015</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">-</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">09</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">-</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">25T15</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">54</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">09.229</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&#43;</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">0800</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> I JOURNAL  </span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">[</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">initandlisten</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">]</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> journal dir</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">=</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">c</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">\data\db\j
+ournal
+</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">2015</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">-</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">09</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">-</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">25T15</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">54</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">09.237</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&#43;</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">0800</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> I JOURNAL  </span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">[</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">initandlisten</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">]</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> recover </span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="kwd" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,136)">no</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> journal fil
+es present</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">,</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="kwd" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,136)">no</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> recovery needed
+</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">2015</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">-</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">09</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">-</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">25T15</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">54</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">09.290</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&#43;</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">0800</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> I JOURNAL  </span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">[</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">durability</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">]</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="typ" style="border:0px; margin:0px; padding:0px; color:rgb(102,0,102)">Durability</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> thread started
+</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">2015</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">-</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">09</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">-</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">25T15</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">54</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">09.294</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&#43;</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">0800</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> I CONTROL  </span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">[</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">initandlisten</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">]</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="typ" style="border:0px; margin:0px; padding:0px; color:rgb(102,0,102)">MongoDB</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> starting </span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> pid</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">=</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">2</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">488</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> port</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">=</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">27017</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> dbpath</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">=</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">c</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">\data\db </span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">64</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">-</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">bit host</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">=</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">WIN</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">-</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">1VONBJOCE88</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">2015</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">-</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">09</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">-</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">25T15</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">54</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">09.296</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&#43;</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">0800</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> I CONTROL  </span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">[</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">initandlisten</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">]</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> targetMinOS</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="typ" style="border:0px; margin:0px; padding:0px; color:rgb(102,0,102)">Windows</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">7</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">/</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">W
+indows </span><span class="typ" style="border:0px; margin:0px; padding:0px; color:rgb(102,0,102)">Server</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">2008</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> R2
+</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">2015</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">-</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">09</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">-</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">25T15</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">54</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">09.298</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&#43;</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">0800</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> I CONTROL  </span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">[</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">initandlisten</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">]</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> db version v3</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">.</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">0.6</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">……</span></span></pre>
+<span style="font-size:14px"><br style="color:rgb(51,51,51); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif">
+</span>
+        <hr style="color:rgb(212,212,212); height:1px; border:0px; clear:both; font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif; background-color:rgb(212,212,212)">
+        <h2 style="border:0px; margin:2px 0px; padding:0px; line-height:1.8em; color:rgb(51,51,51); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif">
+            <span style="font-size:14px">将MongoDB服务器作为Windows服务运行</span></h2>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            <span style="font-size:14px">请注意，你必须有管理权限才能运行下面的命令。执行以下命令将MongoDB服务器作为Windows服务运行：</span></p>
+        <div class="code" style="border:1px solid rgb(212,212,212); margin:0px; padding:5px; width:715.781px; color:rgb(68,68,68); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif; background-color:rgb(246,244,240)">
+            <div style="border:0px; margin:0px; padding:0px; font-family:&quot;courier new&quot;"><span style="font-size:14px">mongod.exe --bind_ip yourIPadress --logpath &quot;C:\data\dbConf\mongodb.log&quot; --logappend --dbpath &quot;C:\data\db&quot; --port yourPortNumber --serviceName &quot;YourServiceName&quot;
+ --serviceDisplayName &quot;YourServiceName&quot; --install</span></div>
+        </div>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            <span style="border:0px; margin:0px; padding:0px"><span style="font-size:14px">下表为mongodb启动的参数说明：</span></span></p>
+        <table class="reference " style="border:0px; margin:4px 0px; padding:0px; border-collapse:collapse; width:729px; color:rgb(51,51,51); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif">
+            <tbody style="border:0px; margin:0px; padding:0px">
+            <tr style="border:0px; margin:0px; padding:0px; background-color:rgb(246,244,240)">
+                <th style="border:1px solid rgb(85,85,85); margin:0px; padding:3px; color:rgb(255,255,255); vertical-align:top; text-align:left; background-color:rgb(85,85,85)">
+                    <span style="font-size:14px">参数</span></th>
+                <th style="border:1px solid rgb(85,85,85); margin:0px; padding:3px; color:rgb(255,255,255); vertical-align:top; text-align:left; background-color:rgb(85,85,85)">
+                    <span style="font-size:14px">描述</span></th>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    <span style="font-size:14px">--bind_ip</span></td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    <span style="font-size:14px">绑定服务IP，若绑定127.0.0.1，则只能本机访问，不指定默认本地所有IP</span></td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px; background-color:rgb(246,244,240)">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    <span style="font-size:14px">--logpath</span></td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    <span style="font-size:14px">定MongoDB日志文件，注意是指定文件不是目录</span></td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    <span style="font-size:14px">--logappend</span></td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    <span style="font-size:14px">使用追加的方式写日志</span></td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px; background-color:rgb(246,244,240)">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    <span style="font-size:14px">--dbpath</span></td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    <span style="font-size:14px">指定数据库路径</span></td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    <span style="font-size:14px">--port</span></td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    <span style="font-size:14px">指定服务端口号，默认端口27017</span></td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px; background-color:rgb(246,244,240)">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    <span style="font-size:14px">--serviceName</span></td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    <span style="font-size:14px">指定服务名称</span></td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    <span style="font-size:14px">--serviceDisplayName</span></td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    <span style="font-size:14px">指定服务名称，有多个mongodb服务时执行。</span></td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px; background-color:rgb(246,244,240)">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    <span style="font-size:14px">--install</span></td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    <span style="font-size:14px">指定作为一个Windows服务安装。</span></td>
+            </tr>
+            </tbody>
+        </table>
+<span style="font-size:14px"><br style="color:rgb(51,51,51); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif">
+</span>
+        <hr style="color:rgb(212,212,212); height:1px; border:0px; clear:both; font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif; background-color:rgb(212,212,212)">
+        <h2 style="border:0px; margin:2px 0px; padding:0px; line-height:1.8em; color:rgb(51,51,51); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif">
+            <span style="font-size:14px">MongoDB后台管理 Shell</span></h2>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            <span style="font-size:14px">如果你需要进入MongoDB后台管理，你需要先打开mongodb装目录的下的bin目录，然后执行mongo.exe文件，MongoDB Shell是MongoDB自带的交互式Javascript shell,用来对MongoDB进行操作和管理的交互式环境。</span></p>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            <span style="font-size:14px">当你进入mongoDB后台后，它默认会链接到 test 文档（数据库）：</span></p>
+<pre class="prettyprint prettyprinted" style="border-width:1px 1px 1px 4px; border-style:solid; border-color:rgb(221,221,221); margin:15px auto; padding:10px 15px; line-height:20px; font-family:&quot;courier new&quot;; white-space:pre-wrap; word-break:break-all; word-wrap:break-word; color:rgb(51,51,51); background-color:rgb(251,251,251)"><span style="font-size:14px"><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&gt;</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> mongo
+</span><span class="typ" style="border:0px; margin:0px; padding:0px; color:rgb(102,0,102)">MongoDB</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> shell version</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">3.0</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">.</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">6</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+connecting to</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> test
+</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">……</span></span></pre>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            <span style="font-size:14px">由于它是一个JavaScript shell，您可以运行一些简单的算术运算:</span></p>
+<pre class="prettyprint prettyprinted" style="border-width:1px 1px 1px 4px; border-style:solid; border-color:rgb(221,221,221); margin:15px auto; padding:10px 15px; line-height:20px; font-family:&quot;courier new&quot;; white-space:pre-wrap; word-break:break-all; word-wrap:break-word; color:rgb(51,51,51); background-color:rgb(251,251,251)"><span style="font-size:14px"><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&gt;</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">2</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&#43;</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">2</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">4</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&gt;</span></span></pre>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            <span style="font-size:14px"><span style="border:0px; margin:0px; padding:0px">db</span>&nbsp;命令用于查看当前操作的文档（数据库）：</span></p>
+<pre class="prettyprint prettyprinted" style="border-width:1px 1px 1px 4px; border-style:solid; border-color:rgb(221,221,221); margin:15px auto; padding:10px 15px; line-height:20px; font-family:&quot;courier new&quot;; white-space:pre-wrap; word-break:break-all; word-wrap:break-word; color:rgb(51,51,51); background-color:rgb(251,251,251)"><span style="font-size:14px"><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&gt;</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> db
+test
+</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&gt;</span></span></pre>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            <span style="font-size:14px">插入一些简单的记录并查找它：</span></p>
+<pre class="prettyprint prettyprinted" style="border-width:1px 1px 1px 4px; border-style:solid; border-color:rgb(221,221,221); margin:15px auto; padding:10px 15px; line-height:20px; font-family:&quot;courier new&quot;; white-space:pre-wrap; word-break:break-all; word-wrap:break-word; color:rgb(51,51,51); background-color:rgb(251,251,251)"><span style="font-size:14px"><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&gt;</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> db</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">.</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">runoob</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">.</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">insert</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">({</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">x</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">10</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">})</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+</span><span class="typ" style="border:0px; margin:0px; padding:0px; color:rgb(102,0,102)">WriteResult</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">({</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="str" style="border:0px; margin:0px; padding:0px; color:rgb(0,136,0)">&quot;nInserted&quot;</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">1</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">})</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&gt;</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> db</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">.</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">runoob</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">.</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">find</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">()</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">{</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="str" style="border:0px; margin:0px; padding:0px; color:rgb(0,136,0)">&quot;_id&quot;</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="typ" style="border:0px; margin:0px; padding:0px; color:rgb(102,0,102)">ObjectId</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">(</span><span class="str" style="border:0px; margin:0px; padding:0px; color:rgb(0,136,0)">&quot;5604ff74a274a611b0c990aa&quot;</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">),</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="str" style="border:0px; margin:0px; padding:0px; color:rgb(0,136,0)">&quot;x&quot;</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">10</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">}</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&gt;</span></span></pre>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            <span style="font-size:14px">第一个命令将数字 10 插入到 runoob 集合的 x 字段中。</span></p>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            <span style="font-size:14px"></span></p>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            不管我们学习什么数据库都应该学习其中的基础概念，在mongodb中基本的概念是文档、集合、数据库，下面我们挨个介绍。</p>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            下表将帮助您更容易理解Mongo中的一些概念：</p>
+        <table class="reference " style="border:0px; margin:4px 0px; padding:0px; border-collapse:collapse; width:729px; color:rgb(51,51,51); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif; font-size:12px">
+            <tbody style="border:0px; margin:0px; padding:0px">
+            <tr style="border:0px; margin:0px; padding:0px; background-color:rgb(246,244,240)">
+                <th style="border:1px solid rgb(85,85,85); margin:0px; padding:3px; color:rgb(255,255,255); vertical-align:top; text-align:left; background-color:rgb(85,85,85)">
+                    SQL术语/概念</th>
+                <th style="border:1px solid rgb(85,85,85); margin:0px; padding:3px; color:rgb(255,255,255); vertical-align:top; text-align:left; background-color:rgb(85,85,85)">
+                    MongoDB术语/概念</th>
+                <th style="border:1px solid rgb(85,85,85); margin:0px; padding:3px; color:rgb(255,255,255); vertical-align:top; text-align:left; background-color:rgb(85,85,85)">
+                    解释/说明</th>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    database</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    database</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    数据库</td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px; background-color:rgb(246,244,240)">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    table</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    collection</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    数据库表/集合</td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    row</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    document</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    数据记录行/文档</td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px; background-color:rgb(246,244,240)">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    column</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    field</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    数据字段/域</td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    index</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    index</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    索引</td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px; background-color:rgb(246,244,240)">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    table joins</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    &nbsp;</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    表连接,MongoDB不支持</td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    primary key</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    primary key</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    主键,MongoDB自动将_id字段设置为主键</td>
+            </tr>
+            </tbody>
+        </table>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            通过下图实例，我们也可以更直观的的了解Mongo中的一些概念：</p>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            <img src="http://www.runoob.com/wp-content/uploads/2013/10/Figure-1-Mapping-Table-to-Collection-1.png" alt="" style="border:0px; margin:0px; padding:0px; max-width:100%; height:auto"></p>
+        <hr style="color:rgb(212,212,212); height:1px; border:0px; clear:both; font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif; background-color:rgb(212,212,212)">
+        <h2 style="border:0px; margin:2px 0px; padding:0px; font-size:1.8em; line-height:1.8em; color:rgb(51,51,51); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif">
+            数据库</h2>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            一个mongodb中可以建立多个数据库。</p>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            MongoDB的默认数据库为&quot;db&quot;，该数据库存储在data目录中。</p>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            MongoDB的单个实例可以容纳多个独立的数据库，每一个都有自己的集合和权限，不同的数据库也放置在不同的文件中。</p>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            <span style="border:0px; margin:0px; padding:0px">&quot;show dbs&quot;</span>&nbsp;命令可以显示所有数据的列表。</p>
+<pre class="prettyprint prettyprinted" style="border-width:1px 1px 1px 4px; border-style:solid; border-color:rgb(221,221,221); margin:15px auto; padding:10px 15px; line-height:20px; font-family:&quot;courier new&quot;; white-space:pre-wrap; word-break:break-all; word-wrap:break-word; color:rgb(51,51,51)"><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">$ </span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">./</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">mongo
+</span><span class="typ" style="border:0px; margin:0px; padding:0px; color:rgb(102,0,102)">MongoDB</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> shell version</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">3.0</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">.</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">6</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+connecting to</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> test
+</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&gt;</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> show dbs
+</span><span class="kwd" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,136)">local</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">  </span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">0.078GB</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+test   </span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">0.078GB</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&gt;</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span></pre>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            执行&nbsp;<span style="border:0px; margin:0px; padding:0px">&quot;db&quot;</span>&nbsp;命令可以显示当前数据库对象或集合。</p>
+<pre class="prettyprint prettyprinted" style="border-width:1px 1px 1px 4px; border-style:solid; border-color:rgb(221,221,221); margin:15px auto; padding:10px 15px; line-height:20px; font-family:&quot;courier new&quot;; white-space:pre-wrap; word-break:break-all; word-wrap:break-word; color:rgb(51,51,51)"><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">$ </span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">./</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">mongo
+</span><span class="typ" style="border:0px; margin:0px; padding:0px; color:rgb(102,0,102)">MongoDB</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> shell version</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">3.0</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">.</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">6</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+connecting to</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> test
+</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&gt;</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> db
+test
+</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&gt;</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span></pre>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            运行&quot;use&quot;命令，可以连接到一个指定的数据库。</p>
+<pre class="prettyprint prettyprinted" style="border-width:1px 1px 1px 4px; border-style:solid; border-color:rgb(221,221,221); margin:15px auto; padding:10px 15px; line-height:20px; font-family:&quot;courier new&quot;; white-space:pre-wrap; word-break:break-all; word-wrap:break-word; color:rgb(51,51,51)"><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&gt;</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="kwd" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,136)">use</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="kwd" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,136)">local</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+switched to db </span><span class="kwd" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,136)">local</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&gt;</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> db
+</span><span class="kwd" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,136)">local</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&gt;</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span></pre>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            以上实例命令中，&quot;local&quot; 是你要链接的数据库。</p>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            在下一个章节我们将详细讲解MongoDB中命令的使用。</p>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            数据库也通过名字来标识。数据库名可以是满足以下条件的任意UTF-8字符串。</p>
+        <ul style="border:0px; margin:1em 0px; padding:0px; line-height:16.8px; list-style-type:none; color:rgb(51,51,51); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif">
+            <li style="border:0px; margin:0px 0px 1em 1em; padding:0px 0px 0px 1.5em; line-height:1.5em; font-size:1em">
+                不能是空字符串（&quot;&quot;)。</li><li style="border:0px; margin:0px 0px 1em 1em; padding:0px 0px 0px 1.5em; line-height:1.5em; font-size:1em">
+                不得含有' '（空&#26684;)、.、$、/、\和\0 (空宇符)。</li><li style="border:0px; margin:0px 0px 1em 1em; padding:0px 0px 0px 1.5em; line-height:1.5em; font-size:1em">
+                应全部小写。</li><li style="border:0px; margin:0px 0px 1em 1em; padding:0px 0px 0px 1.5em; line-height:1.5em; font-size:1em">
+                最多64字节。</li></ul>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            有一些数据库名是保留的，可以直接访问这些有特殊作用的数据库。</p>
+        <ul style="border:0px; margin:1em 0px; padding:0px; line-height:16.8px; list-style-type:none; color:rgb(51,51,51); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif">
+            <li style="border:0px; margin:0px 0px 1em 1em; padding:0px 0px 0px 1.5em; line-height:1.5em; font-size:1em">
+                <span style="border:0px; margin:0px; padding:0px">admin</span>： 从权限的角度来看，这是&quot;root&quot;数据库。要是将一个用户添加到这个数据库，这个用户自动继承所有数据库的权限。一些特定的服务器端命令也只能从这个数据库运行，比如列出所有的数据库或者关闭服务器。</li><li style="border:0px; margin:0px 0px 1em 1em; padding:0px 0px 0px 1.5em; line-height:1.5em; font-size:1em">
+                <span style="border:0px; margin:0px; padding:0px">local:</span>&nbsp;这个数据永远不会被复制，可以用来存储限于本地单台服务器的任意集合</li><li style="border:0px; margin:0px 0px 1em 1em; padding:0px 0px 0px 1.5em; line-height:1.5em; font-size:1em">
+                <span style="border:0px; margin:0px; padding:0px">config</span>: 当Mongo用于分片设置时，config数据库在内部使用，用于保存分片的相关信息。</li></ul>
+        <hr style="color:rgb(212,212,212); height:1px; border:0px; clear:both; font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif; background-color:rgb(212,212,212)">
+        <h2 style="border:0px; margin:2px 0px; padding:0px; font-size:1.8em; line-height:1.8em; color:rgb(51,51,51); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif">
+            文档</h2>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            文档是一个键&#20540;(key-value)对(即BSON)。MongoDB 的文档不需要设置相同的字段，并且相同的字段不需要相同的数据类型，这与关系型数据库有很大的区别，也是 MongoDB 非常突出的特点。</p>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            一个简单的文档例子如下：</p>
+        <pre class="prettyprint prettyprinted" style="border-width:1px 1px 1px 4px; border-style:solid; border-color:rgb(221,221,221); margin:15px auto; padding:10px 15px; line-height:20px; font-family:&quot;courier new&quot;; white-space:pre-wrap; word-break:break-all; word-wrap:break-word; color:rgb(51,51,51)"><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">{</span><span class="str" style="border:0px; margin:0px; padding:0px; color:rgb(0,136,0)">&quot;site&quot;</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="str" style="border:0px; margin:0px; padding:0px; color:rgb(0,136,0)">&quot;www.runoob.com&quot;</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">,</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="str" style="border:0px; margin:0px; padding:0px; color:rgb(0,136,0)">&quot;name&quot;</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="str" style="border:0px; margin:0px; padding:0px; color:rgb(0,136,0)">&quot;菜鸟教程&quot;</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">}</span></pre>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            下表列出了 RDBMS 与 MongoDB 对应的术语：</p>
+        <table class="reference " style="border:0px; margin:4px 0px; padding:0px; border-collapse:collapse; width:729px; color:rgb(51,51,51); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif; font-size:12px">
+            <tbody style="border:0px; margin:0px; padding:0px">
+            <tr style="border:0px; margin:0px; padding:0px; background-color:rgb(246,244,240)">
+                <th style="border:1px solid rgb(85,85,85); margin:0px; padding:3px; color:rgb(255,255,255); vertical-align:top; text-align:left; width:357px; background-color:rgb(85,85,85)">
+                    RDBMS</th>
+                <th style="border:1px solid rgb(85,85,85); margin:0px; padding:3px; color:rgb(255,255,255); vertical-align:top; text-align:left; background-color:rgb(85,85,85)">
+                    MongoDB</th>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    数据库</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    数据库</td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px; background-color:rgb(246,244,240)">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    表&#26684;</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    集合</td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    行</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    文档</td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px; background-color:rgb(246,244,240)">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    列</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    字段</td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    表联合</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    嵌入文档</td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px; background-color:rgb(246,244,240)">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    主键</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    主键 (MongoDB 提供了 key 为 _id )</td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px">
+                <th colspan="2" style="border:1px solid rgb(85,85,85); margin:0px; padding:3px; color:rgb(255,255,255); vertical-align:top; text-align:center; background-color:rgb(85,85,85)">
+                    数据库服务和客户端</th>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px; background-color:rgb(246,244,240)">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    Mysqld/Oracle</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    mongod</td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    mysql/sqlplus</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    mongo</td>
+            </tr>
+            </tbody>
+        </table>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            需要注意的是：</p>
+        <ol style="border:0px; margin:1em 0px; padding:0px; line-height:1.5em; list-style-type:none; color:rgb(51,51,51); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif">
+            <li style="border:0px; margin:0px 0px 1em 2.5em; padding:0px; line-height:1.5em; font-size:1em; list-style-type:decimal">
+                文档中的键/&#20540;对是有序的。</li><li style="border:0px; margin:0px 0px 1em 2.5em; padding:0px; line-height:1.5em; font-size:1em; list-style-type:decimal">
+                文档中的&#20540;不仅可以是在双引号里面的字符串，还可以是其他几种数据类型（甚至可以是整个嵌入的文档)。</li><li style="border:0px; margin:0px 0px 1em 2.5em; padding:0px; line-height:1.5em; font-size:1em; list-style-type:decimal">
+                MongoDB区分类型和大小写。</li><li style="border:0px; margin:0px 0px 1em 2.5em; padding:0px; line-height:1.5em; font-size:1em; list-style-type:decimal">
+                MongoDB的文档不能有重复的键。</li><li style="border:0px; margin:0px 0px 1em 2.5em; padding:0px; line-height:1.5em; font-size:1em; list-style-type:decimal">
+                文档的键是字符串。除了少数例外情况，键可以使用任意UTF-8字符。</li></ol>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            文档键命名规范：</p>
+        <ul style="border:0px; margin:1em 0px; padding:0px; line-height:16.8px; list-style-type:none; color:rgb(51,51,51); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif">
+            <li style="border:0px; margin:0px 0px 1em 1em; padding:0px 0px 0px 1.5em; line-height:1.5em; font-size:1em">
+                键不能含有\0 (空字符)。这个字符用来表示键的结尾。</li><li style="border:0px; margin:0px 0px 1em 1em; padding:0px 0px 0px 1.5em; line-height:1.5em; font-size:1em">
+                .和$有特别的意义，只有在特定环境下才能使用。</li><li style="border:0px; margin:0px 0px 1em 1em; padding:0px 0px 0px 1.5em; line-height:1.5em; font-size:1em">
+                以下划线&quot;_&quot;开头的键是保留的(不是严&#26684;要求的)。</li></ul>
+        <hr style="color:rgb(212,212,212); height:1px; border:0px; clear:both; font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif; background-color:rgb(212,212,212)">
+        <h2 style="border:0px; margin:2px 0px; padding:0px; font-size:1.8em; line-height:1.8em; color:rgb(51,51,51); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif">
+            集合</h2>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            集合就是 MongoDB 文档组，类&#20284;于 RDBMS （关系数据库管理系统：Relational Database Management System)中的表&#26684;。</p>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            集合存在于数据库中，集合没有固定的结构，这意味着你在对集合可以插入不同&#26684;式和类型的数据，但通常情况下我们插入集合的数据都会有一定的关联性。</p>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+        </p>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            比如，我们可以将以下不同数据结构的文档插入到集合中：</p>
+<pre class="prettyprint prettyprinted" style="border-width:1px 1px 1px 4px; border-style:solid; border-color:rgb(221,221,221); margin:15px auto; padding:10px 15px; line-height:20px; font-family:&quot;courier new&quot;; white-space:pre-wrap; word-break:break-all; word-wrap:break-word; color:rgb(51,51,51)"><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">{</span><span class="str" style="border:0px; margin:0px; padding:0px; color:rgb(0,136,0)">&quot;site&quot;</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="str" style="border:0px; margin:0px; padding:0px; color:rgb(0,136,0)">&quot;www.baidu.com&quot;</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">}</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">{</span><span class="str" style="border:0px; margin:0px; padding:0px; color:rgb(0,136,0)">&quot;site&quot;</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="str" style="border:0px; margin:0px; padding:0px; color:rgb(0,136,0)">&quot;www.google.com&quot;</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">,</span><span class="str" style="border:0px; margin:0px; padding:0px; color:rgb(0,136,0)">&quot;name&quot;</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="str" style="border:0px; margin:0px; padding:0px; color:rgb(0,136,0)">&quot;Google&quot;</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">}</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">{</span><span class="str" style="border:0px; margin:0px; padding:0px; color:rgb(0,136,0)">&quot;site&quot;</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="str" style="border:0px; margin:0px; padding:0px; color:rgb(0,136,0)">&quot;www.runoob.com&quot;</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">,</span><span class="str" style="border:0px; margin:0px; padding:0px; color:rgb(0,136,0)">&quot;name&quot;</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="str" style="border:0px; margin:0px; padding:0px; color:rgb(0,136,0)">&quot;菜鸟教程&quot;</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">,</span><span class="str" style="border:0px; margin:0px; padding:0px; color:rgb(0,136,0)">&quot;num&quot;</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">5</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">}</span></pre>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            当第一个文档插入时，集合就会被创建。</p>
+        <h3 style="border:0px; margin:8px 0px; padding:0px; font-size:1.4em; color:rgb(51,51,51); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif">
+            合法的集合名</h3>
+        <ul style="border:0px; margin:1em 0px; padding:0px; line-height:16.8px; list-style-type:none; color:rgb(51,51,51); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif">
+            <li style="border:0px; margin:0px 0px 1em 1em; padding:0px 0px 0px 1.5em; line-height:1.5em; font-size:1em">
+                集合名不能是空字符串&quot;&quot;。</li><li style="border:0px; margin:0px 0px 1em 1em; padding:0px 0px 0px 1.5em; line-height:1.5em; font-size:1em">
+                集合名不能含有\0字符（空字符)，这个字符表示集合名的结尾。</li><li style="border:0px; margin:0px 0px 1em 1em; padding:0px 0px 0px 1.5em; line-height:1.5em; font-size:1em">
+                集合名不能以&quot;system.&quot;开头，这是为系统集合保留的前缀。</li><li style="border:0px; margin:0px 0px 1em 1em; padding:0px 0px 0px 1.5em; line-height:1.5em; font-size:1em">
+                用户创建的集合名字不能含有保留字符。有些驱动程序的确支持在集合名里面包含，这是因为某些系统生成的集合中包含该字符。除非你要访问这种系统创建的集合，否则千万不要在名字里出现$。　</li></ul>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            如下实例：</p>
+        <pre class="prettyprint prettyprinted" style="border-width:1px 1px 1px 4px; border-style:solid; border-color:rgb(221,221,221); margin:15px auto; padding:10px 15px; line-height:20px; font-family:&quot;courier new&quot;; white-space:pre-wrap; word-break:break-all; word-wrap:break-word; color:rgb(51,51,51)"><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">db</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">.</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">col</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">.</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">findOne</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">()</span></pre>
+        <h3 style="border:0px; margin:8px 0px; padding:0px; font-size:1.4em; color:rgb(51,51,51); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif">
+            capped collections</h3>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            Capped collections 就是固定大小的collection。</p>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            它有很高的性能以及队列过期的特性(过期按照插入的顺序). 有点和 &quot;RRD&quot; 概念类&#20284;。</p>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            Capped collections是高性能自动的维护对象的插入顺序。它非常适合类&#20284;记录日志的功能 和标准的collection不同，你必须要显式的创建一个capped collection， 指定一个collection的大小，单位是字节。collection的数据存储空间&#20540;提前分配的。</p>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+        </p>
+        <span style="color:rgb(51,51,51); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif">要注意的是指定的存储大小包含了数据库的头信息。</span>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+        </p>
+        <pre class="prettyprint prettyprinted" style="border-width:1px 1px 1px 4px; border-style:solid; border-color:rgb(221,221,221); margin:15px auto; padding:10px 15px; line-height:20px; font-family:&quot;courier new&quot;; white-space:pre-wrap; word-break:break-all; word-wrap:break-word; color:rgb(51,51,51)"><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">db</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">.</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">createCollection</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">(</span><span class="str" style="border:0px; margin:0px; padding:0px; color:rgb(0,136,0)">&quot;mycoll&quot;</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">,</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">{</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">capped</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="kwd" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,136)">true</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">,</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> size</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">100000</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">})</span></pre>
+        <ul style="border:0px; margin:1em 0px; padding:0px; line-height:16.8px; list-style-type:none; color:rgb(51,51,51); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif">
+            <li style="border:0px; margin:0px 0px 1em 1em; padding:0px 0px 0px 1.5em; line-height:1.5em; font-size:1em">
+                在capped collection中，你能添加新的对象。</li><li style="border:0px; margin:0px 0px 1em 1em; padding:0px 0px 0px 1.5em; line-height:1.5em; font-size:1em">
+                能进行更新，然而，对象不会增加存储空间。如果增加，更新就会失败 。</li><li style="border:0px; margin:0px 0px 1em 1em; padding:0px 0px 0px 1.5em; line-height:1.5em; font-size:1em">
+                数据库不允许进行删除。使用drop()方法删除collection所有的行。</li><li style="border:0px; margin:0px 0px 1em 1em; padding:0px 0px 0px 1.5em; line-height:1.5em; font-size:1em">
+                注意: 删除之后，你必须显式的重新创建这个collection。</li><li style="border:0px; margin:0px 0px 1em 1em; padding:0px 0px 0px 1.5em; line-height:1.5em; font-size:1em">
+                在32bit机器中，capped collection最大存储为1e9( 1X10<sup style="border:0px; margin:0px; padding:0px">9</sup>)个字节。</li></ul>
+        <hr style="color:rgb(212,212,212); height:1px; border:0px; clear:both; font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif; background-color:rgb(212,212,212)">
+        <h2 style="border:0px; margin:2px 0px; padding:0px; font-size:1.8em; line-height:1.8em; color:rgb(51,51,51); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif">
+            元数据</h2>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            数据库的信息是存储在集合中。它们使用了系统的命名空间：</p>
+        <pre class="prettyprint prettyprinted" style="border-width:1px 1px 1px 4px; border-style:solid; border-color:rgb(221,221,221); margin:15px auto; padding:10px 15px; line-height:20px; font-family:&quot;courier new&quot;; white-space:pre-wrap; word-break:break-all; word-wrap:break-word; color:rgb(51,51,51)"><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">dbname</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">.</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">system</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">.*</span></pre>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            在MongoDB数据库中名字空间 &lt;dbname&gt;.system.* 是包含多种系统信息的特殊集合(Collection)，如下:</p>
+        <table class="reference " style="border:0px; margin:4px 0px; padding:0px; border-collapse:collapse; width:729px; color:rgb(51,51,51); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif; font-size:12px">
+            <tbody style="border:0px; margin:0px; padding:0px">
+            <tr style="border:0px; margin:0px; padding:0px; background-color:rgb(246,244,240)">
+                <th style="border:1px solid rgb(85,85,85); margin:0px; padding:3px; color:rgb(255,255,255); vertical-align:top; text-align:left; background-color:rgb(85,85,85)">
+                    集合命名空间</th>
+                <th style="border:1px solid rgb(85,85,85); margin:0px; padding:3px; color:rgb(255,255,255); vertical-align:top; text-align:left; background-color:rgb(85,85,85)">
+                    描述</th>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    dbname.system.namespaces</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    列出所有名字空间。</td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px; background-color:rgb(246,244,240)">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    dbname.system.indexes</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    列出所有索引。</td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    dbname.system.profile</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    包含数据库概要(profile)信息。</td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px; background-color:rgb(246,244,240)">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    dbname.system.users</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    列出所有可访问数据库的用户。</td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    dbname.local.sources</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    包含复制对端（slave）的服务器信息和状态。</td>
+            </tr>
+            </tbody>
+        </table>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            对于修改系统集合中的对象有如下限制。</p>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            在{{system.indexes}}插入数据，可以创建索引。但除此之外该表信息是不可变的(特殊的drop index命令将自动更新相关信息)。</p>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            {{system.users}}是可修改的。 {{system.profile}}是可删除的。</p>
+        <hr style="color:rgb(212,212,212); height:1px; border:0px; clear:both; font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif; background-color:rgb(212,212,212)">
+        <h2 style="border:0px; margin:2px 0px; padding:0px; font-size:1.8em; line-height:1.8em; color:rgb(51,51,51); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif">
+            MongoDB 数据类型</h2>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            下表为MongoDB中常用的几种数据类型。</p>
+        <table class="reference " style="border:0px; margin:4px 0px; padding:0px; border-collapse:collapse; width:729px; color:rgb(51,51,51); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif; font-size:12px">
+            <tbody style="border:0px; margin:0px; padding:0px">
+            <tr style="border:0px; margin:0px; padding:0px; background-color:rgb(246,244,240)">
+                <th style="border:1px solid rgb(85,85,85); margin:0px; padding:3px; color:rgb(255,255,255); vertical-align:top; text-align:left; background-color:rgb(85,85,85)">
+                    数据类型</th>
+                <th style="border:1px solid rgb(85,85,85); margin:0px; padding:3px; color:rgb(255,255,255); vertical-align:top; text-align:left; background-color:rgb(85,85,85)">
+                    描述</th>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    String</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    字符串。存储数据常用的数据类型。在 MongoDB 中，UTF-8 编码的字符串才是合法的。</td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px; background-color:rgb(246,244,240)">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    Integer</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    整型数&#20540;。用于存储数&#20540;。根据你所采用的服务器，可分为 32 位或 64 位。</td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    Boolean</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    布尔&#20540;。用于存储布尔&#20540;（真/假）。</td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px; background-color:rgb(246,244,240)">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    Double</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    双精度浮点&#20540;。用于存储浮点&#20540;。</td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    Min/Max keys</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    将一个&#20540;与 BSON（二进制的 JSON）元素的最低&#20540;和最高&#20540;相对比。</td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px; background-color:rgb(246,244,240)">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    Arrays</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    用于将数组或列表或多个&#20540;存储为一个键。</td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    Timestamp</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    时间戳。记录文档修改或添加的具体时间。</td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px; background-color:rgb(246,244,240)">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    Object</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    用于内嵌文档。</td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    Null</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    用于创建空&#20540;。</td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px; background-color:rgb(246,244,240)">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    Symbol</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    符号。该数据类型基本上等同于字符串类型，但不同的是，它一般用于采用特殊符号类型的语言。</td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    Date</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    日期时间。用 UNIX 时间&#26684;式来存储当前日期或时间。你可以指定自己的日期时间：创建 Date 对象，传入年月日信息。</td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px; background-color:rgb(246,244,240)">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    Object ID</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    对象 ID。用于创建文档的 ID。</td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    Binary Data</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    二进制数据。用于存储二进制数据。</td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px; background-color:rgb(246,244,240)">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    Code</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    代码类型。用于在文档中存储 JavaScript 代码。</td>
+            </tr>
+            <tr style="border:0px; margin:0px; padding:0px">
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    Regular expression</td>
+                <td style="border:1px solid rgb(212,212,212); margin:0px; padding:7px 5px; font-size:1em; word-break:break-all; word-wrap:break-word; vertical-align:top">
+                    正则表达式类型。用于存储正则表达式。</td>
+            </tr>
+            </tbody>
+        </table>
+        <h2 style="border:0px; margin:2px 0px; padding:0px; font-size:1.8em; line-height:1.8em; color:rgb(51,51,51); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif">
+            通过shell连接MongoDB服务</h2>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            你可以通过执行以下命令来连接MongoDB的服务。</p>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            <span style="border:0px; margin:0px; padding:0px">注意：</span>localhost为主机名，这个选项是必须的：</p>
+        <div class="code" style="border:1px solid rgb(212,212,212); margin:0px; padding:5px; width:715.781px; color:rgb(68,68,68); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif; background-color:rgb(246,244,240)">
+            <div style="border:0px; margin:0px; padding:0px; font-size:13.2px; font-family:&quot;courier new&quot;">
+                mongodb://localhost</div>
+        </div>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            当你执行以上命令时，你可以看到以下输出结果：</p>
+<pre class="prettyprint prettyprinted" style="border-width:1px 1px 1px 4px; border-style:solid; border-color:rgb(221,221,221); margin:15px auto; padding:10px 15px; line-height:20px; font-family:&quot;courier new&quot;; white-space:pre-wrap; word-break:break-all; word-wrap:break-word; color:rgb(51,51,51)"><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">$ </span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">./</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">mongo
+</span><span class="typ" style="border:0px; margin:0px; padding:0px; color:rgb(102,0,102)">MongoDB</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> shell version</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">3.0</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">.</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">6</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+connecting to</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> test
+</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&gt;</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> mongodb</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="com" style="border:0px; margin:0px; padding:0px; color:rgb(136,0,0)">//localhostmongodb://localhost</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">...</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span></pre>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            这时候你返回查看运行&nbsp;<span style="border:0px; margin:0px; padding:0px">./mongod</span>&nbsp;命令的窗口，可以看到是从哪里连接到MongoDB的服务器，您可以看到如下信息：</p>
+<pre class="prettyprint prettyprinted" style="border-width:1px 1px 1px 4px; border-style:solid; border-color:rgb(221,221,221); margin:15px auto; padding:10px 15px; line-height:20px; font-family:&quot;courier new&quot;; white-space:pre-wrap; word-break:break-all; word-wrap:break-word; color:rgb(51,51,51)"><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">……省略信息……</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">2015</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">-</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">09</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">-</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">25T17</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">22</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">27.336</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&#43;</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">0800</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> I CONTROL  </span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">[</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">initandlisten</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">]</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> allocator</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> tcmalloc
+</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">2015</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">-</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">09</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">-</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">25T17</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">22</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">27.336</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&#43;</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">0800</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> I CONTROL  </span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">[</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">initandlisten</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">]</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> options</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">{</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> storage</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">{</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> dbPath</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="str" style="border:0px; margin:0px; padding:0px; color:rgb(0,136,0)">&quot;/data/db&quot;</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">}</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">}</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">2015</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">-</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">09</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">-</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">25T17</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">22</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">27.350</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&#43;</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">0800</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> I NETWORK  </span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">[</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">initandlisten</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">]</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> waiting </span><span class="kwd" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,136)">for</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> connections on port </span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">27017</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">2015</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">-</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">09</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">-</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">25T17</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">22</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">36.012</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&#43;</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">0800</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> I NETWORK  </span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">[</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">initandlisten</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">]</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> connection accepted </span><span class="kwd" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,136)">from</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">127.0</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">.</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">0.1</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">37310</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="com" style="border:0px; margin:0px; padding:0px; color:rgb(136,0,0)">#1 (1 connection now open)  # 该行表明一个来自本机的连接</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+
+</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">……省略信息……</span></pre>
+        <br style="color:rgb(51,51,51); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif">
+        <hr style="color:rgb(212,212,212); height:1px; border:0px; clear:both; font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif; background-color:rgb(212,212,212)">
+        <h2 style="border:0px; margin:2px 0px; padding:0px; font-size:1.8em; line-height:1.8em; color:rgb(51,51,51); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif">
+            MongoDB连接命令&#26684;式</h2>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            使用用户名和密码连接到MongoDB服务器，你必须使用 '<span style="border:0px; margin:0px; padding:0px">username:password@hostname/dbname</span>' &#26684;式，'username'为用户名，'password' 为密码。</p>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            使用用户名和密码连接登陆到默认数据库：</p>
+<pre class="prettyprint prettyprinted" style="border-width:1px 1px 1px 4px; border-style:solid; border-color:rgb(221,221,221); margin:15px auto; padding:10px 15px; line-height:20px; font-family:&quot;courier new&quot;; white-space:pre-wrap; word-break:break-all; word-wrap:break-word; color:rgb(51,51,51)"><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">$ </span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">./</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">mongo
+</span><span class="typ" style="border:0px; margin:0px; padding:0px; color:rgb(102,0,102)">MongoDB</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> shell version</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">3.0</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">.</span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">6</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+connecting to</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> test
+mongodb</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="com" style="border:0px; margin:0px; padding:0px; color:rgb(136,0,0)">//admin:123456@localhost/</span></pre>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            以上命令中，用户 admin 使用密码 123456 连接到本地的 MongoDB 服务上。输出结果如下所示：&lt;、p&gt;</p>
+<pre class="prettyprint prettyprinted" style="border-width:1px 1px 1px 4px; border-style:solid; border-color:rgb(221,221,221); margin:15px auto; padding:10px 15px; line-height:20px; font-family:&quot;courier new&quot;; white-space:pre-wrap; word-break:break-all; word-wrap:break-word; color:rgb(51,51,51)"><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&gt;</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> mongodb</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="com" style="border:0px; margin:0px; padding:0px; color:rgb(136,0,0)">//admin:123456@localhost/</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">...</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span></pre>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            使用用户名和密码连接登陆到指定数据库：</p>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            连接到指定数据库的&#26684;式如下：</p>
+        <div class="code" style="border:1px solid rgb(212,212,212); margin:0px; padding:5px; width:715.781px; color:rgb(68,68,68); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif; background-color:rgb(246,244,240)">
+            <div style="border:0px; margin:0px; padding:0px; font-size:13.2px; font-family:&quot;courier new&quot;">
+                mongodb://admin:123456@localhost/test</div>
+        </div>
+        <h1 style="border:0px; margin:0px 0px 10px; padding:0px; font-size:2.1em; font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif">
+            MongoDB 创建数据库</h1>
+        <h3 style="border:0px; margin:8px 0px; padding:0px; font-size:1.4em; color:rgb(51,51,51); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif">
+            语法</h3>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            MongoDB 创建数据库的语法&#26684;式如下：</p>
+        <pre class="prettyprint prettyprinted" style="border-width:1px 1px 1px 4px; border-style:solid; border-color:rgb(221,221,221); margin:15px auto; padding:10px 15px; line-height:20px; font-family:&quot;courier new&quot;; white-space:pre-wrap; word-break:break-all; word-wrap:break-word; color:rgb(51,51,51)"><span class="kwd" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,136)">use</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> DATABASE_NAME</span></pre>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            如果数据库不存在，则创建数据库，否则切换到指定数据库。</p>
+        <h3 style="border:0px; margin:8px 0px; padding:0px; font-size:1.4em; color:rgb(51,51,51); font-family:&quot;Open Sans&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,STHeiti,&quot;Microsoft Yahei&quot;,sans-serif">
+            实例</h3>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            以下实例我们创建了数据库 runoob:</p>
+<pre class="prettyprint prettyprinted" style="border-width:1px 1px 1px 4px; border-style:solid; border-color:rgb(221,221,221); margin:15px auto; padding:10px 15px; line-height:20px; font-family:&quot;courier new&quot;; white-space:pre-wrap; word-break:break-all; word-wrap:break-word; color:rgb(51,51,51)"><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&gt;</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="kwd" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,136)">use</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> runoob
+switched to db runoob
+</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&gt;</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> db
+runoob
+</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&gt;</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span></pre>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            如果你想查看所有数据库，可以使用&nbsp;<span style="border:0px; margin:0px; padding:0px">show dbs</span>&nbsp;命令：</p>
+<pre class="prettyprint prettyprinted" style="border-width:1px 1px 1px 4px; border-style:solid; border-color:rgb(221,221,221); margin:15px auto; padding:10px 15px; line-height:20px; font-family:&quot;courier new&quot;; white-space:pre-wrap; word-break:break-all; word-wrap:break-word; color:rgb(51,51,51)"><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&gt;</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> show dbs
+</span><span class="kwd" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,136)">local</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">  </span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">0.078GB</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+test   </span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">0.078GB</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&gt;</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span></pre>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            可以看到，我们刚创建的数据库 runoob 并不在数据库的列表中， 要显示它，我们需要向 runoob 数据库插入一些数据。</p>
+<pre class="prettyprint prettyprinted" style="border-width:1px 1px 1px 4px; border-style:solid; border-color:rgb(221,221,221); margin:15px auto; padding:10px 15px; line-height:20px; font-family:&quot;courier new&quot;; white-space:pre-wrap; word-break:break-all; word-wrap:break-word; color:rgb(51,51,51)"><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&gt;</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> db</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">.</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">runoob</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">.</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">insert</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">({</span><span class="str" style="border:0px; margin:0px; padding:0px; color:rgb(0,136,0)">&quot;name&quot;</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="str" style="border:0px; margin:0px; padding:0px; color:rgb(0,136,0)">&quot;菜鸟教程&quot;</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">})</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+</span><span class="typ" style="border:0px; margin:0px; padding:0px; color:rgb(102,0,102)">WriteResult</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">({</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="str" style="border:0px; margin:0px; padding:0px; color:rgb(0,136,0)">&quot;nInserted&quot;</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">:</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">1</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">})</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&gt;</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> show dbs
+</span><span class="kwd" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,136)">local</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">   </span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">0.078GB</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+runoob  </span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">0.078GB</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+test    </span><span class="lit" style="border:0px; margin:0px; padding:0px; color:rgb(0,102,102)">0.078GB</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)">
+</span><span class="pun" style="border:0px; margin:0px; padding:0px; color:rgb(102,102,0)">&gt;</span><span class="pln" style="border:0px; margin:0px; padding:0px; color:rgb(0,0,0)"> </span></pre>
+        <p style="border:0px; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; line-height:2em; font-family:&quot;Microsoft Yahei&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; color:rgb(51,51,51)">
+            MongoDB 中默认的数据库为 test，如果你没有创建新的数据库，集合将存放在 test 数据库中。</p>
+        <br>
+        <br>
+    </div>
+
+</div>
+
+

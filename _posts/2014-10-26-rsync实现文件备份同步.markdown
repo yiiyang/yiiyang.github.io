@@ -1,0 +1,245 @@
+---
+layout:     post
+title:      "rsync实现文件备份同步"
+date:       2014-10-26
+author:     "yangyang"
+header-img: "img/post-bg-2015.jpg"
+catalog: true
+tags:
+-  rsync实现文件备份同步
+---
+
+<div id="article_content" class="article_content">
+
+    <p>1．&nbsp;<span style="font-family:宋体">关闭防火墙和</span>selinux</p>
+    <p>systemctl&nbsp;stop&nbsp;firewalld.service&nbsp;#停止firewall&nbsp;&nbsp;</p>
+    <p>systemctl&nbsp;disable&nbsp;firewalld.service&nbsp;#禁止firewall开机启动</p>
+    <p>vi&nbsp;/etc/selinux/config&nbsp;&nbsp;</p>
+    <p>SELINUX=disabled&nbsp;&nbsp;</p>
+    <p>setenforce&nbsp;0</p>
+    <p>&nbsp;</p>
+    <p>2.<span style="font-family:宋体">安装</span><span style="font-family:Calibri">rsync</span><span style="font-family:宋体">服务</span></p>
+    <p>wget <a target="_blank" href="https://rsync.samba.org/ftp/rsync/src/rsync-3.1.2.tar.gz">
+            <u><span style="color:rgb(0,0,255)">https://rsync.samba.org/ftp/rsync/src/rsync-3.1.2.tar.gz</span></u></a></p>
+    <p>cd&nbsp;rsync-*.*.*&nbsp;&nbsp;</p>
+    <p>./configure&nbsp;--prefix=/usr/local/rsync&nbsp;</p>
+    <p>make&nbsp;&amp;&amp;&nbsp;make&nbsp;install</p>
+    <p>&nbsp;</p>
+    <p>3.配置rsync服务</p>
+    <p>Vim /etc/rsyncd.conf</p>
+    <p>#pid文件的存放位置&nbsp;&nbsp;</p>
+    <p>pid&nbsp;file&nbsp;=&nbsp;/var/run/rsync.pid&nbsp;&nbsp;</p>
+    <p>#日志文件位置，启动rsync后自动产生这个文件，无需提前创建&nbsp;&nbsp;</p>
+    <p>log&nbsp;file&nbsp;=&nbsp;/var/log/rsync.log&nbsp;&nbsp;</p>
+    <p>#支持max&nbsp;connections参数的锁文件&nbsp;&nbsp;</p>
+    <p>lock&nbsp;file=/var/run/rsync.lock&nbsp;&nbsp;</p>
+    <p>#用户认证配置文件，里面保存用户名称和密码&nbsp;&nbsp;</p>
+    <p>secrets&nbsp;file&nbsp;=&nbsp;/etc/rsync.pw&nbsp;&nbsp;</p>
+    <p>#rsync启动时欢迎信息页面文件位置&nbsp;&nbsp;</p>
+    <p>motd&nbsp;file&nbsp;=&nbsp;/etc/rsyncd.motd&nbsp;&nbsp;</p>
+    <p>transfer&nbsp;logging&nbsp;=&nbsp;yes&nbsp;&nbsp;</p>
+    <p>log&nbsp;format&nbsp;=&nbsp;%t&nbsp;%a&nbsp;%m&nbsp;%f&nbsp;%b&nbsp;&nbsp;</p>
+    <p>syslog&nbsp;facility&nbsp;=&nbsp;local3&nbsp;&nbsp;</p>
+    <p>#自定义名称&nbsp;&nbsp;</p>
+    <p>[data]&nbsp;&nbsp;</p>
+    <p>#设置需要同步的目录&nbsp;&nbsp;</p>
+    <p>path&nbsp;=&nbsp;/data/test/&nbsp;&nbsp;</p>
+    <p>#模块名称与[data]自定义名称相同&nbsp;&nbsp;</p>
+    <p>comment&nbsp;=&nbsp;data&nbsp;&nbsp;</p>
+    <p>exclude&nbsp;=&nbsp;blank.png&nbsp;;&nbsp;spinner.gif&nbsp;;&nbsp;downsimple.png&nbsp;;&nbsp;rails.png&nbsp;;&nbsp;WEB-INF/&nbsp;&nbsp;</p>
+    <p>#默认端口&nbsp;&nbsp;</p>
+    <p>port&nbsp;=&nbsp;873&nbsp;&nbsp;</p>
+    <p>#设置rsync运行权限为root&nbsp;&nbsp;</p>
+    <p>uid&nbsp;=&nbsp;root&nbsp;&nbsp;</p>
+    <p>#设置rsync运行权限为root&nbsp;&nbsp;</p>
+    <p>gid&nbsp;=&nbsp;root&nbsp;&nbsp;</p>
+    <p>#设置超时时间&nbsp;&nbsp;</p>
+    <p>timeout&nbsp;=&nbsp;600&nbsp;&nbsp;</p>
+    <p>#最大连接数&nbsp;&nbsp;</p>
+    <p>max&nbsp;connections&nbsp;=&nbsp;200&nbsp;&nbsp;</p>
+    <p>#默认为true，修改为no，增加对目录文件软连接的备份&nbsp;&nbsp;</p>
+    <p>use&nbsp;chroot&nbsp;=&nbsp;no&nbsp;&nbsp;</p>
+    <p>#设置rsync服务端文件为读写权限&nbsp;&nbsp;</p>
+    <p>read&nbsp;only&nbsp;=&nbsp;no&nbsp;&nbsp;</p>
+    <p>#不显示rsync服务端资源列表&nbsp;&nbsp;</p>
+    <p>list&nbsp;=&nbsp;no&nbsp;&nbsp;</p>
+    <p>#允许进行数据同步的客户端IP地址&nbsp;&nbsp;</p>
+    <p>hosts&nbsp;allow&nbsp;=&nbsp;192.168.1.3,192.168.1.4</p>
+    <p>#增加test1目录&nbsp;&nbsp;</p>
+    <p>[test1]&nbsp;&nbsp;</p>
+    <p>path&nbsp;=&nbsp;/data/test1&nbsp;&nbsp;</p>
+    <p>list&nbsp;=&nbsp;yes&nbsp;&nbsp;</p>
+    <p>ignore&nbsp;errors&nbsp;&nbsp;</p>
+    <p>comment&nbsp;=&nbsp;ucweb-file&nbsp;system&nbsp;&nbsp;</p>
+    <p>secrets&nbsp;file&nbsp;=&nbsp;/etc/rsync.pw&nbsp;&nbsp;</p>
+    <p>exclude&nbsp;=&nbsp;blank.png&nbsp;;&nbsp;spinner.gif&nbsp;;&nbsp;downsimple.png&nbsp;;&nbsp;rails.png&nbsp;;&nbsp;WEB-INF/</p>
+    <p>&nbsp;</p>
+    <p>4.增加必要文件，账户密码信息，传送时显示页面信息</p>
+    <p>vi&nbsp;/etc/rsync.pw&nbsp;</p>
+    <p>root:123456&nbsp;</p>
+    <p>chmod&nbsp;600&nbsp;/etc/rsync.pw</p>
+    <p>&nbsp;&nbsp;&nbsp;</p>
+    <p>chown&nbsp;root:root&nbsp;/etc/rsync.pw</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>vi&nbsp;/etc/rsyncd.motd</p>
+    <p>###############################&nbsp;&nbsp;</p>
+    <p>#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;</p>
+    <p>#&nbsp;&nbsp;&nbsp;&nbsp;start&nbsp;rsync&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#</p>
+    <p>#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>5.启动服务</p>
+    <p>&nbsp;/usr/local/rsync/bin/rsync&nbsp;--daemon&nbsp;--config=/etc/rsyncd.conf&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>开机启动</p>
+    <p>echo&nbsp;'/usr/local/rsync/bin/rsync&nbsp;--daemon&nbsp;--config=/etc/rsyncd.conf'&gt;&gt;/etc/rc.d/rc.local</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>6.<span style="font-family:宋体">客户端配置</span></p>
+    <p>.新建客户端密码文件(客户端不带用户名)&nbsp;&nbsp;</p>
+    <p>&nbsp;&nbsp;&nbsp;</p>
+    <p>vi&nbsp;/etc/rsyncd.pw</p>
+    <p>123456</p>
+    <p>chmod&nbsp;600&nbsp;/etc/rsyncd.pw</p>
+    <p>&nbsp;</p>
+    <p>//data 模块 &nbsp;&nbsp;&nbsp;/testbak/ &nbsp;&nbsp;&nbsp;备份客户端地址</p>
+    <p>rsync&nbsp;-vzrtopg&nbsp;&nbsp;--progress&nbsp;--delete&nbsp;&nbsp;root@192.168.5.189::data&nbsp;/testbak/</p>
+    <p>&nbsp;</p>
+    <p>rsync&nbsp;-vzrtopg&nbsp;--progress&nbsp;--delete&nbsp;&nbsp;root@192.168.5.189::data&nbsp;/testbak/&nbsp;--password-file=/etc/rsyncd.pw</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p><strong>rsync<span style="font-family:宋体">参数的具体解释如下</span></strong><span style="font-family:宋体">：</span>
+        <br>
+        -v, --verbose <span style="font-family:宋体">详细模式输出 </span><br>
+        -q, --quiet <span style="font-family:宋体">精简输出模式 </span><br>
+        -c, --checksum <span style="font-family:宋体">打开校验开关，强制对文件传输进行校验 </span><br>
+        -a, --archive <span style="font-family:宋体">归档模式，表示以递归方式传输文件，并保持所有文件属性，等于</span><span style="font-family:Calibri">-rlptgoD
+</span><br>
+        -r, --recursive <span style="font-family:宋体">对子目录以递归模式处理 </span><br>
+        -R, --relative <span style="font-family:宋体">使用相对路径信息 </span><br>
+        -b, --backup <span style="font-family:宋体">创建备份，也就是对于目的已经存在有同样的文件名时，将老的文件重新命名为</span><span style="font-family:Calibri">~filename</span><span style="font-family:宋体">。可以使用</span><span style="font-family:Calibri">--suffix</span><span style="font-family:宋体">选项来指定不同的备份文件前缀。
+</span><br>
+        --backup-dir <span style="font-family:宋体">将备份文件</span><span style="font-family:Calibri">(</span><span style="font-family:宋体">如</span><span style="font-family:Calibri">~filename)</span><span style="font-family:宋体">存放在在目录下。
+</span><br>
+        -suffix=SUFFIX <span style="font-family:宋体">定义备份文件前缀 </span><br>
+        -u, --update <span style="font-family:宋体">仅仅进行更新，也就是跳过所有已经存在于</span><span style="font-family:Calibri">DST</span><span style="font-family:宋体">，并且文件时间晚于要备份的文件。</span><span style="font-family:Calibri">(</span><span style="font-family:宋体">不覆盖更新的文件</span><span style="font-family:Calibri">)
+</span><br>
+        -l, --links <span style="font-family:宋体">保留软链结 </span><br>
+        -L, --copy-links <span style="font-family:宋体">想对待常规文件一样处理软链结 </span><br>
+        --copy-unsafe-links <span style="font-family:宋体">仅仅拷贝指向</span><span style="font-family:Calibri">SRC</span><span style="font-family:宋体">路径目录树以外的链结
+</span><br>
+        --safe-links <span style="font-family:宋体">忽略指向</span><span style="font-family:Calibri">SRC</span><span style="font-family:宋体">路径目录树以外的链结
+</span><br>
+        -H, --hard-links <span style="font-family:宋体">保留硬链结 </span><br>
+        -p, --perms <span style="font-family:宋体">保持文件权限 </span><br>
+        -o, --owner <span style="font-family:宋体">保持文件属主信息 </span><br>
+        -g, --group <span style="font-family:宋体">保持文件属组信息 </span><br>
+        -D, --devices <span style="font-family:宋体">保持设备文件信息 </span><br>
+        -t, --times <span style="font-family:宋体">保持文件时间信息 </span><br>
+        -S, --sparse <span style="font-family:宋体">对稀疏文件进行特殊处理以节省</span><span style="font-family:Calibri">DST</span><span style="font-family:宋体">的空间
+</span><br>
+        -n, --dry-run<span style="font-family:宋体">现实哪些文件将被传输 </span><br>
+        -W, --whole-file <span style="font-family:宋体">拷贝文件，不进行增量检测 </span><br>
+        -x, --one-file-system <span style="font-family:宋体">不要跨越文件系统边界 </span><br>
+        -B, --block-size=SIZE <span style="font-family:宋体">检验算法使用的块尺寸，默认是</span><span style="font-family:Calibri">700</span><span style="font-family:宋体">字节
+</span><br>
+        -e, --rsh=COMMAND <span style="font-family:宋体">指定使用</span><span style="font-family:Calibri">rsh</span><span style="font-family:宋体">、</span><span style="font-family:Calibri">ssh</span><span style="font-family:宋体">方式进行数据同步
+</span><br>
+        --rsync-path=PATH <span style="font-family:宋体">指定远程服务器上的</span><span style="font-family:Calibri">rsync</span><span style="font-family:宋体">命令所在路径信息
+</span><br>
+        -C, --cvs-exclude <span style="font-family:宋体">使用和</span><span style="font-family:Calibri">CVS</span><span style="font-family:宋体">一样的方法自动忽略文件，用来排除那些不希望传输的文件
+</span><br>
+        --existing <span style="font-family:宋体">仅仅更新那些已经存在于</span><span style="font-family:Calibri">DST</span><span style="font-family:宋体">的文件，而不备份那些新创建的文件
+</span><br>
+        --delete <span style="font-family:宋体">删除那些</span><span style="font-family:Calibri">DST</span><span style="font-family:宋体">中</span><span style="font-family:Calibri">SRC</span><span style="font-family:宋体">没有的文件
+</span><br>
+        --delete-excluded <span style="font-family:宋体">同样删除接收端那些被该选项指定排除的文件 </span><br>
+        --delete-after <span style="font-family:宋体">传输结束以后再删除 </span><br>
+        --ignore-errors <span style="font-family:宋体">及时出现</span><span style="font-family:Calibri">IO</span><span style="font-family:宋体">错误也进行删除
+</span><br>
+        --max-delete=NUM <span style="font-family:宋体">最多删除</span><span style="font-family:Calibri">NUM</span><span style="font-family:宋体">个文件
+</span><br>
+        --partial <span style="font-family:宋体">保留那些因故没有完全传输的文件，以是加快随后的再次传输 </span><br>
+        --force <span style="font-family:宋体">强制删除目录，即使不为空 </span><br>
+        --numeric-ids <span style="font-family:宋体">不将数字的用户和组</span><span style="font-family:Calibri">ID</span><span style="font-family:宋体">匹配为用户名和组名
+</span><br>
+        --timeout=TIME IP<span style="font-family:宋体">超时时间，单位为秒 </span><br>
+        -I, --ignore-times <span style="font-family:宋体">不跳过那些有同样的时间和长度的文件 </span><br>
+        --size-only <span style="font-family:宋体">当决定是否要备份文件时，仅仅察看文件大小而不考虑文件时间 </span><br>
+        --modify-window=NUM <span style="font-family:宋体">决定文件是否时间相同时使用的时间戳窗口，默认为</span><span style="font-family:Calibri">0
+</span><br>
+        -T --temp-dir=DIR <span style="font-family:宋体">在</span><span style="font-family:Calibri">DIR</span><span style="font-family:宋体">中创建临时文件
+</span><br>
+        --compare-dest=DIR <span style="font-family:宋体">同样比较</span><span style="font-family:Calibri">DIR</span><span style="font-family:宋体">中的文件来决定是否需要备份
+</span><br>
+        -P <span style="font-family:宋体">等同于 </span><span style="font-family:Calibri">--partial
+</span><br>
+        --progress <span style="font-family:宋体">显示备份过程 </span><br>
+        -z, --compress <span style="font-family:宋体">对备份的文件在传输时进行压缩处理 </span><br>
+        --exclude=PATTERN <span style="font-family:宋体">指定排除不需要传输的文件模式 </span><br>
+        --include=PATTERN <span style="font-family:宋体">指定不排除而需要传输的文件模式 </span><br>
+        --exclude-from=FILE <span style="font-family:宋体">排除</span><span style="font-family:Calibri">FILE</span><span style="font-family:宋体">中指定模式的文件
+</span><br>
+        --include-from=FILE <span style="font-family:宋体">不排除</span><span style="font-family:Calibri">FILE</span><span style="font-family:宋体">指定模式匹配的文件
+</span><br>
+        --version <span style="font-family:宋体">打印版本信息 </span><br>
+        --address <span style="font-family:宋体">绑定到特定的地址 </span><br>
+        --config=FILE <span style="font-family:宋体">指定其他的配置文件，不使用默认的</span><span style="font-family:Calibri">rsyncd.conf</span><span style="font-family:宋体">文件
+</span><br>
+        --port=PORT <span style="font-family:宋体">指定其他的</span><span style="font-family:Calibri">rsync</span><span style="font-family:宋体">服务端口
+</span><br>
+        --blocking-io <span style="font-family:宋体">对远程</span><span style="font-family:Calibri">shell</span><span style="font-family:宋体">使用阻塞</span><span style="font-family:Calibri">IO
+</span><br>
+        -stats <span style="font-family:宋体">给出某些文件的传输状态 </span><br>
+        --progress <span style="font-family:宋体">在传输时现实传输过程 </span><br>
+        --log-format=formAT <span style="font-family:宋体">指定日志文件&#26684;式 </span><br>
+        --password-file=FILE <span style="font-family:宋体">从</span><span style="font-family:Calibri">FILE</span><span style="font-family:宋体">中得到密码
+</span><br>
+        --bwlimit=KBPS <span style="font-family:宋体">限制</span><span style="font-family:Calibri">I/O</span><span style="font-family:宋体">带宽，</span><span style="font-family:Calibri">KBytes per second
+</span><br>
+        -h, --help <span style="font-family:宋体">显示帮助信息</span></p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>7.<span style="font-family:宋体">定时备份执行</span></p>
+    <p>新建同步脚本</p>
+    <p>mkdir –p /shell/rsync/</p>
+    <p>vi&nbsp;rsync.sh&nbsp;&nbsp;</p>
+    <p>#!/bin/bash&nbsp;&nbsp;&nbsp;&nbsp;</p>
+    <p>rsync&nbsp;-vzrtopg&nbsp;&nbsp;--progress&nbsp;--delete&nbsp;&nbsp;root@192.168.5.189::data&nbsp;/testbak/&nbsp;&nbsp; &nbsp;&nbsp;</p>
+    <p>rsync&nbsp;-vzrtopg&nbsp;--progress&nbsp;--delete&nbsp;&nbsp;root@192.168.5.189::data&nbsp;/testbak/&nbsp;--password-file=/etc/rsyncd.pwd&nbsp;&nbsp;</p>
+    <p>&nbsp;&nbsp;</p>
+    <p><span style="font-family:宋体">手动同步文件</span>&nbsp;&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>cd&nbsp;/shell/rsync</p>
+    <p>#./rsync.sh&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+    <p><span style="font-family:宋体">自动同步</span>:每隔五分钟同步一次&nbsp;&nbsp;</p>
+    <p>crontab&nbsp;-e&nbsp;&nbsp;</p>
+    <p>0,5&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;/rsync.sh&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>rsync服务器文件列表</p>
+    <p>rsync -vzrtopg rsync://192.168.1.111/data</p>
+    <p><span style="font-family:宋体">本地</span>cp</p>
+    <p>rsync -vzrtopg &nbsp;/testbak/ /usr/local/src/</p>
+    <p>scp </p>
+    <p><span style="font-family:宋体">本地</span>-&gt;另一台服务器</p>
+    <p>rsync -vzrtopg &nbsp;/testbak/ <a target="_blank" href="mailto:root@192.168.1.201:/data/test/">
+            <u><span style="color:rgb(0,0,255)">root@192.168.1.201:</span><span style="color:rgb(0,0,255)">/</span><span style="color:rgb(0,0,255)">data/test/</span></u></a></p>
+    <p><span style="font-family:宋体">另一服务器</span>-&gt;本地</p>
+    <p>rsync -vzrtopg &nbsp;<a target="_blank" href="mailto:root@192.168.1.201:/data/test/"><u><span style="color:rgb(0,0,255)">root@192.168.1.201:</span><span style="color:rgb(0,0,255)">/</span><span style="color:rgb(0,0,255)">data/test/</span></u></a>&nbsp;/testbak/</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>--process</p>
+    <p>显示步骤</p>
+    <p>--delete</p>
+    <p>删除目标路径有而原路径没有的文件</p>
+    <p>&nbsp;</p>
+    <p><span style="font-family:宋体">本地到</span>rsync服务器</p>
+    <p>rsync -avzropg --process&nbsp;--delete &nbsp;/testbak/ &nbsp;<a target="_blank" href="mailto:root@192.168.1.111::data"><u><span style="color:rgb(0,0,255)">root@192.168.1.111::data</span></u></a></p>
+    <p>rsync服务器到本地</p>
+    <p>rsync -avzrtopg --process --delete&nbsp;<a target="_blank" href="mailto:root@192.168.1.111::data"><u><span style="color:rgb(0,0,255)">root@192.168.1.111::data</span></u></a>&nbsp;&nbsp;/testbak/
+    </p>
+    <p>&nbsp;</p>
+
+</div>

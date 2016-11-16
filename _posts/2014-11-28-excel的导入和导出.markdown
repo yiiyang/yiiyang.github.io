@@ -1,0 +1,91 @@
+---
+layout:     post
+title:      "excel的导入和导出"
+date:       2014-11-28
+author:     "yangyang"
+header-img: "img/post-bg-2015.jpg"
+catalog: true
+tags:
+-   excel的导入和导出
+---
+
+<div id="article_content" class="article_content">
+
+    导入<pre name="code" class="php">    public function excel_put(){
+        //先做一个文件上传，保存文件
+        $path=$_FILES[&#39;file&#39;];
+        $filePath = &quot;uploads/&quot;.$path[&quot;name&quot;];
+        move_uploaded_file($path[&quot;tmp_name&quot;],$filePath);
+        //默认用excel2007读取excel，若格式不对，则用之前的版本进行读取
+        //表格字段名字
+        $data=array(&#39;B&#39;=&gt;&#39;name&#39;,&#39;C&#39;=&gt;&#39;pwd&#39;,&#39;D&#39;=&gt;&#39;money1&#39;,&#39;E&#39;=&gt;&#39;salt&#39;);
+        $tablename=&#39;user1&#39;;//表名字
+        $this-&gt;excel_fileput($filePath,$data,$tablename);
+    }
+    private function excel_fileput($filePath,$data,$tablename){
+        $this-&gt;load-&gt;library(&quot;phpexcel&quot;);//ci框架中引入excel类
+        $PHPExcel = new PHPExcel();
+        $PHPReader = new PHPExcel_Reader_Excel2007();
+        if(!$PHPReader-&gt;canRead($filePath)){
+            $PHPReader = new PHPExcel_Reader_Excel5();
+            if(!$PHPReader-&gt;canRead($filePath)){
+                echo &#39;no Excel&#39;;
+                return ;
+            }
+        }
+        // 加载excel文件
+        $PHPExcel = $PHPReader-&gt;load($filePath);
+
+        // 读取excel文件中的第一个工作表
+        $currentSheet = $PHPExcel-&gt;getSheet(0);
+        // 取得最大的列号
+        $allColumn = $currentSheet-&gt;getHighestColumn();
+        // 取得一共有多少行
+        $allRow = $currentSheet-&gt;getHighestRow();
+
+        // 从第二行开始输出，因为excel表中第一行为列名
+        for($currentRow = 2;$currentRow &lt;= $allRow;$currentRow++){
+            /**从第A列开始输出*/
+            //echo $allColumn;
+
+            for($currentColumn= &#39;A&#39;;$currentColumn&lt;= $allColumn; $currentColumn++){
+                $val = $currentSheet-&gt;getCellByColumnAndRow(ord($currentColumn) - 65,$currentRow)-&gt;getValue();
+                //print_r($val);
+                //die;
+
+                if($currentColumn == &#39;A&#39;)
+                {
+                    //echo $val.&quot;\t&quot;;
+                }else if($currentColumn &lt;= $allColumn){
+                    $data1[$currentColumn]=$val;
+                }
+            }
+            foreach($data as $key=&gt;$val){
+                $data2[$val]=$data1[$key];
+            }
+            $this-&gt;db-&gt;insert($tablename,$data2);
+            //print_r($data2);
+            //echo &quot;&lt;/br&gt;&quot;;
+        }
+        //echo &quot;\n&quot;;
+        echo &quot;导入成功&quot;;
+    }  </pre>
+    <p>导出<pre name="code" class="php">    header(&quot;Content-type:application/vnd.ms-excel&quot;);
+    header(&quot;Content-Disposition:attachment;filename=123.xls&quot;);
+
+    $array=$this-&gt;db-&gt;get(&quot;shop_address&quot;)-&gt;result_array();
+    $str = &quot;Id\tName\tPid\n&quot;;
+    foreach ($array as $val) {
+        $str .=  $val[&#39;id&#39;] . &quot;\t&quot; .$val[&#39;name&#39;] . &quot;\t&quot; . $val[&#39;pid&#39;] . &quot;\n&quot;;
+    }
+    echo $str;    </pre><br>
+    <br>
+    </p>
+    <p><br>
+    </p>
+    <p><br>
+    </p>
+
+</div>
+
+

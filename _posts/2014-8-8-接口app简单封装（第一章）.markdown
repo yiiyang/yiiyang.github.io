@@ -1,0 +1,162 @@
+---
+layout:     post
+title:      "接口app简单封装（第一章）"
+date:       2014-08-08
+author:     "yangyang"
+header-img: "img/post-bg-2015.jpg"
+catalog: true
+tags:
+-   接口app简单封装（第一章）
+---
+<div id="article_content" class="article_content">
+
+    <p>1：接口我们有json和xml&#26684;式，但是，在我们做接口的过程中，为了方便开发人员，我们需要设置混合方式，更方便开发人员调用哪种接口</p>
+    <p>下面是我简单的写了个小demo</p>
+    <p><pre name="code" class="php">&lt;?php
+
+class Response
+{
+    const JSON=&#39;json&#39;;
+    /*
+     * 按综合通信方式输出通信数据
+     * @param interger $code 状态码
+     * @param string $message 提示信息
+     * @param string array $-data 数据
+     * @param string array $type 数据类型
+     * return
+     */
+    public static function show($code, $message=&#39;&#39;,$data=array(),$type=self::JSON){
+        if(!is_numeric($code)){
+            return &#39;&#39;;
+        }
+       $type=$_GET[&#39;format&#39;]?$_GET[&#39;format&#39;]:self::JSON;
+        $result=array(
+            &#39;code&#39;=&gt;$code,
+            &#39;mesage&#39;=&gt;$message,
+            &#39;data&#39;=&gt;$data
+        );
+        if($type==&#39;json&#39;){
+             self::json($code,$message,$data);
+        }elseif( $type==&#39;array&#39;){
+            var_dump($result);
+        }elseif($type==&#39;xml&#39;){
+            self::xmlEncode($code,$message,$data);
+        }else{
+            //待定
+        }
+    }
+    /*
+     * 按json通信方式输出通信数据
+     * @param interger $code 状态码
+     * @param string $message 提示信息
+     * @param string array $-data 数据
+     * return
+     */
+    public static function json($code, $message=&#39;&#39;,$data=array()){
+        if(!is_numeric($code)){
+            return &#39;&#39;;
+        }
+        $result=array(
+            &#39;code&#39;=&gt;$code,
+            &#39;mesage&#39;=&gt;$message,
+            &#39;data&#39;=&gt;$data
+        );
+        echo json_encode($result);
+        exit;
+    }
+    /*
+     * 按xml通信方式输出通信数据
+     * @param interger $code 状态码
+     * @param string $message 提示信息
+     * @param string array $-data 数据
+     * return
+     */
+    public static function xmlEncode($code, $message=&#39;&#39;,$data=array()){
+        if(!is_numeric($code)){
+            return &#39;&#39;;
+        }
+        $result=array(
+            &#39;code&#39;=&gt;$code,
+            &#39;message&#39;=&gt;$message,
+            &#39;data&#39;=&gt;$data
+        );
+        header(&quot;Content-Type:text/xml&quot;);
+        $xml=&quot;&lt;?xml version=&#39;1.0&#39; encoding=&#39;UTF-8&#39; ?&gt;&quot;;
+        $xml.=&quot;&lt;root&gt;\n&quot;;
+        $xml.=self::xmlToEncode($result);
+        $xml.=&quot;&lt;/root&gt;&quot;;
+        echo $xml;exit;
+    }
+    public static function xmlToEncode($data){
+        $xml=$attr=&quot;&quot;;
+        foreach($data as $k=&gt;$v){
+            if(is_numeric($k)){
+                $attr=&quot;id=&#39;$k&#39;&quot;;
+                $k=&quot;item&quot;;
+            }
+            $xml.=&quot;&lt;$k $attr &gt;&quot;;
+            $xml.=is_array($v)?self::xmlToEncode($v):$v;
+            $xml.=&quot;&lt;/$k&gt;\n&quot;;
+        }
+        return $xml;
+    }
+}</pre><pre name="code" class="php">//是否成功
+$data=array(
+    &#39;id&#39;=&gt;1,
+    &#39;name&#39;=&gt;&#39;sinagwa&#39;,
+    &#39;type&#39;=&gt;array(1,2,3=&gt;array(1,25,32=&gt;array(&#39;asdf&#39;,45)),342,234),
+);
+Response::json(200,&#39;success&#39;,$data);
+</pre>2：静态缓存：就是保存在磁盘上的静态文件，用php生成数据放在静态文件中；</p>
+    <p>那么，php是如何操作缓存的：1：生成缓存 2：获取缓存 3：删除缓存&nbsp;</p>
+    <p>我给大家提供个demo，直接拿过去用就行</p>
+    <p><span style="white-space:pre"></span><pre name="code" class="php">&lt;?php
+class File{
+    private  $_dir;
+    const EXT=&#39;.txt&#39;;
+    public function __construct()
+    {
+        $this-&gt;_dir=dirname(__FILE__).&#39;/files/&#39;;
+    }
+    /*
+    * 生成缓存 获取缓存 删除缓存
+    * @param string $key 文件名
+    * @param string $value 数据
+    * @param string url $path 路径
+    * return
+    */
+    public function cacheDate($key,$value=&#39;&#39;,$path){
+        $filename=$this-&gt;_dir.$path.$key.self::EXT;
+        if($value!==&#39;&#39;){
+            //删除缓存
+            if(is_null($value)){
+                return @unlink($filename);
+            }
+            //将value值写入缓存
+            $dir=dirname($filename);
+            if(is_dir($dir)){
+                mkdir($dir,0777);
+            }
+            //写入缓存中
+            return file_put_contents($filename,json_encode($value));
+        }
+        if(!is_file($filename)){
+            return flase;
+        }else{
+            //获取缓存
+            return json_decode(file_get_contents($filename),true);
+        }
+    }
+}</pre>3：缓存我们也可以有memcache和redis缓存技术，</p>
+    <p>（1）：Memcache和redis都是用来管理数据的</p>
+    <p>（2）：他们疏忽都是存放在内存里的</p>
+    <p>（3）：redis可以定期经数据备份到磁盘（持久化）</p>
+    <p>（4）：Memcache只是简单的key/value缓存</p>
+    <p>（5）：redis不仅仅支持简单的k/v类型的数据，同时，还提供list，set，hash等数据结构的存储</p>
+    <p>关于这个memcache和redis这个缓存技术，我就不在这里详细的介绍了，大家可以自己搜下这个该怎么用<br>
+        <br>
+    </p>
+
+</div>
+
+

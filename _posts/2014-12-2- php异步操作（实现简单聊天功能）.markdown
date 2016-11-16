@@ -1,0 +1,140 @@
+---
+layout:     post
+title:      " php异步操作（实现简单聊天功能）"
+date:       2014-12-2
+author:     "yangyang"
+header-img: "img/post-bg-2015.jpg"
+catalog: true
+tags:
+-    php异步操作（实现简单聊天功能）
+---
+<div id="article_content" class="article_content">
+
+    <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; color:rgb(85,85,85); font-family:&quot;microsoft yahei&quot;; font-size:15px; line-height:35px">
+        这里主要运用swoole实现简单的聊天功能</p>
+    <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; color:rgb(85,85,85); font-family:&quot;microsoft yahei&quot;; font-size:15px; line-height:35px">
+        首先我们安装swoole&nbsp;<br>
+    </p>
+    <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; color:rgb(85,85,85); font-family:&quot;microsoft yahei&quot;; font-size:15px; line-height:35px">
+        目前<br>
+    </p>
+    <ul style="color:rgb(85,85,85); font-family:&quot;microsoft yahei&quot;; font-size:15px; line-height:35px">
+        <li>仅支持Linux，FreeBSD，MacOS，3类操作系统</li><li>Linux内核版本2.3.32以上</li><li>PHP5.3.10以上版本，包括PHP7</li><li>gcc4.4以上版本或者clang</li><li>cmake2.4&#43;，编译为libswoole.so作为C/C&#43;&#43;库时需要使用cmake</li><li>swoole仅支持PHP5.3.10或更高版本，建议使用PHP5.4&#43;</li><li>推荐使用centos Ubuntu12 Debian6 我用的是centos7.0 下面也是7.0的安装以及运用</li></ul>
+    <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; color:rgb(85,85,85); font-family:&quot;microsoft yahei&quot;; font-size:15px; line-height:35px">
+    </p>
+    <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; color:rgb(85,85,85); font-family:&quot;microsoft yahei&quot;; font-size:15px; line-height:35px">
+        下载地址&nbsp;<a target="_blank" target="_blank" href="http://pecl.php.net/package/swoole" style="text-decoration:none; color:rgb(12,137,207)">http://pecl.php.net/package/swoole</a></p>
+    <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; color:rgb(85,85,85); font-family:&quot;microsoft yahei&quot;; font-size:15px; line-height:35px">
+    </p>
+    <p style="white-space:pre-wrap; word-wrap:break-word; color:rgb(85,85,85); font-size:15px; line-height:35px; background-color:rgb(255,255,255)">
+        <code class="shell rainbow">编译安装</code></p>
+    <p style="white-space:pre-wrap; word-wrap:break-word; color:rgb(85,85,85); font-size:15px; line-height:35px; background-color:rgb(255,255,255)">
+        <code class="shell rainbow"></code><pre name="code" class="python">cd swoole
+phpize
+./configure
+make
+sudo make install</pre><span style="color:rgb(85,85,85); font-family:&quot;microsoft yahei&quot;; font-size:15px; line-height:35px">配置php.ini</span></p>
+    <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; color:rgb(85,85,85); font-family:&quot;microsoft yahei&quot;; font-size:15px; line-height:35px">
+    </p>
+    <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; color:rgb(85,85,85); font-family:&quot;microsoft yahei&quot;; font-size:15px; line-height:35px">
+    </p>
+    <pre style="white-space:pre-wrap; word-wrap:break-word; color:rgb(85,85,85); font-size:15px; line-height:35px; background-color:rgb(255,255,255)"><code class="shell rainbow">加入</code></pre>
+    <pre name="code" class="php">extension=swoole.so</pre><span style="color:rgb(85,85,85); font-family:&quot;microsoft yahei&quot;; font-size:15px; line-height:35px">通过</span><code style="color:rgb(85,85,85); font-size:15px; line-height:35px">php -m</code><span style="color:rgb(85,85,85); font-family:&quot;microsoft yahei&quot;; font-size:15px; line-height:35px">或</span><code style="color:rgb(85,85,85); font-size:15px; line-height:35px">phpinfo()</code><span style="color:rgb(85,85,85); font-family:&quot;microsoft yahei&quot;; font-size:15px; line-height:35px">来查看是否成功加载了swoole；</span>
+    <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; color:rgb(85,85,85); font-family:&quot;microsoft yahei&quot;; font-size:15px; line-height:35px">
+    </p>
+    <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; color:rgb(85,85,85); font-family:&quot;microsoft yahei&quot;; font-size:15px; line-height:35px">
+        安装完成后 参考这里代码实现许多功能</p>
+    <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; color:rgb(85,85,85); font-family:&quot;microsoft yahei&quot;; font-size:15px; line-height:35px">
+        http://wiki.swoole.com/wiki/page/479.html</p>
+    <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; color:rgb(85,85,85); font-family:&quot;microsoft yahei&quot;; font-size:15px; line-height:35px">
+        现在我给出的是一个能够简单聊天的功能代码</p>
+    <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; color:rgb(85,85,85); font-family:&quot;microsoft yahei&quot;; font-size:15px; line-height:35px">
+        前台&nbsp;&nbsp;</p>
+    <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; color:rgb(85,85,85); font-family:&quot;microsoft yahei&quot;; font-size:15px; line-height:35px">
+<pre name="code" class="html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Document&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h3&gt;demo 1&lt;/h3&gt;
+    &lt;table&gt;
+        &lt;tr&gt;
+            &lt;td&gt;&lt;input type=&quot;text&quot; id=&quot;text&quot;&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td&gt;&lt;input type=&quot;button&quot; value=&quot;点击&quot; onclick=&quot;ab()&quot;&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+    &lt;/table&gt;
+    &lt;div id=&quot;div&quot; style=&quot;width:200px; height:200px;&quot; }&gt;
+
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+//引入一个jQuery文件
+&lt;script src=&quot;jquery-1.9.1.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+    var wsServer = &#39;ws://192.168.1.113:9502&#39;;//这里的IP应该更改
+    var websocket = new WebSocket(wsServer);
+    websocket.onopen = function (evt) {
+        console.log(&quot;Connected to WebSocket server.&quot;);
+    };
+ websocket.onclose = function (evt) {
+        console.log(&quot;Disconnected&quot;);
+    };
+
+    websocket.onmessage = function (evt) {
+        $(&#39;#div&#39;).append(evt.data+&quot;&lt;br&gt;&quot;);
+        // document.getElementById(&#39;div&#39;).style.background = evt.data;
+        console.log(&#39;Retrieved data from server: &#39; + evt.data);
+    };
+
+    websocket.onerror = function (evt, e) {
+        console.log(&#39;Error occured: &#39; + evt.data);
+    };
+function ab(){
+    var zhi=document.getElementById(&#39;text&#39;).value;
+    websocket.send(zhi);
+}
+
+&lt;/script&gt;
+</pre><span style="color:rgb(85,85,85); font-family:&quot;microsoft yahei&quot;; font-size:15px; line-height:35px">服务器代码</span></p>
+    <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; color:rgb(85,85,85); font-family:&quot;microsoft yahei&quot;; font-size:15px; line-height:35px">
+<pre name="code" class="python">&lt;?PHP
+
+//创建websocket服务器对象，监听0.0.0.0:9502端口
+$ws = new swoole_websocket_server(&quot;0.0.0.0&quot;, 9502);
+
+//监听WebSocket连接打开事件
+$ws-&gt;on(&#39;open&#39;, function ($ws, $request) {
+    var_dump($request-&gt;fd, $request-&gt;get, $request-&gt;server);
+    //获取所有连接人存为数组
+    $GLOBALS[&#39;fd&#39;][] = $request-&gt;fd;
+    //$ws-&gt;push($request-&gt;fd, &quot;hello, welcome\n&quot;);
+});
+
+//监听WebSocket消息事件
+$ws-&gt;on(&#39;message&#39;, function ($ws, $frame) {
+    echo &quot;Message: {$frame-&gt;data}\n&quot;;
+//循环所有连接人发送内容
+      foreach($GLOBALS[&#39;fd&#39;] as $key =&gt; $val){
+            $ws-&gt;push($val,$frame-&gt;data);
+      }
+   //$ws-&gt;push($frame-&gt;fd, &quot;{$frame-&gt;data}&quot;);
+});
+
+//监听WebSocket连接关闭事件
+$ws-&gt;on(&#39;close&#39;, function ($ws, $fd) {
+    echo &quot;client-{$fd} is closed\n&quot;;
+});
+
+$ws-&gt;start();</pre></p>
+    <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; color:rgb(85,85,85); font-family:&quot;microsoft yahei&quot;; font-size:15px; line-height:35px">
+        运行服务器文件在命令行中执行</p>
+    <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; color:rgb(85,85,85); font-family:&quot;microsoft yahei&quot;; font-size:15px; line-height:35px">
+        php 文件名</p>
+    <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; color:rgb(85,85,85); font-family:&quot;microsoft yahei&quot;; font-size:15px; line-height:35px">
+        运行后 浏览器打开前台文件</p>
+
+</div>
