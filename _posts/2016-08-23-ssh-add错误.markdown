@@ -1,0 +1,19 @@
+---
+layout:     post
+title:      "ssh-add错误"
+date:      2016-08-23
+author:     "yangyang"
+header-img: "img/post-bg-2015.jpg"
+catalog: true
+tags:
+-   ssh-add错误
+---
+
+
+* ***Could not open a connection to your authentication agenty***
+
+```
+	若执行ssh-add /path/to/xxx 时出现这个错误:Could not open a connection to your authentication agent，则先执行如下命令即可：
+	ssh-agent bash
+```
+
